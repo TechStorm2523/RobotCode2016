@@ -1,19 +1,17 @@
 
 package org.usfirst.frc.team2523.robot;
 
+import org.usfirst.frc.team2523.robot.commands.ExampleCommand;
+import org.usfirst.frc.team2523.robot.subsystems.DriveTrain;
+import org.usfirst.frc.team2523.robot.subsystems.ExampleSubsystem;
+import org.usfirst.frc.team2523.robot.subsystems.Winch;
+
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-
-import org.usfirst.frc.team2523.robot.commands.ExampleCommand;
-import org.usfirst.frc.team2523.robot.subsystems.DriveTrain;
-import org.usfirst.frc.team2523.robot.subsystems.ExampleSubsystem;
-
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.Jaguar;
-import edu.wpi.first.wpilibj.Talon;
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the IterativeRobot
@@ -25,6 +23,7 @@ public class Robot extends IterativeRobot {
 
 	public static final ExampleSubsystem exampleSubsystem = new ExampleSubsystem();
 	public static final DriveTrain drivetrain = new DriveTrain();
+	public static final Winch winch =new Winch();
 	public static OI oi = new OI();
 
     Command autonomousCommand;

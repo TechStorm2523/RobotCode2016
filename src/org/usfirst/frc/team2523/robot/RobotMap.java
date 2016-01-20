@@ -1,7 +1,6 @@
 package org.usfirst.frc.team2523.robot;
 
-import edu.wpi.first.wpilibj.Jaguar;
-import edu.wpi.first.wpilibj.Talon;
+
 
 /**
  * The RobotMap is a mapping from the ports sensors and actuators are wired into
@@ -28,7 +27,8 @@ public class RobotMap {
 	public static int feeder = 4;
 	public static int launch1 = 5;
 	public static int launch2 = 6;
-	public static int lifter = 7;
-	public static int winch = 8;
+	public static int lifter1 = 7;
+	public static int lifter2 = 8;
+	public static int winch = 9;
 			
 }

@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 /**
  *
  */
+@SuppressWarnings("unused")
 public class DriveTrain extends Subsystem {
     
 	RobotDrive drive = new RobotDrive(0,1,2,3);
