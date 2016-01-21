@@ -2,11 +2,13 @@
 package org.usfirst.frc.team2523.robot;
 
 import org.usfirst.frc.team2523.robot.commands.ExampleCommand;
+import org.usfirst.frc.team2523.robot.subsystems.ArmPivot;
 import org.usfirst.frc.team2523.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team2523.robot.subsystems.ExampleSubsystem;
 import org.usfirst.frc.team2523.robot.subsystems.Winch;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -24,6 +26,7 @@ public class Robot extends IterativeRobot {
 	public static final ExampleSubsystem exampleSubsystem = new ExampleSubsystem();
 	public static final DriveTrain drivetrain = new DriveTrain();
 	public static final Winch winch =new Winch();
+	public static final ArmPivot armpivot = new ArmPivot();
 	public static OI oi = new OI();
 
     Command autonomousCommand;

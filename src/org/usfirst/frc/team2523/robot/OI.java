@@ -1,19 +1,32 @@
 package org.usfirst.frc.team2523.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.Button;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 /**
  * This class is the glue that binds the controls on the physical operator
  * interface to the commands and command groups that allow control of the robot.
  */
-@SuppressWarnings("unused")
 public class OI {
     //// CREATING BUTTONS
     // One type of button is a joystick button which is any button on a joystick.
     // You create one by telling it which joystick it's on and which button
     // number it is.
     public Joystick DriveStick = new Joystick(1);
-    // Button button = new JoystickButton(stick, buttonNumber);
+    public Joystick UtilStick = new Joystick (2);
+    Button button1 = new JoystickButton(UtilStick, 1),
+			button2 = new JoystickButton(UtilStick, 2),
+			button3 = new JoystickButton(UtilStick, 3),
+			button4 = new JoystickButton(UtilStick, 4),
+			button5 = new JoystickButton(UtilStick, 5),
+			button6 = new JoystickButton(UtilStick, 6),
+			button7 = new JoystickButton(UtilStick, 7),
+			button8 = new JoystickButton(UtilStick, 8),
+			button9 = new JoystickButton(UtilStick, 9),
+			button10 = new JoystickButton(UtilStick, 10),
+			button11 = new JoystickButton(UtilStick, 11),
+			button12 = new JoystickButton(UtilStick, 12);
     
     // There are a few additional built in buttons you can use. Additionally,
     // by subclassing Button you can create custom triggers and bind those to

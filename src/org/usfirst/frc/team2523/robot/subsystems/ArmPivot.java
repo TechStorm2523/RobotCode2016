@@ -11,8 +11,8 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  */
 public class ArmPivot extends Subsystem {
     
-	 Talon arm1 = new Talon(RobotMap.lifter1);
-	 Talon arm2 = new Talon(RobotMap.lifter2);
+	 static Talon arm1 = new Talon(RobotMap.lifter1);
+	 static Talon arm2 = new Talon(RobotMap.lifter2);
 
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
@@ -20,23 +20,19 @@ public class ArmPivot extends Subsystem {
     }
     
     
-    public void up1(){
+    public static void up(){
     	arm1.set(1);
-	}
-	public void up2(){
     	arm2.set(-1);
 	}
-	public void stoparm1(){
+	public void stoparm(){
     	arm1.set(0);
-	}
-	public void stoparm2(){
     	arm2.set(0);
 	}
-	public void down1(){
+	
+	public void down(){
     	arm1.set(-1);
-	}
-	public void down2(){
     	arm2.set(2);
 	}
+	
 }
 
