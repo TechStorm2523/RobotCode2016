@@ -14,15 +14,15 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 @SuppressWarnings("unused")
 public class Feeder extends Subsystem {
     
-    Relay feed = new Relay(RobotMap.feeder);
+     static Relay feed = new Relay(RobotMap.feeder);
     
     public void initDefaultCommand() {
     }
     	
-    	public void gofeed(){
+    	public static void gofeed(){
         	feed.set(Relay.Value.kForward);
     	}
-    	public void stopfeed(){
+    	public static void stopfeed(){
         	feed.set(Relay.Value.kOff);
     	}
     	

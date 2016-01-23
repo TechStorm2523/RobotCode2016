@@ -9,9 +9,9 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class ArmUp extends Command {
+public class ArmPivotComm extends Command {
 
-    public ArmUp() {
+    public ArmPivotComm() {
         // Use requires() here to declare subsystem dependencies
         requires(Robot.armpivot);
     }
@@ -22,7 +22,7 @@ public class ArmUp extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	 ArmPivot.up();
+    	 ArmPivot.SetArm();
     	 
     }
 

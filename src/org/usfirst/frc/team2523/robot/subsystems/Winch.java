@@ -15,14 +15,18 @@ public class Winch extends Subsystem {
 
     public void initDefaultCommand() {
     }
+    	public void SetWinch() {
+    	//	winchmotor.set();
+    		// Use the above to set the winchmotor's speed any value, for instance to do the "contract the extension automatically" thing
+		}
     	
-    	public void extend(){
+    	public void fullextend(){
         	winchmotor.set(1);
     	}
-    	public void contract(){
+    	public void fullcontract(){
         	winchmotor.set(-1);
     	}
-    	public void stop(){
+    	public void fullstop(){
         	winchmotor.set(0);
     	}
 }

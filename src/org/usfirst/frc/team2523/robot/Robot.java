@@ -5,6 +5,8 @@ import org.usfirst.frc.team2523.robot.commands.ExampleCommand;
 import org.usfirst.frc.team2523.robot.subsystems.ArmPivot;
 import org.usfirst.frc.team2523.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team2523.robot.subsystems.ExampleSubsystem;
+import org.usfirst.frc.team2523.robot.subsystems.Feeder;
+import org.usfirst.frc.team2523.robot.subsystems.LauncherWheels;
 import org.usfirst.frc.team2523.robot.subsystems.Winch;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -27,6 +29,8 @@ public class Robot extends IterativeRobot {
 	public static final DriveTrain drivetrain = new DriveTrain();
 	public static final Winch winch =new Winch();
 	public static final ArmPivot armpivot = new ArmPivot();
+	public static final Feeder feeder = new Feeder();
+	public static final LauncherWheels launcherwheels = new LauncherWheels();
 	public static OI oi = new OI();
 
     Command autonomousCommand;
