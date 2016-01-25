@@ -8,7 +8,6 @@ package org.usfirst.frc.team2523.robot;
  * the wiring easier and significantly reduces the number of magic numbers
  * floating around.
  */
-@SuppressWarnings("unused")
 public class RobotMap {
     // For example to map the left and right motors, you could define the
     // following variables to use with your drivetrain subsystem.
