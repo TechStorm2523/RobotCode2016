@@ -15,19 +15,15 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  */
 @SuppressWarnings("unused")
 public class DriveTrain extends Subsystem {
-    
-	RobotDrive drive = new RobotDrive(0,1,2,3);
+
+	RobotDrive drive = new RobotDrive(RobotMap.Lfront, RobotMap.Lback, RobotMap.Rfront, RobotMap.Rback);
 	public void arcadedrivebyjoystick() {
 		drive.arcadeDrive(Robot.oi.DriveStick); 
-		}
-    
-    public void initDefaultCommand() {
-    setDefaultCommand(new CallArcadeDrive());
-    
-    }
-    
-    
-    
-    }
+	}
+
+	public void initDefaultCommand() {
+		setDefaultCommand(new CallArcadeDrive());
+	}
+}
 
 
