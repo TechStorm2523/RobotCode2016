@@ -6,14 +6,15 @@ package org.usfirst.frc.team2523.robot.subsystems;
  */
 public class TargetReport {
 	// target characteristics
-	public int centerX;
-	public int centerY;
-	public int area;
-	public int width;
-	public int height;
+	public double centerX;
+	public double centerY;
+	public double area;
+	public double width;
+	public double height;
 	
 	// possible additional target scoring values
-	public int aspectRatioScore;
+	public double aspectRatioScore;
+	public double areaRatioScore;
 	
 	/**
 	 * Basic Constructor
@@ -23,12 +24,28 @@ public class TargetReport {
 	 * @param width
 	 * @param height
 	 */
-	TargetReport(int centerX, int centerY, int area, int width, int height)
+	TargetReport(double centerX, double centerY, double area, double width, double height)
 	{
 		this.centerX = centerX;
 		this.centerY = centerY;
 		this.area = area;
 		this.width = width;
 		this.height = height;
+	}
+	
+	public void setAdditionalScores(double aspectRatioScore, double areaRatioScore)
+	{
+		this.aspectRatioScore = aspectRatioScore;
+		this.areaRatioScore = areaRatioScore;
+	}
+	
+	/**
+	 * Generates cumulative score for the current target.
+	 * Must have setAdditionalScores run beforehand
+	 */
+	public double getCumulativeScore()
+	{
+		// if both scores are PERFECT, this will give a one
+		return (this.aspectRatioScore + this.areaRatioScore) / 2.0;
 	}
 }
