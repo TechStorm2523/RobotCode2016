@@ -1,5 +1,7 @@
 package org.usfirst.frc.team2523.robot;
 
+import edu.wpi.first.wpilibj.DigitalSource;
+
 
 
 /**
@@ -19,6 +21,11 @@ public class RobotMap {
     // public static int rangefinderPort = 1;
     // public static int rangefinderModule = 1;
 	
+	// GLOBAL CONSTANTS
+	public static int ARM_STARTING_ANGLE = 0; // degrees, positive for down off horizontal
+	public static int LAUNCH_ANGLE = 0;
+	
+	// PWM Outputs (Motors & Solenoids)
 	public static int Rfront = 0;
 	public static int Rback = 1;
 	public static int Lfront = 2;
@@ -29,5 +36,13 @@ public class RobotMap {
 	public static int lifter1 = 7;
 	public static int lifter2 = 8;
 	public static int winch = 9;
+	
+	// RELAY Outputs (Relays)
+	
+	// Digital IO Ports (Sensors/Encoders)
+	public static int armEncoderPort1 = 0;
+	public static int armEncoderPort2 = 1;
+	public static int launcherEncoderPort1 = 2;
+	public static int launcherEncoderPort2 = 3;
 			
 }
