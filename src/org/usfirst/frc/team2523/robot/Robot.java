@@ -60,6 +60,7 @@ public class Robot extends IterativeRobot {
 	
 	public void disabledPeriodic() {
 		Scheduler.getInstance().run();
+		allPeriodic();
 	}
 
 	/**
@@ -94,6 +95,7 @@ public class Robot extends IterativeRobot {
      */
     public void autonomousPeriodic() {
         Scheduler.getInstance().run();
+        allPeriodic();
     }
 
     public void teleopInit() {
@@ -109,6 +111,7 @@ public class Robot extends IterativeRobot {
      */
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
+        allPeriodic();
     }
     
     /**
@@ -116,5 +119,14 @@ public class Robot extends IterativeRobot {
      */
     public void testPeriodic() {
         LiveWindow.run();
+    }
+    
+    /**
+     * This function (implemented by mckenna) is run periodically during ALL modes
+     * (except test mode)
+     */
+    private void allPeriodic()
+    {
+		armpivot.updateArmRate();
     }
 }

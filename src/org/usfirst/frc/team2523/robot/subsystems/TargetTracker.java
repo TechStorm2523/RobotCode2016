@@ -120,7 +120,7 @@ public class TargetTracker extends Subsystem {
 			// it will auto-initialize further scores
 			reports[i] = new TargetReport(centerXs[i],
 										  centerYs[i],
-										  areas[i],
+										  areas[i], 
 										  widths[i],
 										  heights[i],
 										  IDEAL_ASPECT_RATIO,

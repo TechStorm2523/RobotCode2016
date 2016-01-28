@@ -6,6 +6,7 @@ import org.usfirst.frc.team2523.robot.Robot;
 import org.usfirst.frc.team2523.robot.RobotMap;
 import org.usfirst.frc.team2523.robot.commands.ArmPivotComm;
 
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
@@ -16,26 +17,24 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  */
 public class ArmPivot extends Subsystem {
 	// constants
-	public final double ENCODER_DEGREES_PER_PULSE = 0; // TODO: SET!!!!!!!
+	public final double POTENTIOMETER_DEGREE_LIMIT = 270;
+	public final double POTENTIOMETER_START_DEGREE = 30;
 	
 	// variables
 	public double currentSpeed;
+	public double pastPotentiometerAngle = 0;
+	public double lastPotentiometerRateRead = 0;
 
 	Talon arm1 = new Talon(RobotMap.lifter1);
 	Talon arm2 = new Talon(RobotMap.lifter2);
-	Encoder armEncoder = new Encoder(RobotMap.armEncoderPort1, RobotMap.armEncoderPort2, 
-									false, Encoder.EncodingType.k4X);
-	
-	public ArmPivot()
-	{
-		// Initialize encoder scaling
-		armEncoder.setDistancePerPulse(ENCODER_DEGREES_PER_PULSE);
-	}
+	AnalogPotentiometer armEncoder = new AnalogPotentiometer(RobotMap.armPotenPort1, 
+															 POTENTIOMETER_DEGREE_LIMIT,
+															 POTENTIOMETER_START_DEGREE);
 	
 	public void setArmByJoystick()
 	{
 		double commandedSpeed = OI.UtilStick.getY();
-		commandedSpeed = Robot.winch.limitArmSpeed(commandedSpeed);
+		commandedSpeed = Robot.winch.getLimitedArmSpeed(commandedSpeed);
 		set(commandedSpeed);
 	}
 
@@ -48,19 +47,22 @@ public class ArmPivot extends Subsystem {
 	
 	public double getArmAngle()
 	{
-		return armEncoder.getDistance();
+		return armEncoder.get();
 	}
 	
+	/**
+	 * @return Rate with units in degrees per second
+	 */
 	public double getArmRate()
 	{
-		return armEncoder.getRate();
+		return ( pastPotentiometerAngle - getArmAngle() ) / 
+			   ((System.nanoTime() - lastPotentiometerRateRead)*10e6);
 	}
 	
-	
-	public void resetArmEncoder()
+	public void updateArmRate()
 	{
-		armEncoder.reset();
-		Timer.delay(1); // wait for complete reset
+		lastPotentiometerRateRead = System.nanoTime();
+		pastPotentiometerAngle = getArmAngle();
 	}
 	
 	public void initDefaultCommand() {

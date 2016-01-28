@@ -40,7 +40,7 @@ public class RobotMap {
 	// RELAY Outputs (Relays)
 	
 	// Digital IO Ports (Sensors/Encoders)
-	public static int armEncoderPort1 = 0;
+	public static int armPotenPort1 = 0;
 	public static int armEncoderPort2 = 1;
 	public static int launcherEncoderPort1 = 2;
 	public static int launcherEncoderPort2 = 3;

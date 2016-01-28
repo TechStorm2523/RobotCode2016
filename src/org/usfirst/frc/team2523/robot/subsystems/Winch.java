@@ -53,7 +53,7 @@ public class Winch extends Subsystem {
 	 * Check if given arm speed must be limited to meet winch speed requirements,
 	 * then return the new value if necessary (otherwise just return old one)
 	 */
-	public double limitArmSpeed(double commandedSpeed) 
+	public double getLimitedArmSpeed(double commandedSpeed) 
 	{
 		double winchSpeed = getWinchSpeed(Robot.armpivot.getArmAngle(),
 										  Robot.armpivot.getArmRate());

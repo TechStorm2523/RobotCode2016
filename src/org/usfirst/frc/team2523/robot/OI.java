@@ -1,5 +1,6 @@
 package org.usfirst.frc.team2523.robot;
 
+import org.usfirst.frc.team2523.robot.commands.FeederOff;
 import org.usfirst.frc.team2523.robot.commands.FeederOn;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -51,7 +52,7 @@ public class OI {
 	    
 	    // Start the command when the button is released  and let it run the command
 	    // until it is finished as determined by it's isFinished method.
-	    // button.whenReleased(new ExampleCommand());
+	    button3.whenReleased(new FeederOff());
 	}
 }
 
