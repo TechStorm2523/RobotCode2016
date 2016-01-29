@@ -37,6 +37,8 @@ public class RobotMap {
 	public static int lifter2 = 8;
 	public static int winch = 9;
 	
+	
+	
 	// RELAY Outputs (Relays)
 	
 	// Digital IO Ports (Sensors/Encoders)
