@@ -1,7 +1,8 @@
 package org.usfirst.frc.team2523.robot;
 
+import org.usfirst.frc.team2523.robot.commands.AutoLaunch;
 import org.usfirst.frc.team2523.robot.commands.FeederOff;
-import org.usfirst.frc.team2523.robot.commands.FeederOn;
+import org.usfirst.frc.team2523.robot.commands.FeederCollect;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
@@ -43,12 +44,13 @@ public class OI {
 	    
 	    // Start the command when the button is pressed and let it run the command
 	    // until it is finished as determined by it's isFinished method.
-	    button3.whenPressed(new FeederOn());
+	    button1.whenPressed(new AutoLaunch())
+	   
 	    
-	    
+	   ;
 	    // Run the command while the button is being held down and interrupt it once
 	    // the button is released.
-	    // button.whileHeld(new ExampleCommand());
+	    button3.whenPressed(new FeederCollect());
 	    
 	    // Start the command when the button is released  and let it run the command
 	    // until it is finished as determined by it's isFinished method.

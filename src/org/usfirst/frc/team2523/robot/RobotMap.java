@@ -53,5 +53,6 @@ public class RobotMap {
 	public static int armPoten2 = 1;
 	public static int launcherEncoder1 = 2;
 	public static int launcherEncoder2 = 3;
+	// The balldetector is in port 4.
 			
 }

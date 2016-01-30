@@ -81,7 +81,7 @@ public class ArmPivot extends Subsystem {
 
 	public void down(){
     	arm1.set(-1);
-    	arm2.set(2);
+    	arm2.set(1);
 	}
 	 */
 

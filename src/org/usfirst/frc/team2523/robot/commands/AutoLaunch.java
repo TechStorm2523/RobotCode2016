@@ -14,7 +14,8 @@ public class AutoLaunch extends CommandGroup {
         addSequential(new SetLauncherRPMByTarget());
         
         // FIRE!
-        addSequential(new FeederOn());
+
+        addSequential(new FeederCollect(true));
         
         // wait, then shutdown
         addSequential(new Wait( 2 ));

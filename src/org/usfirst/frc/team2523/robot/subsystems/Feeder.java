@@ -3,6 +3,7 @@ package org.usfirst.frc.team2523.robot.subsystems;
 
 import org.usfirst.frc.team2523.robot.RobotMap;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Talon;
@@ -16,7 +17,10 @@ public class Feeder extends Subsystem {
     
     public void initDefaultCommand() {
     }
-    	
+    DigitalInput balldetector = new DigitalInput(1);
+    public boolean ballstate(){
+    	return balldetector.get();
+    }
 	public void gofeed(){
     	feed.set(Relay.Value.kForward);
 	}

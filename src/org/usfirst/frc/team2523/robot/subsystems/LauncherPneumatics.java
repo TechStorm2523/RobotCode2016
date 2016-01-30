@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  * Controls the phneumatics which raise/lower the launcher
  */
 public class LauncherPneumatics extends Subsystem {
-	DoubleSolenoid launcherPneumatics = new DoubleSolenoid(RobotMap.launcherSolenoid1, RobotMap.launcherSolenoid1);
+	DoubleSolenoid launcherPneumatics = new DoubleSolenoid(RobotMap.launcherSolenoid1, RobotMap.launcherSolenoid2);
 
 	public void rase() {
 		launcherPneumatics.set(DoubleSolenoid.Value.kForward);

@@ -9,9 +9,15 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class FeederOn extends Command {
-
-    public FeederOn() {
+public class FeederFire extends Command {
+	
+	
+    public FeederFire() {
+        // Use requires() here to declare subsystem dependencies
+        requires(Robot.feeder);
+    }
+    
+    public FeederFire(boolean launch) {
         // Use requires() here to declare subsystem dependencies
         requires(Robot.feeder);
     }
@@ -27,11 +33,17 @@ public class FeederOn extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return true;
+    	if (Robot.feeder.ballstate()){
+    	return true;
+    	} else {
+    		return false;
+    	}
+	
     }
 
     // Called once after isFinished returns true
-    protected void end() {
+    protected void end(){
+    	Robot.feeder.stopfeed();
     }
 
     // Called when another command which requires one or more of the same

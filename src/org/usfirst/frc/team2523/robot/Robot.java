@@ -4,6 +4,7 @@ package org.usfirst.frc.team2523.robot;
 import org.usfirst.frc.team2523.robot.commands.ExampleCommand;
 import org.usfirst.frc.team2523.robot.subsystems.ArmPivot;
 import org.usfirst.frc.team2523.robot.subsystems.ArmPneumatics;
+import org.usfirst.frc.team2523.robot.subsystems.Dashboard;
 import org.usfirst.frc.team2523.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team2523.robot.subsystems.ExampleSubsystem;
 import org.usfirst.frc.team2523.robot.subsystems.Feeder;
@@ -37,6 +38,7 @@ public class Robot extends IterativeRobot {
 	public static final TargetTracker targetTracker = new TargetTracker();
 	public static ArmPneumatics armPneumatics = new ArmPneumatics();
 	public static LauncherPneumatics launcherPneumatics = new LauncherPneumatics();
+	public static Dashboard dashboard = new Dashboard();
 
     Command autonomousCommand;
     SendableChooser chooser;
