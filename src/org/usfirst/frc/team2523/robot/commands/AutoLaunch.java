@@ -12,10 +12,11 @@ public class AutoLaunch extends CommandGroup {
     	addParallel(new TurnToTarget());
         addParallel(new LauncherLower());
         addSequential(new SetLauncherRPMByTarget());
+        addSequential(new Wait( 0.5 ));
         
         // FIRE!
 
-        addSequential(new FeederCollect(true));
+        addSequential(new FeederFire());
         
         // wait, then shutdown
         addSequential(new Wait( 2 ));

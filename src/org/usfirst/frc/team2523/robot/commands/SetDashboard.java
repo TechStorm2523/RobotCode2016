@@ -26,15 +26,9 @@ public class SetDashboard extends Command
     {
 		// Configure SmartDashboard displays
     	// ESSENTIALS
-        SmartDashboard.putNumber(" Arm Speed ", Math.abs(Robot.armpivot.currentSpeed));
 		SmartDashboard.putNumber(" Arm Angle ", Robot.armpivot.getArmAngle());
-		SmartDashboard.putBoolean(" Claw Closed ", Robot.claw.isClawClosed());
-		SmartDashboard.putBoolean(" Crate Present ", Robot.lift.isCratePresent());
-		SmartDashboard.putBoolean(" Lift Calibrating ", Robot.lift.liftCalibrating);
-		SmartDashboard.putNumber(" Actual Lift Height ", Robot.lift.getLiftPosition());
-		SmartDashboard.putNumber(" Drive Distance Y ", Robot.accelerometer.distanceY);
-		SmartDashboard.putBoolean(" Slow Speed Mode On", Robot.chassis.globalSpeedChange == RobotMap.DEFAULT_SPEED_REDUCTION);
-
+		SmartDashboard.putBoolean(" Ball? ", Robot.feeder.ballstate());
+		SmartDashboard.putString("Status of Launcher", );
 		// DIAGNOSTICS
 		SmartDashboard.putNumber(" Encoder Reading ", RobotMap.liftEncoder.get());
 		SmartDashboard.putNumber(" Encoder Distance ", Robot.lift.getLiftPosition());

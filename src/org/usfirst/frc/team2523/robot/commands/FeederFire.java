@@ -33,17 +33,15 @@ public class FeederFire extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-    	if (Robot.feeder.ballstate()){
     	return true;
-    	} else {
-    		return false;
+    	
     	}
 	
-    }
+    
 
     // Called once after isFinished returns true
     protected void end(){
-    	Robot.feeder.stopfeed();
+    
     }
 
     // Called when another command which requires one or more of the same
