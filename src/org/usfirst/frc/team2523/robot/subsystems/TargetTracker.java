@@ -57,7 +57,7 @@ public class TargetTracker extends Subsystem {
 	 * Finds the target's horizontal distance to the target in feet (or whatever measure TARGET_WIDTH is in)
 	 * @return The distance, or 0 if no target is found. Most accurate if head on to target
 	 */
-	public double getHorizontalDistanceToTarget()
+	public double getRangeToTarget()
 	{
 		if (currentBestTarget != null)
 		{
@@ -89,11 +89,12 @@ public class TargetTracker extends Subsystem {
 			{
 				bestTarget = target;
 				bestScore = target.getCumulativeScore();
-			}
+			}	
 		}
 		
-		// if we've found one, return it
+		// if we've found one, cache and return it
 		// otherwise, return null (it will just default to the first value of bestTarget)
+		currentBestTarget = bestTarget;
 		return bestTarget;
 	}
 	

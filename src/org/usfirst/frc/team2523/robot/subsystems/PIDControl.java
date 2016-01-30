@@ -63,7 +63,7 @@ public class PIDControl extends Subsystem {
 	 */
 	public PIDControl(double KP, double KI, double KD, double MIN_OUTPUT, double MAX_OUTPUT)
 	{
-		this(KP, KI, KD, MIN_OUTPUT, MAX_OUTPUT, 100);
+		this(KP, KI, KD, MIN_OUTPUT, MAX_OUTPUT, 10);
 	}
 	
 	/**
@@ -74,7 +74,7 @@ public class PIDControl extends Subsystem {
 	 */
 	public PIDControl(double KP, double KI, double KD)
 	{
-		this(KP, KI, KD, -1, 1, 100);
+		this(KP, KI, KD, -1, 1, 10);
 	}
 	
 	/**
