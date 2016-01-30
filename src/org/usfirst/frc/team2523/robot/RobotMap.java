@@ -25,7 +25,7 @@ public class RobotMap {
 	public static int ARM_STARTING_ANGLE = 0; // degrees, positive for down off horizontal
 	public static int LAUNCH_ANGLE = 0;
 	
-	// PWM Outputs (Motors & Solenoids)
+	// PWM Outputs (Motors)
 	public static int Rfront = 0;
 	public static int Rback = 1;
 	public static int Lfront = 2;
@@ -38,13 +38,20 @@ public class RobotMap {
 	public static int winch = 9;
 	
 	
+	// Solenoid Outputs (PCM)
+	public static int armSolenoid1 = 0;
+	public static int armSolenoid2 = 1;
+	public static int launcherSolenoid1 = 2;
+	public static int launcherSolenoid2 = 3;
+	public static int winchBrakeSolenoid1 = 4;
+	public static int winchBrakeSolenoid2 = 5;
 	
 	// RELAY Outputs (Relays)
 	
 	// Digital IO Ports (Sensors/Encoders)
-	public static int armPotenPort1 = 0;
-	public static int armEncoderPort2 = 1;
-	public static int launcherEncoderPort1 = 2;
-	public static int launcherEncoderPort2 = 3;
+	public static int armPoten1 = 0;
+	public static int armPoten2 = 1;
+	public static int launcherEncoder1 = 2;
+	public static int launcherEncoder2 = 3;
 			
 }

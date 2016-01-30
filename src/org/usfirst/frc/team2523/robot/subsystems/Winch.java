@@ -4,6 +4,7 @@ package org.usfirst.frc.team2523.robot.subsystems;
 import org.usfirst.frc.team2523.robot.Robot;
 import org.usfirst.frc.team2523.robot.RobotMap;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
@@ -16,10 +17,11 @@ public class Winch extends Subsystem {
 	public static int POWER_PER_INCH_PER_SECOND = 0;
     
 	// definitions
-    Jaguar winchmotor = new Jaguar(RobotMap.winch);
+    Jaguar winchMotor = new Jaguar(RobotMap.winch);
+    DoubleSolenoid winchBrake = new DoubleSolenoid(RobotMap.winchBrakeSolenoid1, RobotMap.winchBrakeSolenoid2);
     
 	public void set(double speed) {
-		winchmotor.set(speed);
+		winchMotor.set(speed);
 		// Use the above to set the winchmotor's speed any value, for instance to do the "contract the extension automatically" thing
 	}
 	
@@ -76,6 +78,17 @@ public class Winch extends Subsystem {
 	
 	public void fullstop(){
     	set(0);
+	}
+	
+	// brake functions
+	public void setBrake()
+	{
+		winchBrake.set(DoubleSolenoid.Value.kForward);
+	}
+	
+	public void releaseBrake()
+	{
+		winchBrake.set(DoubleSolenoid.Value.kReverse);
 	}
 	
     public void initDefaultCommand() {

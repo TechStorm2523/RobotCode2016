@@ -1,19 +1,17 @@
-
 package org.usfirst.frc.team2523.robot.commands;
 
 import org.usfirst.frc.team2523.robot.Robot;
-import org.usfirst.frc.team2523.robot.subsystems.Feeder;
 
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
  *
  */
-public class FeederOff extends Command {
+public class LauncherRaise extends Command {
 
-    public FeederOff() {
+    public LauncherRaise() {
         // Use requires() here to declare subsystem dependencies
-        requires(Robot.feeder);
+        requires(Robot.launcherPneumatics);
     }
 
     // Called just before this Command runs the first time
@@ -22,7 +20,7 @@ public class FeederOff extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.feeder.stopfeed();
+    	Robot.launcherPneumatics.lower();
     }
 
     // Make this return true when this Command no longer needs to run execute()

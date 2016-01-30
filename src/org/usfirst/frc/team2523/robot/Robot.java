@@ -3,10 +3,12 @@ package org.usfirst.frc.team2523.robot;
 
 import org.usfirst.frc.team2523.robot.commands.ExampleCommand;
 import org.usfirst.frc.team2523.robot.subsystems.ArmPivot;
+import org.usfirst.frc.team2523.robot.subsystems.ArmPneumatics;
 import org.usfirst.frc.team2523.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team2523.robot.subsystems.ExampleSubsystem;
 import org.usfirst.frc.team2523.robot.subsystems.Feeder;
 import org.usfirst.frc.team2523.robot.subsystems.LauncherWheels;
+import org.usfirst.frc.team2523.robot.subsystems.LauncherPneumatics;
 import org.usfirst.frc.team2523.robot.subsystems.TargetTracker;
 import org.usfirst.frc.team2523.robot.subsystems.Winch;
 
@@ -14,6 +16,7 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -25,15 +28,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * directory.
  */
 public class Robot extends IterativeRobot {
-
-	public static final ExampleSubsystem exampleSubsystem = new ExampleSubsystem();
+	public static OI oi = new OI();
 	public static final DriveTrain drivetrain = new DriveTrain();
 	public static final Winch winch =new Winch();
 	public static final ArmPivot armpivot = new ArmPivot();
 	public static final Feeder feeder = new Feeder();
 	public static final LauncherWheels launcherwheels = new LauncherWheels();
 	public static final TargetTracker targetTracker = new TargetTracker();
-	public static OI oi = new OI();
+	public static ArmPneumatics armPneumatics = new ArmPneumatics();
+	public static LauncherPneumatics launcherPneumatics = new LauncherPneumatics();
 
     Command autonomousCommand;
     SendableChooser chooser;

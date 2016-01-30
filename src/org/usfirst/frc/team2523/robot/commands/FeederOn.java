@@ -22,7 +22,7 @@ public class FeederOn extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Feeder.gofeed();
+    	Robot.feeder.gofeed();
     }
 
     // Make this return true when this Command no longer needs to run execute()

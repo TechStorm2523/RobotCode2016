@@ -27,7 +27,7 @@ public class ArmPivot extends Subsystem {
 
 	Talon arm1 = new Talon(RobotMap.lifter1);
 	Talon arm2 = new Talon(RobotMap.lifter2);
-	AnalogPotentiometer armEncoder = new AnalogPotentiometer(RobotMap.armPotenPort1, 
+	AnalogPotentiometer armEncoder = new AnalogPotentiometer(RobotMap.armPoten1, 
 															 POTENTIOMETER_DEGREE_LIMIT,
 															 POTENTIOMETER_START_DEGREE);
 	

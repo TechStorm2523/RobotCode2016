@@ -11,21 +11,18 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 /**
  *
  */
-@SuppressWarnings("unused")
 public class Feeder extends Subsystem {
-    
-     static Relay feed = new Relay(RobotMap.feeder);
+	Relay feed = new Relay(RobotMap.feeder);
     
     public void initDefaultCommand() {
     }
     	
-    	public static void gofeed(){
-        	feed.set(Relay.Value.kForward);
-    	}
-    	public static void stopfeed(){
-        	feed.set(Relay.Value.kOff);
-    	}
-    	
+	public void gofeed(){
+    	feed.set(Relay.Value.kForward);
+	}
+	public void stopfeed(){
+    	feed.set(Relay.Value.kOff);
+	}
 }
 
     

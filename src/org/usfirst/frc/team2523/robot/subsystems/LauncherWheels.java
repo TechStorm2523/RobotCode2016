@@ -20,7 +20,7 @@ public class LauncherWheels extends Subsystem {
     
     Talon launch1 = new Talon(RobotMap.launch1);
     Talon launch2 = new Talon(RobotMap.launch2);
-    Encoder rpmEncoder = new Encoder(RobotMap.launcherEncoderPort1, RobotMap.launcherEncoderPort2, 
+    Encoder rpmEncoder = new Encoder(RobotMap.launcherEncoder1, RobotMap.launcherEncoder2, 
 									false, Encoder.EncodingType.k4X);
     PIDControl rpmPID = new PIDControl(PID_KP, 0, 0); // we're only going to need proportional control
     	
@@ -40,7 +40,7 @@ public class LauncherWheels extends Subsystem {
     	launch2.set(-speed);
 	}
 	
-	public void SetTargetRPM(int rpm)
+	public void setTargetRPM(int rpm)
 	{
 		if (rpm != 0)
 			set(rpmPID.getPoutput(rpm, rpmEncoder.getRate()*60)); // in Rev/Second
