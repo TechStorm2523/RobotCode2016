@@ -9,18 +9,20 @@ public class AutoLaunch extends CommandGroup {
     
     public  AutoLaunch() {
         // Lower launcher and align with target
+    	addParallel(new SetStatusAiming());
     	addParallel(new TurnToTarget());
         addParallel(new LauncherLower());
         addSequential(new SetLauncherRPMByTarget());
         addSequential(new Wait( 0.5 ));
         
         // FIRE!
-
-        addSequential(new FeederFire());
         
+        addSequential(new FeederFire());
+        addParallel(new SetStatusFiring());
         // wait, then shutdown
         addSequential(new Wait( 2 ));
         addSequential(new FeederOff());
+        addParallel(new SetStatusIdle());
         addSequential(new SetLauncherRPM(0));
     }
 }

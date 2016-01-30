@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  */
 public class LauncherStatus extends Subsystem {
     
-	String Status; 
+	public String Status; 
 
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.

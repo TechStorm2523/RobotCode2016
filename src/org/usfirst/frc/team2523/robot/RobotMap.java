@@ -1,6 +1,7 @@
 package org.usfirst.frc.team2523.robot;
 
 import edu.wpi.first.wpilibj.DigitalSource;
+import edu.wpi.first.wpilibj.Timer;
 
 
 
@@ -10,6 +11,7 @@ import edu.wpi.first.wpilibj.DigitalSource;
  * the wiring easier and significantly reduces the number of magic numbers
  * floating around.
  */
+@SuppressWarnings("unused")
 public class RobotMap {
     // For example to map the left and right motors, you could define the
     // following variables to use with your drivetrain subsystem.
@@ -21,9 +23,11 @@ public class RobotMap {
     // public static int rangefinderPort = 1;
     // public static int rangefinderModule = 1;
 	
+	public static final double MATCH_LENGTH = 150; //2min 30secs
 	// GLOBAL CONSTANTS
 	public static int ARM_STARTING_ANGLE = 0; // degrees, positive for down off horizontal
 	public static int LAUNCH_ANGLE = 0;
+	public static double GLOBAL_TIME = Timer.getMatchTime();
 	
 	// PWM Outputs (Motors)
 	public static int Rfront = 0;

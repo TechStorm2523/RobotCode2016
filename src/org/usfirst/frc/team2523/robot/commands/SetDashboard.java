@@ -28,14 +28,11 @@ public class SetDashboard extends Command
     	// ESSENTIALS
 		SmartDashboard.putNumber(" Arm Angle ", Robot.armpivot.getArmAngle());
 		SmartDashboard.putBoolean(" Ball? ", Robot.feeder.ballstate());
-		SmartDashboard.putString("Status of Launcher", );
+		
 		// DIAGNOSTICS
-		SmartDashboard.putNumber(" Encoder Reading ", RobotMap.liftEncoder.get());
-		SmartDashboard.putNumber(" Encoder Distance ", Robot.lift.getLiftPosition());
-		//SmartDashboard.putNumber(" Direction ", RobotMap.chassisGyro.getAngle());
-		SmartDashboard.putNumber(" Axis value ", RobotMap.primaryStick.getPOV());
-		SmartDashboard.putBoolean(" Limit Switches Overridden ", Robot.lift.limitSwitchOverride);
-    }
+		SmartDashboard.putString("Status of Launcher",Robot.launcherstatus.Status );
+		
+		    }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() 

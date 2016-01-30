@@ -3,6 +3,7 @@ package org.usfirst.frc.team2523.robot;
 import org.usfirst.frc.team2523.robot.commands.AutoLaunch;
 import org.usfirst.frc.team2523.robot.commands.FeederOff;
 import org.usfirst.frc.team2523.robot.commands.FeederCollect;
+import org.usfirst.frc.team2523.robot.commands.GateMacro;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
@@ -44,7 +45,8 @@ public class OI {
 	    
 	    // Start the command when the button is pressed and let it run the command
 	    // until it is finished as determined by it's isFinished method.
-	    button1.whenPressed(new AutoLaunch())
+	    button1.whenPressed(new AutoLaunch());
+	    button12.whenPressed(new GateMacro())
 	   
 	    
 	   ;

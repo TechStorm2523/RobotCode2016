@@ -16,10 +16,11 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  *
  */
 public class ArmPivot extends Subsystem {
+	
 	// constants
 	public final double POTENTIOMETER_DEGREE_LIMIT = 270;
 	public final double POTENTIOMETER_START_DEGREE = 30;
-	
+	private static final double MAX_ANGLE = 80;
 	// variables
 	public double currentSpeed;
 	public double pastPotentiometerAngle = 0;
@@ -27,9 +28,9 @@ public class ArmPivot extends Subsystem {
 
 	Talon arm1 = new Talon(RobotMap.lifter1);
 	Talon arm2 = new Talon(RobotMap.lifter2);
-	AnalogPotentiometer armEncoder = new AnalogPotentiometer(RobotMap.armPoten1, 
-															 POTENTIOMETER_DEGREE_LIMIT,
-															 POTENTIOMETER_START_DEGREE);
+	AnalogPotentiometer armPotentiometer = new AnalogPotentiometer(RobotMap.armPoten1, 
+																   POTENTIOMETER_DEGREE_LIMIT,
+																   POTENTIOMETER_START_DEGREE);
 	
 	public void setArmByJoystick()
 	{
@@ -40,14 +41,22 @@ public class ArmPivot extends Subsystem {
 
 	public void set(double speed)
 	{
-		arm1.set(speed);
-		arm2.set(-speed);
-		this.currentSpeed = speed;
+		if (speed > 0 && getArmAngle() > MAX_ANGLE && 
+				(RobotMap.MATCH_LENGTH - Timer.getMatchTime() > 20))
+		{
+			arm1.set(0);
+			arm2.set(0);
+			this.currentSpeed = 0;
+		} else {
+			arm1.set(speed);
+			arm2.set(-speed);
+			this.currentSpeed = speed;
+		}
 	}
 	
 	public double getArmAngle()
 	{
-		return armEncoder.get();
+		return armPotentiometer.get();
 	}
 	
 	/**

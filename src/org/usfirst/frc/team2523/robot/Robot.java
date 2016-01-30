@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * creating this project, you must also update the manifest file in the resource
  * directory.
  */
+@SuppressWarnings("unused")
 public class Robot extends IterativeRobot {
 	public static OI oi = new OI();
 	public static final DriveTrain drivetrain = new DriveTrain();
