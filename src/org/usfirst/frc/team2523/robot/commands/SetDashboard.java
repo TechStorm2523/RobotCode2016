@@ -28,11 +28,20 @@ public class SetDashboard extends Command
     	// ESSENTIALS
 		SmartDashboard.putNumber(" Arm Angle ", Robot.armpivot.getArmAngle());
 		SmartDashboard.putBoolean(" Ball? ", Robot.feeder.ballstate());
+		SmartDashboard.putBoolean(" In Range ", Robot.launcherstatus.inRange);
+		SmartDashboard.putBoolean(" Aligned ", Robot.launcherstatus.aligned);
+		SmartDashboard.putBoolean(" Spooled Up ", Robot.launcherstatus.spooledUp);
+		SmartDashboard.putNumber(" Range to Best Target ", Robot.targetTracker.currentRangeToBestTarget);
 		
 		// DIAGNOSTICS
 		SmartDashboard.putString("Status of Launcher",Robot.launcherstatus.Status );
+		SmartDashboard.putNumber(" Launcher Speed Mot RPM ", Robot.launcherWheels.speedMotRPM);
+		SmartDashboard.putNumber(" Launcher Angle Mot RPM ", Robot.launcherWheels.angleMotRPM);
 		
-		    }
+		// COMMANDS
+		//SmartDashboard.putData("Set Launch Properties", new SetLauncherVelocityAndAngle());
+		
+    }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() 

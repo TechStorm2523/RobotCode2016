@@ -5,15 +5,20 @@ import org.usfirst.frc.team2523.robot.Robot;
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
- * Set's launcher wheel's RPM by the target's range
+ * Set's launcher wheel's RPM based on velocity and angle MAINLY FOR TESTING
  */
-public class SetLauncherRPMByTarget extends Command {
+public class SetLauncherVelocityAndAngle extends Command {
+	double velocity;
+	double angle;
 	double speedMotTargetRPM = 0;
 	double angleMotTargetRPM = 0;
 
-    public SetLauncherRPMByTarget() {
+    public SetLauncherVelocityAndAngle(double velocity, double angle) {
         // Use requires() here to declare subsystem dependencies
         requires(Robot.launcherWheels);
+        
+        this.velocity = velocity;
+        this.angle = angle;
     }
 
     // Called just before this Command runs the first time
@@ -22,9 +27,8 @@ public class SetLauncherRPMByTarget extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	double range = Robot.targetTracker.getRangeToBestTarget();
-    	speedMotTargetRPM = Robot.launcherWheels.getSpeedMotRPMbyRange(range);
-    	angleMotTargetRPM = Robot.launcherWheels.getAngleMotRPMbyRange(range);
+    	speedMotTargetRPM = Robot.launcherWheels.RPM_PER_VELOCITY * velocity;
+    	angleMotTargetRPM = speedMotTargetRPM * Robot.launcherWheels.getRelativeRateByAngle(angle);
     	
     	Robot.launcherWheels.setSpeedMotTargetRPM(speedMotTargetRPM);
     	Robot.launcherWheels.setAngleMotTargetRPM(angleMotTargetRPM);

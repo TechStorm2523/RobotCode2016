@@ -17,7 +17,8 @@ public class LauncherWheels extends Subsystem {
 	// constants
 	public final double PID_KP = 0.1;
 	public final double ENCODER_REV_PER_PULSE = 0; // TODO: SET!!!!!!!
-	public final double RPM_PER_VELOCITY = 0; // inch/sec
+	public final double MAX_RPM = 0;
+	public final double RPM_PER_VELOCITY = 1 / (120*Math.PI*(2.85/2)); // inch/sec - by formula x/v = 1/(120*pi*r)
 	public final double LAUNCH_ANGLE = 64;
 	public final double LAUNCH_HEIGHT = 0; // feet
 	public final double TARGET_HEIGHT = 7*12+1 + 12 ; // feet
@@ -28,6 +29,10 @@ public class LauncherWheels extends Subsystem {
 	public final double RELATIVE_LAUNCH_ANGLE_AT_SAME_RATE = 0; 
 	public final double TARGET_RPM_TOLERANCE = 100; // distance off given RPM before rpm is considered to equal to that value
     
+	// variables
+	public double speedMotRPM = 0;
+	public double angleMotRPM = 0;
+	
     Talon speedMot = new Talon(RobotMap.launcherSpeedMot);
     Talon angleMot = new Talon(RobotMap.launcherAngleMot);
     
@@ -97,12 +102,14 @@ public class LauncherWheels extends Subsystem {
 	
 	public double getCurrentSpeedMotRPM()
 	{
-		return speedMotRPMEncoder.getRate()*60; // in Rev/Second
+		speedMotRPM  = speedMotRPMEncoder.getRate()*60; // in Rev/Second
+		return speedMotRPM;
 	}
 	
 	public double getCurrentAngleMotRPM()
 	{
-		return angleMotRPMEncoder.getRate()*60; // in Rev/Second
+		angleMotRPM = angleMotRPMEncoder.getRate()*60; // in Rev/Second
+		return angleMotRPM;
 	}
 	
 	public double getSpeedMotRPMbyRange(double range)
@@ -126,11 +133,18 @@ public class LauncherWheels extends Subsystem {
 		return Math.atan( (TARGET_HEIGHT - LAUNCH_HEIGHT) / (range*(1 - 0.5*RobotMap.GRAVITY)) );
 	}
 	
-	private double getRelativeRateByAngle(double angle)
+	// referenced by setLauncherVelocityAndAngle
+	public double getRelativeRateByAngle(double angle)
 	{
 		// the coefficient is just empirical, but the relation between relative rate and angle is inverse, so 
 		// an increase in required angle results in a decrease in relative rate (because wheel is above launcher)
 		return RELATIVE_RATE_PER_ANGLE_COEFFICENT *(LAUNCH_ANGLE / (angle + RELATIVE_LAUNCH_ANGLE_AT_SAME_RATE));
+	}
+	
+	public boolean inRange(double range)
+	{
+		return getSpeedMotRPMbyRange(range) <= MAX_RPM &&
+			   getAngleMotRPMbyRange(range) <= MAX_RPM;
 	}
 	
     public void initDefaultCommand() {

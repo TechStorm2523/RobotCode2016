@@ -5,6 +5,7 @@ Camera
 Arm
 	Start Angle
 	MAX Angle for height limit
+	ARM PID Values
 	
 Chassis
 	Turn PID (KP and KI)
@@ -12,11 +13,12 @@ Chassis
 Winch
 	Distance to 15 inch from pivot
 	Power per feed rate in in/sec
+	MAX_WINCH_BY_ARM_ANGLE - set to angle of cable slack
 	
 Launch Wheels
 	RPM PID
 	Encoder Rev Per Pulse
-	RPM Per Velocity
+	RPM Per Velocity - CHECK
 	RELATIVE_LAUNCH_ANGLE_AT_SAME_RATE
 	RELATIVE_RATE_PER_ANGLE_COEFFICENT
 	TARGET_RPM_TOLERANCE

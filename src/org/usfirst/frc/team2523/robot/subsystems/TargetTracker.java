@@ -30,6 +30,7 @@ public class TargetTracker extends Subsystem {
 	
 	// Variables
 	private TargetReport currentBestTarget = null;
+	public double currentRangeToBestTarget = 0;
 	
 	public TargetTracker()
 	{
@@ -59,7 +60,7 @@ public class TargetTracker extends Subsystem {
 	 * Finds the target's horizontal distance to the target in feet (or whatever measure TARGET_WIDTH is in)
 	 * @return The distance, or 0 if no target is found. Most accurate if head on to target
 	 */
-	public double getRangeToTarget()
+	public double getRangeToBestTarget()
 	{
 		if (currentBestTarget != null)
 		{
@@ -94,6 +95,13 @@ public class TargetTracker extends Subsystem {
 				bestScore = target.getCumulativeScore();
 			}	
 		}
+		
+		// determine if in launcher range to target
+		currentRangeToBestTarget = getRangeToBestTarget();
+		if (Robot.launcherWheels.inRange(currentRangeToBestTarget))
+			Robot.launcherstatus.setInRange();
+		else
+			Robot.launcherstatus.setInRange();
 		
 		// if we've found one, cache and return it
 		// otherwise, return null (it will just default to the first value of bestTarget)

@@ -15,6 +15,7 @@ public class Winch extends Subsystem {
 	// constants
 	public static int ARM_PIVOT_TO_15IN = 0; // TODO: CALCULATE!!!!
 	public static int POWER_PER_INCH_PER_SECOND = 0;
+	public static int MAX_WINCH_BY_ARM_ANGLE = 60;
     
 	// definitions
     Jaguar winchMotor = new Jaguar(RobotMap.winch);
@@ -22,7 +23,10 @@ public class Winch extends Subsystem {
     
 	public void set(double speed) {
 		winchMotor.set(speed);
-		// Use the above to set the winchmotor's speed any value, for instance to do the "contract the extension automatically" thing
+		
+		// make sure brake released (only if not zero)
+		if (speed != 0)
+			releaseBrake();
 	}
 	
 	/**
@@ -41,14 +45,20 @@ public class Winch extends Subsystem {
 	 */
 	private double getWinchSpeed(double currentAngle, double angleDelta) 
 	{
-		// derived from derivative of arm radius ( d/cos(theta) ) with respect to angle multiplied by
-		// the derivative of angle with respect to time.
-		// (dr/dTheta * dtheta/dt = dr/dt)
-		return POWER_PER_INCH_PER_SECOND *
-			   ARM_PIVOT_TO_15IN * 
-			   Math.tan(Math.toRadians(currentAngle - RobotMap.ARM_STARTING_ANGLE)) / 
-			   Math.cos(Math.toRadians(currentAngle - RobotMap.ARM_STARTING_ANGLE)) *
-			   angleDelta;
+		// disable if above max angle to avoid infinite speed issues and cable slack
+		if (currentAngle > MAX_WINCH_BY_ARM_ANGLE)
+			return 0;
+		else
+		{
+			// derived from derivative of arm radius ( d/cos(theta) ) with respect to angle multiplied by
+			// the derivative of angle with respect to time.
+			// (dr/dTheta * dtheta/dt = dr/dt)
+			return POWER_PER_INCH_PER_SECOND *
+				   ARM_PIVOT_TO_15IN * 
+				   Math.tan(Math.toRadians(currentAngle - RobotMap.ARM_STARTING_ANGLE)) / 
+				   Math.cos(Math.toRadians(currentAngle - RobotMap.ARM_STARTING_ANGLE)) *
+				   angleDelta;
+		}
 	}
 
 	/**

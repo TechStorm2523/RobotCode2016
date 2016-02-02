@@ -22,7 +22,7 @@ public class AutoLaunch extends CommandGroup {
         // wait, then shutdown
         addSequential(new Wait( 2 ));
         addSequential(new FeederOff());
-        addParallel(new SetStatusIdle());
+        addSequential(new SetStatusIdle());
         addSequential(new SetLauncherRPM(0));
     }
 }

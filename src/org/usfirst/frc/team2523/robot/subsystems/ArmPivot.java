@@ -18,11 +18,16 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class ArmPivot extends Subsystem {
 	
 	// constants
-	public final double POTENTIOMETER_DEGREE_LIMIT = 270;
-	public final double POTENTIOMETER_START_DEGREE = 30;
-	private static final double MAX_ANGLE = 80;
+	private final double PID_KP = 0.05;
+	private final double PID_KI = 0.1; 
+	private final double POTENTIOMETER_DEGREE_LIMIT = 270;
+	private final double POTENTIOMETER_START_DEGREE = 30;
+	public final double MAX_IN_MATCH_ANGLE = 80;
+	public final double ARM_PID_STOP_TOLERANCE = 3; // roughly leads to arm PID positioning precision
+	
 	// variables
 	public double currentSpeed;
+	public double currentMaxAngle = MAX_IN_MATCH_ANGLE;
 	public double pastPotentiometerAngle = 0;
 	public double lastPotentiometerRateRead = 0;
 
@@ -31,6 +36,7 @@ public class ArmPivot extends Subsystem {
 	AnalogPotentiometer armPotentiometer = new AnalogPotentiometer(RobotMap.armPoten1, 
 																   POTENTIOMETER_DEGREE_LIMIT,
 																   POTENTIOMETER_START_DEGREE);
+	public PIDControl armPID = new PIDControl(PID_KP, PID_KI, 0); // No PD
 	
 	public void setArmByJoystick()
 	{
@@ -41,8 +47,7 @@ public class ArmPivot extends Subsystem {
 
 	public void set(double speed)
 	{
-		if (speed > 0 && getArmAngle() > MAX_ANGLE && 
-				(RobotMap.MATCH_LENGTH - Timer.getMatchTime() > 20))
+		if (speed > 0 && getArmAngle() > currentMaxAngle)
 		{
 			arm1.set(0);
 			arm2.set(0);
@@ -52,6 +57,11 @@ public class ArmPivot extends Subsystem {
 			arm2.set(-speed);
 			this.currentSpeed = speed;
 		}
+	}
+	
+	public void setTargetAngle(double angle)
+	{
+		set(armPID.getPIoutput(angle, getArmAngle()));
 	}
 	
 	public double getArmAngle()
@@ -68,10 +78,16 @@ public class ArmPivot extends Subsystem {
 			   ((System.nanoTime() - lastPotentiometerRateRead)*10e6);
 	}
 	
-	public void updateArmRate()
+	public void updateArmProperties()
 	{
 		lastPotentiometerRateRead = System.nanoTime();
 		pastPotentiometerAngle = getArmAngle();
+		
+		// set max angle based on match time
+		if (RobotMap.MATCH_LENGTH - Timer.getMatchTime() > 20)
+			currentMaxAngle = MAX_IN_MATCH_ANGLE;
+		else
+			currentMaxAngle = POTENTIOMETER_DEGREE_LIMIT;
 	}
 	
 	public void initDefaultCommand() {

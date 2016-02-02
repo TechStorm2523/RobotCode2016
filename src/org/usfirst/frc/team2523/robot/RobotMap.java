@@ -24,7 +24,7 @@ public class RobotMap {
     // public static int rangefinderModule = 1;
 	
 	// GLOBAL CONSTANTS
-	public static final double GRAVITY = 32.2; // ft/sec
+	public static final double GRAVITY = 32.2; // ft/sec^2
 	public static final double MATCH_LENGTH = 150; //2min 30secs
 	public static final int ARM_STARTING_ANGLE = 0; // degrees, positive for down off horizontal
 	public static final double GLOBAL_TIME = Timer.getMatchTime();

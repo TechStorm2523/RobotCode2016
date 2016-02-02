@@ -30,7 +30,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * creating this project, you must also update the manifest file in the resource
  * directory.
  */
-@SuppressWarnings("unused")
 public class Robot extends IterativeRobot {
 	public static final DriveTrain drivetrain = new DriveTrain();
 	public static final Winch winch =new Winch();
@@ -48,17 +47,17 @@ public class Robot extends IterativeRobot {
 	public static OI oi = new OI();
 	
     Command autonomousCommand;
-    SendableChooser chooser;
+    SendableChooser autoChooser;
 
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
     public void robotInit() {
-        chooser = new SendableChooser();
-        chooser.addDefault("Default Auto", new ExampleCommand());
+        autoChooser = new SendableChooser();
+        autoChooser.addDefault("Default Auto", new ExampleCommand());
 //        chooser.addObject("My Auto", new MyAutoCommand());
-        SmartDashboard.putData("Auto mode", chooser);
+        SmartDashboard.putData("Auto mode", autoChooser);
     }
 	
 	/**
@@ -87,6 +86,7 @@ public class Robot extends IterativeRobot {
     public void autonomousInit() {
         autonomousCommand = (Command) chooser.getSelected();
         
+        // SHOULDNT BE NEEDED
 		/* String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
 		switch(autoSelected) {
 		case "My Auto":
@@ -139,6 +139,6 @@ public class Robot extends IterativeRobot {
      */
     private void allPeriodic()
     {
-		armpivot.updateArmRate();
+		armpivot.updateArmProperties();
     }
 }

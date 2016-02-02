@@ -20,6 +20,13 @@ public class DriveTrain extends Subsystem {
 	RobotDrive drive = new RobotDrive(RobotMap.Lfront, RobotMap.Lback, RobotMap.Rfront, RobotMap.Rback);
 	public PIDControl turnPID = new PIDControl(TURN_KP, TURN_KI, 0); // PI control intended
 	
+	public DriveTrain()
+	{
+		// ensure robot will stop motors if they do not receive commands for 0.1 seconds
+		drive.setSafetyEnabled(true);
+		drive.setExpiration(0.1);
+	}
+	
 	public void arcadedrivebyjoystick() {
 		drive.arcadeDrive(Robot.oi.DriveStick);
 	}

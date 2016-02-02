@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class LauncherPneumatics extends Subsystem {
 	DoubleSolenoid launcherPneumatics = new DoubleSolenoid(RobotMap.launcherSolenoid1, RobotMap.launcherSolenoid2);
 
-	public void rase() {
+	public void raise() {
 		launcherPneumatics.set(DoubleSolenoid.Value.kForward);
 	}
 	public void lower() {
