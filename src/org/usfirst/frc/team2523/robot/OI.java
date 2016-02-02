@@ -1,5 +1,6 @@
 package org.usfirst.frc.team2523.robot;
 
+import org.usfirst.frc.team2523.robot.commands.AutoCollect;
 import org.usfirst.frc.team2523.robot.commands.AutoLaunch;
 import org.usfirst.frc.team2523.robot.commands.FeederOff;
 import org.usfirst.frc.team2523.robot.commands.FeederCollect;
@@ -46,17 +47,14 @@ public class OI {
 	    // Start the command when the button is pressed and let it run the command
 	    // until it is finished as determined by it's isFinished method.
 	    button1.whenPressed(new AutoLaunch());
-	    button12.whenPressed(new GateMacro())
-	   
-	    
-	   ;
+	    button12.whenPressed(new GateMacro());
+
 	    // Run the command while the button is being held down and interrupt it once
 	    // the button is released.
-	    button3.whenPressed(new FeederCollect());
+	    button2.whenPressed(new AutoCollect());
 	    
 	    // Start the command when the button is released  and let it run the command
 	    // until it is finished as determined by it's isFinished method.
-	    button3.whenReleased(new FeederOff());
 	}
 }
 

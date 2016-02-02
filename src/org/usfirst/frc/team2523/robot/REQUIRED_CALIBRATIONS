@@ -1,0 +1,22 @@
+Camera
+	FOV
+	Elevation
+	
+Arm
+	Start Angle
+	MAX Angle for height limit
+	
+Chassis
+	Turn PID (KP and KI)
+	
+Winch
+	Distance to 15 inch from pivot
+	Power per feed rate in in/sec
+	
+Launch Wheels
+	RPM PID
+	Encoder Rev Per Pulse
+	RPM Per Velocity
+	RELATIVE_LAUNCH_ANGLE_AT_SAME_RATE
+	RELATIVE_RATE_PER_ANGLE_COEFFICENT
+	TARGET_RPM_TOLERANCE

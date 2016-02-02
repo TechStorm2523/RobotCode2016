@@ -1,5 +1,6 @@
 package org.usfirst.frc.team2523.robot.subsystems;
 
+import org.usfirst.frc.team2523.robot.Robot;
 import org.usfirst.frc.team2523.robot.commands.IdentifyBestTarget;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -17,10 +18,11 @@ public class TargetTracker extends Subsystem {
 	private final double IDEAL_ASPECT_RATIO = 20.0 / 14.0;
 	private final double IDEAL_AREA_RATIO =  88.0 / 280.0;
 	private final double TARGET_WIDTH = 20 / 12.0;
+	private final double TARGET_HEIGHT = 14 / 12.0;
 	// camera/image properties
 	private final double IMAGE_WIDTH = 640;
 	private final double IMAGE_HEIGHT = 480;
-	private final double CAMERA_FOV = 68.5; // TODO: NEEDS ADJUSTING
+	private final double CAMERA_FOV = 68.5; // TODO: NEEDS ADJUSTING // VERTICAL FOV
 	private final double CAMERA_ELEVATION = 68; // degrees
 	
 	// Objects Used
@@ -61,8 +63,9 @@ public class TargetTracker extends Subsystem {
 	{
 		if (currentBestTarget != null)
 		{
-			// d = TargetWidthFeet*FOVWidthPixel / (2*TargetWidthPixel*tan(FOV/2) ) (HYPOTENUSE)
-			return TARGET_WIDTH*IMAGE_WIDTH / (2*currentBestTarget.width*Math.tan(CAMERA_FOV/2))
+			// chose to use height because most consistent across view angles
+			// d = TargetHeightFeet*FOVHeightPixel / (2*TargetHeightPixel*tan(FOV/2) ) (HYPOTENUSE)
+			return TARGET_HEIGHT*IMAGE_HEIGHT / (2*currentBestTarget.height*Math.tan(CAMERA_FOV/2))
 					*Math.cos(Math.toDegrees(CAMERA_ELEVATION)); // convert to horizontal
 		}
 		else
@@ -126,6 +129,8 @@ public class TargetTracker extends Subsystem {
 										  heights[i],
 										  IDEAL_ASPECT_RATIO,
 										  IDEAL_AREA_RATIO);
+			
+			Robot.camera.drawTargetIndicator((int) reports[i].centerX, (int) reports[i].centerY);
 		}
 		
 		return reports;

@@ -23,11 +23,11 @@ public class RobotMap {
     // public static int rangefinderPort = 1;
     // public static int rangefinderModule = 1;
 	
-	public static final double MATCH_LENGTH = 150; //2min 30secs
 	// GLOBAL CONSTANTS
-	public static int ARM_STARTING_ANGLE = 0; // degrees, positive for down off horizontal
-	public static int LAUNCH_ANGLE = 0;
-	public static double GLOBAL_TIME = Timer.getMatchTime();
+	public static final double GRAVITY = 32.2; // ft/sec
+	public static final double MATCH_LENGTH = 150; //2min 30secs
+	public static final int ARM_STARTING_ANGLE = 0; // degrees, positive for down off horizontal
+	public static final double GLOBAL_TIME = Timer.getMatchTime();
 	
 	// PWM Outputs (Motors)
 	public static int Rfront = 0;
@@ -35,8 +35,8 @@ public class RobotMap {
 	public static int Lfront = 2;
 	public static int Lback = 3;
 	public static int feeder = 4;
-	public static int launch1 = 5;
-	public static int launch2 = 6;
+	public static int launcherSpeedMot = 5;
+	public static int launcherAngleMot = 6;
 	public static int lifter1 = 7;
 	public static int lifter2 = 8;
 	public static int winch = 9;
@@ -55,8 +55,10 @@ public class RobotMap {
 	// Digital IO Ports (Sensors/Encoders)
 	public static int armPoten1 = 0;
 	public static int armPoten2 = 1;
-	public static int launcherEncoder1 = 2;
-	public static int launcherEncoder2 = 3;
+	public static int launcherSpeedEncoder1 = 2;
+	public static int launcherSpeedEncoder2 = 3;
+	public static int launcherAngleEncoder1 = 4;
+	public static int launcherAngleEncoder2 = 5;
 	// The balldetector is in port 4.
 			
 }

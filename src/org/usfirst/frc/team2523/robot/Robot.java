@@ -4,6 +4,7 @@ package org.usfirst.frc.team2523.robot;
 import org.usfirst.frc.team2523.robot.commands.ExampleCommand;
 import org.usfirst.frc.team2523.robot.subsystems.ArmPivot;
 import org.usfirst.frc.team2523.robot.subsystems.ArmPneumatics;
+import org.usfirst.frc.team2523.robot.subsystems.Camera;
 import org.usfirst.frc.team2523.robot.subsystems.Dashboard;
 import org.usfirst.frc.team2523.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team2523.robot.subsystems.ExampleSubsystem;
@@ -31,18 +32,21 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 @SuppressWarnings("unused")
 public class Robot extends IterativeRobot {
-	public static OI oi = new OI();
 	public static final DriveTrain drivetrain = new DriveTrain();
 	public static final Winch winch =new Winch();
 	public static final ArmPivot armpivot = new ArmPivot();
 	public static final Feeder feeder = new Feeder();
 	public static final LauncherWheels launcherWheels = new LauncherWheels();
 	public static final TargetTracker targetTracker = new TargetTracker();
-	public static ArmPneumatics armPneumatics = new ArmPneumatics();
-	public static LauncherPneumatics launcherPneumatics = new LauncherPneumatics();
-	public static Dashboard dashboard = new Dashboard();
+	public static final ArmPneumatics armPneumatics = new ArmPneumatics();
+	public static final LauncherPneumatics launcherPneumatics = new LauncherPneumatics();
+	public static final Dashboard dashboard = new Dashboard();
 	public static final LauncherStatus launcherstatus = new LauncherStatus();
+	public static final Camera camera = new Camera(); 
 
+	// MUST be after subsystems
+	public static OI oi = new OI();
+	
     Command autonomousCommand;
     SendableChooser chooser;
 
