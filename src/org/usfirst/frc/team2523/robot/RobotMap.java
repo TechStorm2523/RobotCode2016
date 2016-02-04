@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.Timer;
  * the wiring easier and significantly reduces the number of magic numbers
  * floating around.
  */
-@SuppressWarnings("unused")
 public class RobotMap {
     // For example to map the left and right motors, you could define the
     // following variables to use with your drivetrain subsystem.
@@ -26,8 +25,6 @@ public class RobotMap {
 	// GLOBAL CONSTANTS
 	public static final double GRAVITY = 32.2; // ft/sec^2
 	public static final double MATCH_LENGTH = 150; //2min 30secs
-	public static final int ARM_STARTING_ANGLE = 0; // degrees, positive for down off horizontal
-	public static final double GLOBAL_TIME = Timer.getMatchTime();
 	
 	// PWM Outputs (Motors)
 	public static int Rfront = 0;
@@ -59,6 +56,8 @@ public class RobotMap {
 	public static int launcherSpeedEncoder2 = 3;
 	public static int launcherAngleEncoder1 = 4;
 	public static int launcherAngleEncoder2 = 5;
-	// The balldetector is in port 4.
+	public static int ballDedectorLimSwitch = 6;
+	public static int driveEncoder1 = 7;
+	public static int driveEncoder2 = 8;
 			
 }

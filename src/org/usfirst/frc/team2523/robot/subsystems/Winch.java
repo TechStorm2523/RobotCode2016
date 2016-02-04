@@ -55,8 +55,8 @@ public class Winch extends Subsystem {
 			// (dr/dTheta * dtheta/dt = dr/dt)
 			return POWER_PER_INCH_PER_SECOND *
 				   ARM_PIVOT_TO_15IN * 
-				   Math.tan(Math.toRadians(currentAngle - RobotMap.ARM_STARTING_ANGLE)) / 
-				   Math.cos(Math.toRadians(currentAngle - RobotMap.ARM_STARTING_ANGLE)) *
+				   Math.tan(Math.toRadians(currentAngle - Robot.armpivot.ARM_STARTING_ANGLE)) / 
+				   Math.cos(Math.toRadians(currentAngle - Robot.armpivot.ARM_STARTING_ANGLE)) *
 				   angleDelta;
 		}
 	}

@@ -20,6 +20,7 @@ public class ArmPivot extends Subsystem {
 	// constants
 	private final double PID_KP = 0.05;
 	private final double PID_KI = 0.1; 
+	public final double ARM_STARTING_ANGLE = 0; // degrees, positive for down off horizontal
 	private final double POTENTIOMETER_DEGREE_LIMIT = 270;
 	private final double POTENTIOMETER_START_DEGREE = 30;
 	public final double MAX_IN_MATCH_ANGLE = 80;

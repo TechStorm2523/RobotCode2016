@@ -17,7 +17,7 @@ public class Feeder extends Subsystem {
     
     public void initDefaultCommand() {
     }
-    DigitalInput balldetector = new DigitalInput(1);
+    DigitalInput balldetector = new DigitalInput(RobotMap.ballDedectorLimSwitch);
     public boolean ballstate(){
     	return balldetector.get();
     }

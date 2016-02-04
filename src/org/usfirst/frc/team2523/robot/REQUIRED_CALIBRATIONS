@@ -1,24 +1,56 @@
-Camera
-	FOV
-	Elevation
+*How to Calibrate PID:
+ - PD is the most basic way to change how fast the arm moves to target. 
+ 	High values make it go at full power until just before the right place;
+ 	Low values make it slow down well before (possibly too far before -- this is what PI (Integral) is for)
+ - PI controls how much the arm will react to a long time running.
+ 	High values make the arm move very past and possibly overshoot if it has been running for any long time.
+ 	Low values mean the arm will stop before the target and take a long time before they start moving again. 
+ 		It also may go too far and take to long to go back again
+
+Camera.java
+	Field of View - See https://wpilib.screenstepslive.com/s/4485/m/24194/l/288985-identifying-and-processing-the-targets#Distance
+	Elevation - Simply Camera Angle
 	
-Arm
-	Start Angle
-	MAX Angle for height limit
-	ARM PID Values
+ArmPivot.java
+	ARM_STARTING_ANGLE - the angle off horizontal that the arm is zero (starts) at. Set precisely, this controls the winch retraction
+	POTENTIOMETER_START_DEGREE - The angle on the potentiometer the arm starts at
+	MAX_IN_MATCH_ANGLE - Max Angle (potentiometer) to be under height limit (experimentally determined)
+	ARM PID Coefficents (PID_KP and PID_KI)
 	
-Chassis
-	Turn PID (KP and KI)
+DriveTrain.java
+	Turn PID (TURN_KP and TURN_KI)
+	Drive PID (DRIVE_KP and DRIVE_KI)
+	DISTANCE_PER_ENCODER_PULSE - Distance robot travels for an encoder pulse
+	TARGET_DISTANCE_TOLERANCE - How far off from a target distance the robot will be satisfied that it's on target
+							too low may take a while to hit or NOT hit, too high will be imprecise
 	
 Winch
-	Distance to 15 inch from pivot
-	Power per feed rate in in/sec
-	MAX_WINCH_BY_ARM_ANGLE - set to angle of cable slack
+	ARM_PIVOT_TO_15IN Distance to 15 inch from pivot center (May want to less than 15in for leway
+	POWER_PER_INCH_PER_SECOND Power per feed rate in in/sec - need to measure emprically 
+		(easiest way is to hook up to average charge battery/ run at full to see what inch/sec is at that (full) speed
+		 , and enter 1 / INCH/SEC into this constant with that value, where the 1 represents full power (.5 is half, etc.)
+		 ALSO - multiply THIS by random coefficents to calibrate ARM MOVEMENT!!
+		 
+	MAX_WINCH_BY_ARM_ANGLE - set to angle that cable starts to slack (when arm is FULLY extended too)
 	
 Launch Wheels
-	RPM PID
-	Encoder Rev Per Pulse
-	RPM Per Velocity - CHECK
-	RELATIVE_LAUNCH_ANGLE_AT_SAME_RATE
-	RELATIVE_RATE_PER_ANGLE_COEFFICENT
-	TARGET_RPM_TOLERANCE
+	RPM PID - Just PID_KP
+	ENCODER_REV_PER_PULSE - the number of wheel revolutions per encoder pulse (of which there are usually 360)
+							(can be found mathematically w/ gearboxes)
+	MAX_RPM - The max RPM the motor is capable of -- used to tell whether in range
+	RPM_PER_VELOCITY - Conversion factor to go from velocity to rpm - HAS BEEN CALCULATED THEORETICALLY, multiply to 
+						by some value to match what you see. (ALSO, we measure speed based on the SLOWER wheel on the shooter,
+						so you may have to average the value OR change the model in the code (which will be hard))
+						(see back of trajectory calculations in shooter box)
+	LAUNCH_ANGLE - shooter launch angle
+	LAUNCH_HEIGHT - height of ROBOT launch (to center of ball approx.)
+	TARGET_HEIGHT
+	RELATIVE_LAUNCH_ANGLE_AT_SAME_RATE - the angle off of the launcher angle at which the ball launches when the relative rate is one;
+										basically a y intercept of the launch angle - USE to adjust visually if the shooter shoots at
+										some angle off perpendicular to a line between the wheels WHEN the motors are same speed (same rate).
+	RELATIVE_RATE_PER_ANGLE_COEFFICENT - THIS IS basically a coefficent for the required relative rate of the speed and angle motors to 
+										obtain a certain angle change. 	
+										an increase will mean that a smaller relative rate is needed for the same angle off normal launch
+										Change this based on random hunches and dead estimation - the theory is REALLY hard
+	TARGET_RPM_TOLERANCE - just how far off from a target RPM the robot will be satisfied that it's on target
+							too low may take a while to hit or NOT hit, too high will be imprecise
