@@ -22,6 +22,7 @@ public class DriveTrain extends Subsystem {
 	final double DRIVE_KI = 0.05;
 	final double DISTANCE_PER_ENCODER_PULSE = 0; // feet
 	public final double TARGET_DISTANCE_TOLERANCE = 0.2; // feet, or same as DISTANCE_PER_ENCODER_PULSE
+	public final double RAMP_UP_DURATION = 1;
 	
 	RobotDrive drive = new RobotDrive(RobotMap.Lfront, RobotMap.Lback, RobotMap.Rfront, RobotMap.Rback);
 	Encoder driveEncoder = new Encoder(RobotMap.driveEncoder1, RobotMap.driveEncoder2, 
@@ -59,6 +60,18 @@ public class DriveTrain extends Subsystem {
 	public void setDriveTarget(double target)
 	{
 		set(drivePID.getPIoutput(target, getCurrentDistance()), 0);
+	}
+	
+	/**
+	 * Get a speed to go at based on the progress within a rampup
+	 * @param currentSpeed Speed desired if no ramp
+	 * @param rampProgress Progress through ramp, where 0 is just starting and 1 is done
+	 * @return
+	 */
+	public double getSpeedByRamp(double currentSpeed, double rampProgress)
+	{
+		// squared relationship
+		return currentSpeed * (rampProgress * rampProgress);
 	}
 	
 	/**

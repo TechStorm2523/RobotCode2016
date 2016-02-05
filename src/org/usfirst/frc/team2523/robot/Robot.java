@@ -1,7 +1,6 @@
 
 package org.usfirst.frc.team2523.robot;
 
-import org.usfirst.frc.team2523.robot.commands.ExampleCommand;
 import org.usfirst.frc.team2523.robot.subsystems.ArmPivot;
 import org.usfirst.frc.team2523.robot.subsystems.ArmPneumatics;
 import org.usfirst.frc.team2523.robot.subsystems.Camera;
@@ -14,6 +13,7 @@ import org.usfirst.frc.team2523.robot.subsystems.LauncherWheels;
 import org.usfirst.frc.team2523.robot.subsystems.LauncherPneumatics;
 import org.usfirst.frc.team2523.robot.subsystems.TargetTracker;
 import org.usfirst.frc.team2523.robot.subsystems.Winch;
+import org.usfirst.frc.team2523.robot.commands.*;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Relay;
@@ -55,8 +55,13 @@ public class Robot extends IterativeRobot {
      */
     public void robotInit() {
         autoChooser = new SendableChooser();
-        autoChooser.addDefault("Default Auto", new ExampleCommand());
-//        chooser.addObject("My Auto", new MyAutoCommand());
+        autoChooser.addDefault("Drive to Defense", new AutoCommandBasic());
+        autoChooser.addObject("Do Nothing", new AutoCommandNOTHING());
+        autoChooser.addObject("Basic (Drive-Over) Defense", new AutoCommandBasicDefense());
+        autoChooser.addDefault("Cheval de Frise (Tippy) Defense", new AutoCommandChevaldeFrise());
+        autoChooser.addDefault("Drawbridge Defense", new AutoCommandDrawbridge());
+        autoChooser.addDefault("Portcullis (Gate) Defense", new AutoCommandPortcullis());
+//      autoChooser.addObject("My Auto", new MyAutoCommand());
         SmartDashboard.putData("Auto mode", autoChooser);
     }
 	

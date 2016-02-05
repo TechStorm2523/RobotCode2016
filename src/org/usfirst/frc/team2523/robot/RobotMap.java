@@ -26,6 +26,10 @@ public class RobotMap {
 	public static final double GRAVITY = 32.2; // ft/sec^2
 	public static final double MATCH_LENGTH = 150; //2min 30secs
 	
+	// DISTANCE CONSTANTS (for AUTO)
+	public static final double DISTANCE_TO_DEFENSE_EDGE = 7.5; // feet
+	public static final double DISTANCE_TO_DEFENSE_MIDDLE = 8.16;
+	
 	// PWM Outputs (Motors)
 	public static int Rfront = 0;
 	public static int Rback = 1;

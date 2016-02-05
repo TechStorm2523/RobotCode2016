@@ -28,7 +28,7 @@ public class FeederFire extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.feeder.gofeed();
+    	Robot.feeder.feed();
     }
 
     // Make this return true when this Command no longer needs to run execute()

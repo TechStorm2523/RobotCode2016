@@ -9,9 +9,10 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class FeederOff extends Command {
-
-    public FeederOff() {
+public class FeederExpel extends Command {
+	
+	
+    public FeederExpel() {
         // Use requires() here to declare subsystem dependencies
         requires(Robot.feeder);
     }
@@ -22,16 +23,17 @@ public class FeederOff extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.feeder.stop();
+    	Robot.feeder.expel();
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return true;
+    	return true;
     }
 
     // Called once after isFinished returns true
-    protected void end() {
+    protected void end(){
+    	Robot.feeder.stop();
     }
 
     // Called when another command which requires one or more of the same

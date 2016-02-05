@@ -7,20 +7,21 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class SetChassisTarget extends Command {
+public class DriveForDistance extends Command {
 	double target;
 	double maxSpeed;
+	double rampUpStartTime = 0;
 
 	/**
 	 * Sets the target distance for the wheels to go to
 	 * @param target The target distance, in feet 
 	 * (or whatever unit DISTANCE_PER_ENCODER_PULSE is in)
 	 */
-    public SetChassisTarget(double target, double maxSpeed) {
+    public DriveForDistance(double maxSpeed, double targetDistance) {
         // Use requires() here to declare subsystem dependencies
         requires(Robot.drivetrain);
         
-        this.target = target;
+        this.target = targetDistance;
         this.maxSpeed = maxSpeed;
     }
 
@@ -28,10 +29,22 @@ public class SetChassisTarget extends Command {
     protected void initialize() {
     	Robot.drivetrain.resetDistance();
     	Robot.drivetrain.drivePID.setMaxMin(-maxSpeed, maxSpeed); 	
+    	rampUpStartTime = System.nanoTime();
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+    	
+    	// if ramp up has not expired, apply a ramp
+    	if((System.nanoTime() - rampUpStartTime) * 10e9 
+		 	< Robot.drivetrain.RAMP_UP_DURATION)
+    	{
+    		// use PID max/min to set speed
+        	Robot.drivetrain.drivePID.setMaxMin(
+        			Robot.drivetrain.getSpeedByRamp(maxSpeed, System.nanoTime() - rampUpStartTime) * 10e9 
+    														 / Robot.drivetrain.RAMP_UP_DURATION);
+    	}
+    	
     	Robot.drivetrain.setDriveTarget(target);
     }
 

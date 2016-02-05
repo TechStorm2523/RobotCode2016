@@ -9,6 +9,7 @@ public class AutoLaunch extends CommandGroup {
     
     public  AutoLaunch() {
         // Lower launcher and align with target
+    	addSequential(new SeekTarget());
     	addParallel(new SetStatusAiming());
     	addParallel(new TurnToTarget());
         addParallel(new LauncherLower());

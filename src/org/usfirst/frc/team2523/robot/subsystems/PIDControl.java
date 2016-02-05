@@ -255,6 +255,18 @@ public class PIDControl extends Subsystem {
 		this.MIN_OUTPUT = min;
 		this.MAX_OUTPUT = max;
 	}
+	
+	/**
+	 * Sets the maximum and minimum speeds to output from the PID control, by one value
+	 * @param minMax Absolute value of min/max value
+	 */
+	public void setMaxMin(double minMax)
+	{
+		// set values
+		this.MIN_OUTPUT = minMax;
+		this.MAX_OUTPUT = minMax;
+	}
+	
 	/**
 	 * Sets integral value to zero to allow uninhibited movement
 	 */

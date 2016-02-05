@@ -21,10 +21,13 @@ public class Feeder extends Subsystem {
     public boolean ballstate(){
     	return balldetector.get();
     }
-	public void gofeed(){
+	public void feed(){
     	feed.set(Relay.Value.kForward);
 	}
-	public void stopfeed(){
+	public void expel(){
+    	feed.set(Relay.Value.kReverse);
+	}	
+	public void stop(){
     	feed.set(Relay.Value.kOff);
 	}
 }
