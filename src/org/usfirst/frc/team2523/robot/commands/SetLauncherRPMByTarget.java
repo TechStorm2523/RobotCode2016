@@ -8,8 +8,7 @@ import edu.wpi.first.wpilibj.command.Command;
  * Set's launcher wheel's RPM by the target's range
  */
 public class SetLauncherRPMByTarget extends Command {
-	double speedMotTargetRPM = 0;
-	double angleMotTargetRPM = 0;
+	double targetRPM = 0;
 
     public SetLauncherRPMByTarget() {
         // Use requires() here to declare subsystem dependencies
@@ -23,18 +22,15 @@ public class SetLauncherRPMByTarget extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
     	double range = Robot.targetTracker.getRangeToBestTarget();
-    	speedMotTargetRPM = Robot.launcherWheels.getSpeedMotRPMbyRange(range);
-    	angleMotTargetRPM = Robot.launcherWheels.getAngleMotRPMbyRange(range);
+    	targetRPM = Robot.launcherWheels.getRPMbyRange(range);
     	
-    	Robot.launcherWheels.setSpeedMotTargetRPM(speedMotTargetRPM);
-    	Robot.launcherWheels.setAngleMotTargetRPM(angleMotTargetRPM);
+    	Robot.launcherWheels.setTargetRPM(targetRPM);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
     	// stop once RPM reached (in certain range) for BOTH wheels
-        return Math.abs(speedMotTargetRPM - Robot.launcherWheels.getCurrentSpeedMotRPM()) < Robot.launcherWheels.TARGET_RPM_TOLERANCE &&
-        	   Math.abs(angleMotTargetRPM - Robot.launcherWheels.getCurrentAngleMotRPM()) < Robot.launcherWheels.TARGET_RPM_TOLERANCE;
+        return Math.abs(targetRPM - Robot.launcherWheels.getCurrentRPM()) < Robot.launcherWheels.TARGET_RPM_TOLERANCE;
     }
 
     // Called once after isFinished returns true

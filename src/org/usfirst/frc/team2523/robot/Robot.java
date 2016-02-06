@@ -41,7 +41,7 @@ public class Robot extends IterativeRobot {
 	public static final LauncherPneumatics launcherPneumatics = new LauncherPneumatics();
 	public static final Dashboard dashboard = new Dashboard();
 	public static final LauncherStatus launcherstatus = new LauncherStatus();
-	public static final Camera camera = new Camera(); 
+	public static final Camera  camera = new Camera(); 
 
 	// MUST be after subsystems
 	public static OI oi = new OI();

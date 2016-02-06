@@ -34,9 +34,8 @@ public class SetDashboard extends Command
 		SmartDashboard.putNumber(" Range to Best Target ", Robot.targetTracker.currentRangeToBestTarget);
 		
 		// DIAGNOSTICS
-		SmartDashboard.putString("Status of Launcher",Robot.launcherstatus.Status );
-		SmartDashboard.putNumber(" Launcher Speed Mot RPM ", Robot.launcherWheels.speedMotRPM);
-		SmartDashboard.putNumber(" Launcher Angle Mot RPM ", Robot.launcherWheels.angleMotRPM);
+		SmartDashboard.putString(" Status of Launcher ",Robot.launcherstatus.Status );
+		SmartDashboard.putNumber(" Launcher Mot RPM (Front) ", Robot.launcherWheels.getCurrentRPM());
 		
 		// COMMANDS
 		//SmartDashboard.putData("Set Launch Properties", new SetLauncherVelocityAndAngle());

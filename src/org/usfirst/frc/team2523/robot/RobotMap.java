@@ -56,10 +56,8 @@ public class RobotMap {
 	// Digital IO Ports (Sensors/Encoders)
 	public static int armPoten1 = 0;
 	public static int armPoten2 = 1;
-	public static int launcherSpeedEncoder1 = 2;
-	public static int launcherSpeedEncoder2 = 3;
-	public static int launcherAngleEncoder1 = 4;
-	public static int launcherAngleEncoder2 = 5;
+	public static int launcherEncoder1 = 2;
+	public static int launcherEncoder2 = 3;
 	public static int ballDedectorLimSwitch = 6;
 	public static int driveEncoder1 = 7;
 	public static int driveEncoder2 = 8;

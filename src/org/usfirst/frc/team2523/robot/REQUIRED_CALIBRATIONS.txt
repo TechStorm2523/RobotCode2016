@@ -44,7 +44,7 @@ LauncherWheels.java
 	RPM PID - Just PID_KP
 	ENCODER_REV_PER_PULSE - the number of wheel revolutions per encoder pulse (of which there are usually 360)
 							(can be found mathematically w/ gearboxes)
-	MAX_RPM - The max RPM the motor is capable of -- used to tell whether in range
+	MAX_RPM - The max RPM the motor is capable of -- used to tell whether in range (WE HAVE THEORETICALLY)
 	RPM_PER_VELOCITY - Conversion factor to go from velocity to rpm - HAS BEEN CALCULATED THEORETICALLY, multiply to 
 						by some value to match what you see. (ALSO, we measure speed based on the SLOWER wheel on the shooter,
 						so you may have to average the value OR change the model in the code (which will be hard))
@@ -52,15 +52,9 @@ LauncherWheels.java
 	LAUNCH_ANGLE - shooter launch angle
 	LAUNCH_HEIGHT - height of ROBOT launch (to center of ball approx.)
 	TARGET_HEIGHT
-	RELATIVE_LAUNCH_ANGLE_AT_SAME_RATE - the angle off of the launcher angle at which the ball launches when the relative rate is one;
-										basically a y intercept of the launch angle - USE to adjust visually if the shooter shoots at
-										some angle off perpendicular to a line between the wheels WHEN the motors are same speed (same rate).
-	RELATIVE_RATE_PER_ANGLE_COEFFICENT - THIS IS basically a coefficent for the required relative rate of the speed and angle motors to 
-										obtain a certain angle change. 	
-										an increase will mean that a smaller relative rate is needed for the same angle off normal launch
-										Change this based on random hunches and dead estimation - the theory is REALLY hard
 	TARGET_RPM_TOLERANCE - just how far off from a target RPM the robot will be satisfied that it's on target
 							too low may take a while to hit or NOT hit, too high will be imprecise
+	CAM_DISTANCE_OFF_LAUNCH - Distance of camera off center of ball at launch
 							
 SeekTarget.java - NOT super important, hopefully never used much
 	SEEK_SPEED
