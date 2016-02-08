@@ -8,9 +8,9 @@ import org.usfirst.frc.team2523.robot.Robot;
 /**
  *
  */
-public class LauncherComm extends Command {
+public class SetLauncherByThrottle extends Command {
 
-    public LauncherComm() {
+    public SetLauncherByThrottle() {
         // Use requires() here to declare subsystem dependencies
         requires(Robot.launcherWheels);
     }

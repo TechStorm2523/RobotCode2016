@@ -2,7 +2,7 @@
 package org.usfirst.frc.team2523.robot.subsystems;
 
 import org.usfirst.frc.team2523.robot.RobotMap;
-import org.usfirst.frc.team2523.robot.commands.DrawBarsOnCamera;
+import org.usfirst.frc.team2523.robot.commands.DrawTargetsOnCamera;
 
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.DrawMode;
@@ -59,14 +59,14 @@ public class Camera extends Subsystem {
         // add shapes to frame
     	for (NIVision.Rect crosshairRect : crosshairRects)
     		NIVision.imaqDrawShapeOnImage(frame, frame, crosshairRect, DrawMode.PAINT_VALUE, ShapeMode.SHAPE_RECT, 0.0f);
-        
+    	
         // set the image
         CameraServer.getInstance().setImage(frame);
     }
     
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
-        //setDefaultCommand(new DrawTargetsOnCamera());
+        setDefaultCommand(new DrawTargetsOnCamera());
     }
 }
 

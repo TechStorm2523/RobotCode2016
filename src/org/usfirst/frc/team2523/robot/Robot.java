@@ -1,18 +1,7 @@
 
 package org.usfirst.frc.team2523.robot;
 
-import org.usfirst.frc.team2523.robot.subsystems.ArmPivot;
-import org.usfirst.frc.team2523.robot.subsystems.ArmPneumatics;
-import org.usfirst.frc.team2523.robot.subsystems.Camera;
-import org.usfirst.frc.team2523.robot.subsystems.Dashboard;
-import org.usfirst.frc.team2523.robot.subsystems.DriveTrain;
-import org.usfirst.frc.team2523.robot.subsystems.ExampleSubsystem;
-import org.usfirst.frc.team2523.robot.subsystems.Feeder;
-import org.usfirst.frc.team2523.robot.subsystems.LauncherStatus;
-import org.usfirst.frc.team2523.robot.subsystems.LauncherWheels;
-import org.usfirst.frc.team2523.robot.subsystems.LauncherPneumatics;
-import org.usfirst.frc.team2523.robot.subsystems.TargetTracker;
-import org.usfirst.frc.team2523.robot.subsystems.Winch;
+import org.usfirst.frc.team2523.robot.subsystems.*;
 import org.usfirst.frc.team2523.robot.commands.*;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -21,6 +10,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 /**
@@ -32,23 +22,32 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends IterativeRobot {
 	public static final DriveTrain drivetrain = new DriveTrain();
-	public static final Winch winch =new Winch();
+	public static final Winch winch = new Winch();
 	public static final ArmPivot armpivot = new ArmPivot();
-	public static final Feeder feeder = new Feeder();
+//	public static final Feeder feeder = new Feeder();
 	public static final LauncherWheels launcherWheels = new LauncherWheels();
 	public static final TargetTracker targetTracker = new TargetTracker();
-	public static final ArmPneumatics armPneumatics = new ArmPneumatics();
-	public static final LauncherPneumatics launcherPneumatics = new LauncherPneumatics();
+//	public static final ArmPneumatics armPneumatics = new ArmPneumatics();
+//	public static final LauncherPneumatics launcherPneumatics = new LauncherPneumatics();
 	public static final Dashboard dashboard = new Dashboard();
 	public static final LauncherStatus launcherstatus = new LauncherStatus();
 	public static final Camera  camera = new Camera(); 
+//	public static final Compressor compressor = new Compressor();
 
 	// MUST be after subsystems
 	public static OI oi = new OI();
 	
+	// nettables
+	public static NetworkTable netTable;
+	
     Command autonomousCommand;
     SendableChooser autoChooser;
 
+    public Robot()
+    {
+    	netTable = NetworkTable.getTable(RobotMap.CONTOUR_NET_TABLE);
+    }
+    
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -57,10 +56,10 @@ public class Robot extends IterativeRobot {
         autoChooser = new SendableChooser();
         autoChooser.addDefault("Drive to Defense", new AutoCommandBasic());
         autoChooser.addObject("Do Nothing", new AutoCommandNOTHING());
-        autoChooser.addObject("Basic (Drive-Over) Defense", new AutoCommandBasicDefense());
-        autoChooser.addDefault("Cheval de Frise (Tippy) Defense", new AutoCommandChevaldeFrise());
+//        autoChooser.addObject("Basic (Drive-Over) Defense", new AutoCommandBasicDefense());
+//        autoChooser.addDefault("Cheval de Frise (Tippy) Defense", new AutoCommandChevaldeFrise());
         autoChooser.addDefault("Drawbridge Defense", new AutoCommandDrawbridge());
-        autoChooser.addDefault("Portcullis (Gate) Defense", new AutoCommandPortcullis());
+//        autoChooser.addDefault("Portcullis (Gate) Defense", new AutoCommandPortcullis());
 //      autoChooser.addObject("My Auto", new MyAutoCommand());
         SmartDashboard.putData("Auto mode", autoChooser);
     }

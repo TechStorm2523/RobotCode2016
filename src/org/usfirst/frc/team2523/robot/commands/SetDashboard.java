@@ -27,7 +27,7 @@ public class SetDashboard extends Command
 		// Configure SmartDashboard displays
     	// ESSENTIALS
 		SmartDashboard.putNumber(" Arm Angle ", Robot.armpivot.getArmAngle());
-		SmartDashboard.putBoolean(" Ball? ", Robot.feeder.ballstate());
+//		SmartDashboard.putBoolean(" Ball? ", Robot.feeder.ballstate());
 		SmartDashboard.putBoolean(" In Range ", Robot.launcherstatus.inRange);
 		SmartDashboard.putBoolean(" Aligned ", Robot.launcherstatus.aligned);
 		SmartDashboard.putBoolean(" Spooled Up ", Robot.launcherstatus.spooledUp);

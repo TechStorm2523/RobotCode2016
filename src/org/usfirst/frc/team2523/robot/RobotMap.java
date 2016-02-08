@@ -25,6 +25,7 @@ public class RobotMap {
 	// GLOBAL CONSTANTS
 	public static final double GRAVITY = 32.2; // ft/sec^2
 	public static final double MATCH_LENGTH = 150; //2min 30secs
+	public static final String CONTOUR_NET_TABLE = "GRIP/ContoursReport";
 	
 	// DISTANCE CONSTANTS (for AUTO)
 	public static final double DISTANCE_TO_DEFENSE_EDGE = 7.5; // feet
@@ -36,8 +37,8 @@ public class RobotMap {
 	public static int Lfront = 2;
 	public static int Lback = 3;
 	public static int feeder = 4;
-	public static int launcherSpeedMot = 5;
-	public static int launcherAngleMot = 6;
+	public static int launcherMot1 = 5;
+	public static int launcherMot2 = 6;
 	public static int lifter1 = 7;
 	public static int lifter2 = 8;
 	public static int winch = 9;
@@ -55,10 +56,10 @@ public class RobotMap {
 	
 	// Digital IO Ports (Sensors/Encoders)
 	public static int armPoten1 = 0;
-	public static int armPoten2 = 1;
+	public static int armPoten2 = 6;
 	public static int launcherEncoder1 = 2;
 	public static int launcherEncoder2 = 3;
-	public static int ballDedectorLimSwitch = 6;
+	public static int ballDedectorLimSwitch = 1;
 	public static int driveEncoder1 = 7;
 	public static int driveEncoder2 = 8;
 			

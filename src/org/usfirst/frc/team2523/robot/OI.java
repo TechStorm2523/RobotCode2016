@@ -15,7 +15,7 @@ public class OI {
     // One type of button is a joystick button which is any button on a joystick.
     // You create one by telling it which joystick it's on and which button
     // number it is.
-    public Joystick DriveStick = new Joystick(1);
+    public Joystick DriveStick = new Joystick(0);
     Button driveButton1 = new JoystickButton(UtilStick, 1),
 			driveButton2 = new JoystickButton(UtilStick, 2),
 			driveButton3 = new JoystickButton(UtilStick, 3),
@@ -30,7 +30,7 @@ public class OI {
 			driveButton12 = new JoystickButton(UtilStick, 12);
     
     
-    public static Joystick UtilStick = new Joystick (2);
+    public static Joystick UtilStick = new Joystick (1);
     Button utilButton1 = new JoystickButton(UtilStick, 1),
 			utilButton2 = new JoystickButton(UtilStick, 2),
 			utilButton3 = new JoystickButton(UtilStick, 3),
@@ -47,20 +47,21 @@ public class OI {
     public OI()
     {
     	// DRIVE
-    	driveButton1.whenPressed(new AutoCollect());
+//    	driveButton1.whenPressed(new AutoCollect());
     	
-    	driveButton2.whileHeld(new FeederCollect());
-   		
-   		driveButton3.whenPressed(new LauncherLower());
-   		driveButton5.whenPressed(new LauncherRaise());
-   		
-   		driveButton4.whileHeld(new FeederExpel());
+//    	driveButton2.whileHeld(new FeederCollect());
+//   		
+//   		driveButton3.whenPressed(new LauncherLower());
+//   		driveButton5.whenPressed(new LauncherRaise());
+//   		
+//   		driveButton4.whileHeld(new FeederExpel());
     
     	// UTIL
-    	utilButton1.whenPressed(new AutoLaunch());
+//    	utilButton1.whenPressed(new AutoLaunch());
+    	utilButton2.whenPressed(new SetLauncherByThrottle());
     	
-    	utilButton3.whenPressed(new ArmRetract());
-    	utilButton5.whenPressed(new ArmExtend());
+//    	utilButton3.whenPressed(new ArmRetract());
+//    	utilButton5.whenPressed(new ArmExtend());
     	
     	// TODO: THIS COULD SCREW UP THE NORMAL WINCH-ARM FUNCTION!!! SET BASED ON HOW GOOD THE LIFT COMMAND WORKS
 //    	utilButton4.whenPressed(new SetWinch(1));

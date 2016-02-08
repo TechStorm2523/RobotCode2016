@@ -3,11 +3,12 @@ package org.usfirst.frc.team2523.robot.subsystems;
 
 import org.usfirst.frc.team2523.robot.OI;
 import org.usfirst.frc.team2523.robot.RobotMap;
-import org.usfirst.frc.team2523.robot.commands.LauncherComm;
+import org.usfirst.frc.team2523.robot.commands.SetLauncherByThrottle;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
@@ -26,8 +27,8 @@ public class LauncherWheels extends Subsystem {
 	public final double CAM_DISTANCE_OFF_LAUNCH = 0; // feet
 
     
-    Talon launch1 = new Talon(RobotMap.launcherSpeedMot);
-    Talon launch2 = new Talon(RobotMap.launcherAngleMot);
+    Victor launch1 = new Victor(RobotMap.launcherMot1);
+    Victor launch2 = new Victor(RobotMap.launcherMot2);
     Encoder rpmEncoder = new Encoder(RobotMap.launcherEncoder1, RobotMap.launcherEncoder2, 
 									false, Encoder.EncodingType.k4X);
     PIDControl rpmPID = new PIDControl(PID_KP, 0, 0); // we're only going to need proportional control
@@ -36,16 +37,17 @@ public class LauncherWheels extends Subsystem {
     {
     	// Initialize encoder scaling
     	rpmEncoder.setDistancePerPulse(ENCODER_REV_PER_PULSE);
+    	set(0);
     }
     
 	public void setByThrottle() {
-    	set(OI.UtilStick.getThrottle());
+    	set(-OI.UtilStick.getThrottle());
 	}
 	
 	public void set(double speed)
 	{
-		launch1.set(speed);
-    	launch2.set(-speed);
+		launch1.set(-speed);
+    	launch2.set(speed);
 	}
 	
 	public void setTargetRPM(double rpm)
@@ -85,6 +87,6 @@ public class LauncherWheels extends Subsystem {
 	}
 	
     public void initDefaultCommand() {
-    	setDefaultCommand(new LauncherComm());
+    	setDefaultCommand(new SetLauncherByThrottle());
     }	
 }

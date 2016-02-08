@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.networktables.NetworkTable;
  */
 public class TargetTracker extends Subsystem {	
 	// CONSTANTS
-	private final String CONTOUR_NET_TABLE = "GRIP/ContoursReport";
+//	private final String CONTOUR_NET_TABLE = "GRIP/ContoursReport";
 	// target geometry
 	private final double IDEAL_ASPECT_RATIO = 20.0 / 14.0;
 	private final double IDEAL_AREA_RATIO =  88.0 / 280.0;
@@ -25,17 +25,10 @@ public class TargetTracker extends Subsystem {
 	private final double CAMERA_FOV = 68.5; // TODO: NEEDS ADJUSTING // VERTICAL FOV
 	private final double CAMERA_ELEVATION = 68; // degrees
 	
-	// Objects Used
-	NetworkTable netTable;
-	
 	// Variables
 	private TargetReport currentBestTarget = null;
+	public TargetReport[] allTargets = null;
 	public double currentRangeToBestTarget = 0;
-	
-	public TargetTracker()
-	{
-		netTable = NetworkTable.getTable(CONTOUR_NET_TABLE);
-	}
 	
 	/**
 	 * Finds the distance of the current target from the center of the camera view
@@ -82,11 +75,19 @@ public class TargetTracker extends Subsystem {
 	public TargetReport retrieveBestTarget()
 	{
 		// get targets...
-		TargetReport[] allTargets = getTargetReports();
+		allTargets = getTargetReports();
+		
+		// remove if not found
+		if (allTargets == null)
+		{
+			currentBestTarget = null;
+			return null;
+		}
 		
 		// and find the best one
 		TargetReport bestTarget = null;
 		double bestScore = 0;
+		
 		for (TargetReport target : allTargets)
 		{
 			if (target.getCumulativeScore() > bestScore)
@@ -101,7 +102,7 @@ public class TargetTracker extends Subsystem {
 		if (Robot.launcherWheels.inRange(currentRangeToBestTarget))
 			Robot.launcherstatus.setInRange();
 		else
-			Robot.launcherstatus.setInRange();
+			Robot.launcherstatus.setOutOfRange();
 		
 		// if we've found one, cache and return it
 		// otherwise, return null (it will just default to the first value of bestTarget)
@@ -116,14 +117,18 @@ public class TargetTracker extends Subsystem {
 	private TargetReport[] getTargetReports()
 	{
 		// initialize null default value to pass if no connection
-		double[] defaultValue = new double[0];
+		double[] defaultValue = null;
 		
 		// get relevant values
-		double[] centerXs = netTable.getNumberArray("centerX", defaultValue);
-		double[] centerYs = netTable.getNumberArray("centerY", defaultValue);
-		double[] areas = netTable.getNumberArray("area", defaultValue);
-		double[] widths = netTable.getNumberArray("width", defaultValue);
-		double[] heights = netTable.getNumberArray("height", defaultValue);
+		double[] centerXs = Robot.netTable.getNumberArray("centerX", defaultValue);
+		double[] centerYs = Robot.netTable.getNumberArray("centerY", defaultValue);
+		double[] areas = Robot.netTable.getNumberArray("area", defaultValue);
+		double[] widths = Robot.netTable.getNumberArray("width", defaultValue);
+		double[] heights = Robot.netTable.getNumberArray("height", defaultValue);
+		
+		// if part of report not found, there is some error or no target was found
+		if (centerXs == null)
+			return null;	
 		
 		// for each given, create a new object
 		TargetReport[] reports = new TargetReport[centerXs.length];
@@ -137,8 +142,6 @@ public class TargetTracker extends Subsystem {
 										  heights[i],
 										  IDEAL_ASPECT_RATIO,
 										  IDEAL_AREA_RATIO);
-			
-			Robot.camera.drawTargetIndicator((int) reports[i].centerX, (int) reports[i].centerY);
 		}
 		
 		return reports;
