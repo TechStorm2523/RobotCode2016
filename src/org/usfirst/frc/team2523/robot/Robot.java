@@ -1,6 +1,8 @@
 
 package org.usfirst.frc.team2523.robot;
 
+import java.io.IOException;
+
 import org.usfirst.frc.team2523.robot.subsystems.*;
 import org.usfirst.frc.team2523.robot.commands.*;
 
@@ -31,7 +33,7 @@ public class Robot extends IterativeRobot {
 //	public static final LauncherPneumatics launcherPneumatics = new LauncherPneumatics();
 	public static final Dashboard dashboard = new Dashboard();
 	public static final LauncherStatus launcherstatus = new LauncherStatus();
-	public static final Camera  camera = new Camera(); 
+//	public static final Camera  camera = new Camera(); 
 //	public static final Compressor compressor = new Compressor();
 
 	// MUST be after subsystems
@@ -62,6 +64,13 @@ public class Robot extends IterativeRobot {
 //        autoChooser.addDefault("Portcullis (Gate) Defense", new AutoCommandPortcullis());
 //      autoChooser.addObject("My Auto", new MyAutoCommand());
         SmartDashboard.putData("Auto mode", autoChooser);
+        
+        /* Auto run GRIP (Graphical image processor for vision tracking) in a new process */
+//        try {
+//            new ProcessBuilder("/home/lvuser/grip").inheritIO().start();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 	
 	/**

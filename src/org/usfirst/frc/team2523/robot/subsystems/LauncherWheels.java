@@ -41,7 +41,8 @@ public class LauncherWheels extends Subsystem {
     }
     
 	public void setByThrottle() {
-    	set(-OI.UtilStick.getThrottle());
+		// shift so goes from 0 at base to 1 at max
+    	set(0.5*(-OI.UtilStick.getThrottle() + 1));
 	}
 	
 	public void set(double speed)
@@ -87,6 +88,6 @@ public class LauncherWheels extends Subsystem {
 	}
 	
     public void initDefaultCommand() {
-    	setDefaultCommand(new SetLauncherByThrottle());
+    	//setDefaultCommand(new SetLauncherByThrottle());
     }	
 }
