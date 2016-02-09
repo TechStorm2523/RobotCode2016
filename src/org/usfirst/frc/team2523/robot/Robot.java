@@ -6,6 +6,8 @@ import java.io.IOException;
 import org.usfirst.frc.team2523.robot.subsystems.*;
 import org.usfirst.frc.team2523.robot.commands.*;
 
+import com.ni.vision.NIVision;
+
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.command.Command;
@@ -65,12 +67,8 @@ public class Robot extends IterativeRobot {
 //      autoChooser.addObject("My Auto", new MyAutoCommand());
         SmartDashboard.putData("Auto mode", autoChooser);
         
-        /* Auto run GRIP (Graphical image processor for vision tracking) in a new process */
-//        try {
-//            new ProcessBuilder("/home/lvuser/grip").inheritIO().start();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        // start vision acquisition
+        NIVision.IMAQdxStartAcquisition(Robot.targetTracker.session);
     }
 	
 	/**

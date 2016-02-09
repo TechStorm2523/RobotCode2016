@@ -4,13 +4,13 @@ import java.util.Comparator;
 import java.util.Vector;
 
 import org.usfirst.frc.team2523.robot.Robot;
-import org.usfirst.frc.team2523.robot.Robot.ParticleReport;
-import org.usfirst.frc.team2523.robot.Robot.Scores;
 import org.usfirst.frc.team2523.robot.commands.IdentifyBestTarget;
 
 import com.ni.vision.NIVision;
+import com.ni.vision.NIVision.DrawMode;
 import com.ni.vision.NIVision.Image;
 import com.ni.vision.NIVision.ImageType;
+import com.ni.vision.NIVision.ShapeMode;
 
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -26,44 +26,42 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class TargetTracker extends Subsystem {	
 	// CONSTANTS
 	// target geometry
-	private final double IDEAL_ASPECT_RATIO = 20.0 / 14.0;
-	private final double IDEAL_AREA_RATIO =  88.0 / 280.0;
-	private final double TARGET_WIDTH = 20 / 12.0;
-	private final double TARGET_HEIGHT = 14 / 12.0;
+	final double IDEAL_ASPECT_RATIO = 20.0 / 14.0;
+	final double IDEAL_AREA_RATIO =  88.0 / 280.0;
+	final double TARGET_WIDTH = 20 / 12.0;
+	final double TARGET_HEIGHT = 14 / 12.0;
 	// camera/image properties
-	private final double IMAGE_WIDTH = 640;
-	private final double IMAGE_HEIGHT = 480;
-	private final double CAMERA_FOV = 52; // 52 or 60 // TODO: NEEDS ADJUSTING // VERTICAL FOV
-	private final double CAMERA_ELEVATION = 68; // degrees
+	final double IMAGE_WIDTH = 640;
+	final double IMAGE_HEIGHT = 480;
+	final double CAMERA_FOV = 52; // 52 or 60 // TODO: NEEDS ADJUSTING // VERTICAL FOV
+	final double CAMERA_ELEVATION = 68; // degrees
 	// threshold values
-	NIVision.Range HUE_RANGE = new NIVision.Range(24, 49);	//Default hue range for target
-	NIVision.Range SAT_RANGE = new NIVision.Range(67, 255);	//Default saturation range for target
-	NIVision.Range VAL_RANGE = new NIVision.Range(49, 255);	//Default value range for target
+	final NIVision.Range HUE_RANGE = new NIVision.Range(24, 49);	//Default hue range for target
+	final NIVision.Range SAT_RANGE = new NIVision.Range(67, 255);	//Default saturation range for target
+	final NIVision.Range VAL_RANGE = new NIVision.Range(49, 255);	//Default value range for target
 	// general scoring
-	private final double AREA_MINIMUM = 0.5; // as percentage of total area
-	private final double AREA_MAXIMUM = 100.0;
-	private final double MIN_SCORE = 75;
+	final double AREA_MINIMUM = 0.5; // Default Area minimum for particle as percentage of total area (pixels are hard with NIVision)
+	final double AREA_MAXIMUM = 100.0; // Max area by same measure
+//	private final double MIN_SCORE = 75;
 	NIVision.ParticleFilterCriteria2 areaFilterCritera[] = new NIVision.ParticleFilterCriteria2[1];
 	NIVision.ParticleFilterOptions2 filterOptions = new NIVision.ParticleFilterOptions2(0,0,1,1);
 	
+	// target display constants
+	final int TARGET_CROSSHAIR_SIZE = 30;
+	final int TARGET_CROSSHAIR_WIDTH = 5;
+	final int TARGET_CROSSHAIR_SPREAD = 5;
+	
 	// Exterior reference variables
 	private ParticleReport currentBestTarget = null;
-	public ParticleReport[] allTargets = null;
+	private ParticleReport[] allTargets = null;
 	public double currentRangeToBestTarget = 0;
 	
-	//Constants
-//	double AREA_MINIMUM = 0.5; //Default Area minimum for particle as a percentage of total image area
-//	double LONG_RATIO = 2.22; //Tote long side = 26.9 / Tote height = 12.1 = 2.22
-//	double SHORT_RATIO = 1.4; //Tote short side = 16.9 / Tote height = 12.1 = 1.4
-//	double SCORE_MIN = 75.0;  //Minimum score to be considered a tot
-		
-
-	
-	//A structure to hold measurements of a particle
+	// A structure to hold measurements of a particle
 	public class ParticleReport implements Comparator<ParticleReport>, Comparable<ParticleReport>{
 		double PercentAreaToImageArea;
 		double Area;
-		double ConvexHullArea;
+		double centerX;
+		double centerY;
 		double BoundingRectLeft;
 		double BoundingRectTop;
 		double BoundingRectRight;
@@ -82,13 +80,14 @@ public class TargetTracker extends Subsystem {
 		}
 	};
 
-	//Structure to represent the scores for the various tests used for target identification
+	// Structure to represent the scores for the various tests used for target identification
 	public class Scores {
 		double aspectRatioScore;
 		double areaRatioScore;
 	};
 
-	//Images
+	// Images
+	public int session;
 	Image frame;
 	Image binaryFrame;
 	int imaqError;
@@ -98,13 +97,27 @@ public class TargetTracker extends Subsystem {
 		// create images
 		frame = NIVision.imaqCreateImage(ImageType.IMAGE_RGB, 0);
 		binaryFrame = NIVision.imaqCreateImage(ImageType.IMAGE_U8, 0);
-		areaFilterCritera[0] = new NIVision.ParticleFilterCriteria2(NIVision.MeasurementType.MT_AREA_BY_IMAGE_AREA, AREA_MINIMUM, AREA_MAXIMUM, 0, 0);
+		areaFilterCritera[0] = new NIVision.ParticleFilterCriteria2(
+				NIVision.MeasurementType.MT_AREA_BY_IMAGE_AREA, AREA_MINIMUM, AREA_MAXIMUM, 0, 0);
+		// the camera name (ex "cam0") can be found through the roborio web interface
+        session = NIVision.IMAQdxOpenCamera("cam0",
+                NIVision.IMAQdxCameraControlMode.CameraControlModeController);
+        NIVision.IMAQdxConfigureGrab(session);
+		
+		// get first best target if available
+		retrieveBestTarget();
 	}
 	
-	public ParticleReport getBestTarget()
+	/**
+	 * Generates complete scores for all found targets,
+	 * then deduces the best. Sets this class's best target
+	 * reference to the one found
+	 * @return The best target's ParticleReport
+	 */
+	public ParticleReport retrieveBestTarget()
 	{
 		// get image
-		//NIVision.IMAQdxGrab(session, frame, 1);
+		NIVision.IMAQdxGrab(session, frame, 1);
 		
 		// threshold based on HSV
 		NIVision.imaqColorThreshold(binaryFrame, frame, 255, NIVision.ColorMode.HSV, HUE_RANGE, SAT_RANGE, VAL_RANGE);
@@ -113,8 +126,8 @@ public class TargetTracker extends Subsystem {
 		CameraServer.getInstance().setImage(binaryFrame);
 		
 		// filter out small particles
-		areaFilterCritera[0].lower = (float)AREA_MINIMUM;
-		areaFilterCritera[0].upper = (float)AREA_MAXIMUM;
+		areaFilterCritera[0].lower = (float) AREA_MINIMUM;
+		areaFilterCritera[0].upper = (float) AREA_MAXIMUM;
 		imaqError = NIVision.imaqParticleFilter4(binaryFrame, binaryFrame, areaFilterCritera, filterOptions, null);
 		
 		// get number of particles after filter
@@ -135,7 +148,10 @@ public class TargetTracker extends Subsystem {
 				par.BoundingRectLeft = NIVision.imaqMeasureParticle(binaryFrame, particleIndex, 0, NIVision.MeasurementType.MT_BOUNDING_RECT_LEFT);
 				par.BoundingRectBottom = NIVision.imaqMeasureParticle(binaryFrame, particleIndex, 0, NIVision.MeasurementType.MT_BOUNDING_RECT_BOTTOM);
 				par.BoundingRectRight = NIVision.imaqMeasureParticle(binaryFrame, particleIndex, 0, NIVision.MeasurementType.MT_BOUNDING_RECT_RIGHT);
-				// score each target using arbituary functions I made (to see which are most like the target)
+				// based on bounding box, find center (add half width to lowest edge value)
+				par.centerX = par.BoundingRectRight  + (par.BoundingRectRight - par.BoundingRectLeft)/2;
+				par.centerY = par.BoundingRectBottom + (par.BoundingRectBottom - par.BoundingRectTop)/2;
+				// score each target using arbitrary functions I made (to see which are most like the target)
 				par.AspectRatioScore = calculateAspectRatioScore(par);
 				par.AreaRatioScore = calculateAreaRatioScore(par);
 				particles.add(par);
@@ -225,7 +241,7 @@ public class TargetTracker extends Subsystem {
 	 */
 	private double scoreFromDistance(double realValue, double idealValue)
 	{
-		// Create a "pyramid function", inverting an absoulute value function and 
+		// Create a "pyramid function", inverting an absolute value function and 
 		// shifting so a 0 in the difference between one and the ratio of the values
 		// results in a 1 on the score
 		if (idealValue != 0)
@@ -257,20 +273,50 @@ public class TargetTracker extends Subsystem {
 	/**
 	 * Finds the target's horizontal distance to the target in feet (or whatever measure TARGET_WIDTH is in)
 	 * @return The distance, or 0 if no target is found. Most accurate if head on to target
+	 * Based on https://wpilib.screenstepslive.com/s/3120/m/8731/l/90361-identifying-and-processing-the-targets
+	 * and example code in 2015 Vision Retro Sample (they do it slightly differently with variables, but its the same)
 	 */
 	public double getRangeToBestTarget()
 	{
-		if (currentBestTarget != null)
+		if (currentBestTarget != null && binaryFrame != null)
 		{
+			// get image size from binary frame
+			NIVision.GetImageSizeResult size = NIVision.imaqGetImageSize(binaryFrame);
+			double targetHeightPixel = currentBestTarget.BoundingRectBottom - currentBestTarget.BoundingRectTop;
+			
 			// chose to use height because most consistent across view angles
 			// d = TargetHeightFeet*FOVHeightPixel / (2*TargetHeightPixel*tan(FOV/2) ) (HYPOTENUSE)
-			return TARGET_HEIGHT*IMAGE_HEIGHT / (2*currentBestTarget.height*Math.tan(CAMERA_FOV/2))
+			return TARGET_HEIGHT*size.height / (2*targetHeightPixel*Math.tan(Math.toRadians(CAMERA_FOV/2)))
 					*Math.cos(Math.toDegrees(CAMERA_ELEVATION)); // convert to horizontal
 		}
 		else
 			return 0;
 	}
-
+	
+	/**
+	 * Draw a crosshair indicator at the given position
+	 */
+	public void drawTargetIndicator(int x, int y, Image frame)
+	{      
+  		// draw four rectangles for crosshairs
+      	NIVision.Rect[] crosshairRects = new NIVision.Rect[4];
+  		crosshairRects[0] = new NIVision.Rect(x + TARGET_CROSSHAIR_SPREAD, y, 
+  										  	TARGET_CROSSHAIR_SIZE, TARGET_CROSSHAIR_WIDTH);
+  		crosshairRects[1] = new NIVision.Rect(x - TARGET_CROSSHAIR_SPREAD, y, 
+				  							TARGET_CROSSHAIR_SIZE, TARGET_CROSSHAIR_WIDTH);
+  		crosshairRects[2] = new NIVision.Rect(x, y + TARGET_CROSSHAIR_SPREAD, 
+  										  	TARGET_CROSSHAIR_WIDTH, TARGET_CROSSHAIR_SIZE);
+  		crosshairRects[3] = new NIVision.Rect(x, y + TARGET_CROSSHAIR_SPREAD, 
+				  							TARGET_CROSSHAIR_WIDTH, TARGET_CROSSHAIR_SIZE);
+  
+  		// add shapes to frame
+  		for (NIVision.Rect crosshairRect : crosshairRects)
+  			NIVision.imaqDrawShapeOnImage(frame, frame, crosshairRect, DrawMode.PAINT_VALUE, ShapeMode.SHAPE_RECT, 0.0f);
+  	
+      	// set the image
+//  		CameraServer.getInstance().setImage(frame);
+    }
+	
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
         setDefaultCommand(new IdentifyBestTarget());

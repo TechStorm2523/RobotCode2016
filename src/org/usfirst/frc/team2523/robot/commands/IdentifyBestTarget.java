@@ -2,6 +2,8 @@ package org.usfirst.frc.team2523.robot.commands;
 
 import org.usfirst.frc.team2523.robot.Robot;
 
+import com.ni.vision.NIVision;
+
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
@@ -25,8 +27,8 @@ public class IdentifyBestTarget extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-    	// run once each cycle
-        return true;
+    	// run continuously
+        return false;
     }
 
     // Called once after isFinished returns true
@@ -36,5 +38,6 @@ public class IdentifyBestTarget extends Command {
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
+    	System.out.println("VISION INTERRUPTED - INEFFICENT");
     }
 }
