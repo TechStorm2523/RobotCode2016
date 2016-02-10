@@ -36,9 +36,9 @@ public class TargetTracker extends Subsystem {
 	final double CAMERA_FOV = 52; // 52 or 60 // TODO: NEEDS ADJUSTING // VERTICAL FOV
 	final double CAMERA_ELEVATION = 68; // degrees
 	// threshold values
-	final NIVision.Range HUE_RANGE = new NIVision.Range(24, 49);	//Default hue range for target
-	final NIVision.Range SAT_RANGE = new NIVision.Range(67, 255);	//Default saturation range for target
-	final NIVision.Range VAL_RANGE = new NIVision.Range(49, 255);	//Default value range for target
+	NIVision.Range HUE_RANGE = new NIVision.Range(60, 150);	//Default hue range for target
+	NIVision.Range SAT_RANGE = new NIVision.Range(60, 255);	//Default saturation range for target
+	NIVision.Range VAL_RANGE = new NIVision.Range(100, 255);	//Default value range for target
 	// general scoring
 	final double AREA_MINIMUM = 0.5; // Default Area minimum for particle as percentage of total area (pixels are hard with NIVision)
 	final double AREA_MAXIMUM = 100.0; // Max area by same measure
@@ -47,7 +47,7 @@ public class TargetTracker extends Subsystem {
 	NIVision.ParticleFilterOptions2 filterOptions = new NIVision.ParticleFilterOptions2(0,0,1,1);
 	
 	// target display constants
-	final int TARGET_CROSSHAIR_SIZE = 30;
+	final int TARGET_CROSSHAIR_SIZE = 20;
 	final int TARGET_CROSSHAIR_WIDTH = 5;
 	final int TARGET_CROSSHAIR_SPREAD = 5;
 	
@@ -94,6 +94,11 @@ public class TargetTracker extends Subsystem {
 	
 	public void TargetReport()
 	{
+		
+	}
+	
+	public void init()
+	{
 		// create images
 		frame = NIVision.imaqCreateImage(ImageType.IMAGE_RGB, 0);
 		binaryFrame = NIVision.imaqCreateImage(ImageType.IMAGE_U8, 0);
@@ -103,9 +108,7 @@ public class TargetTracker extends Subsystem {
         session = NIVision.IMAQdxOpenCamera("cam0",
                 NIVision.IMAQdxCameraControlMode.CameraControlModeController);
         NIVision.IMAQdxConfigureGrab(session);
-		
-		// get first best target if available
-		retrieveBestTarget();
+        System.out.println("INITING");
 	}
 	
 	/**
@@ -116,78 +119,106 @@ public class TargetTracker extends Subsystem {
 	 */
 	public ParticleReport retrieveBestTarget()
 	{
-		// get image
-		NIVision.IMAQdxGrab(session, frame, 1);
+//		NIVision.IMAQdxStartAcquisition(session);
 		
-		// threshold based on HSV
-		NIVision.imaqColorThreshold(binaryFrame, frame, 255, NIVision.ColorMode.HSV, HUE_RANGE, SAT_RANGE, VAL_RANGE);
-		
-		// send masked image to dashboard
-		CameraServer.getInstance().setImage(binaryFrame);
-		
-		// filter out small particles
-		areaFilterCritera[0].lower = (float) AREA_MINIMUM;
-		areaFilterCritera[0].upper = (float) AREA_MAXIMUM;
-		imaqError = NIVision.imaqParticleFilter4(binaryFrame, binaryFrame, areaFilterCritera, filterOptions, null);
-		
-		// get number of particles after filter
-		int numParticles = NIVision.imaqCountParticles(binaryFrame, 1);
-		
-		if (numParticles > 0)
-		{		
-			//Measure particles and sort by particle size
-			Vector<ParticleReport> particles = new Vector<ParticleReport>();
-			for(int particleIndex = 0; particleIndex < numParticles; particleIndex++)
-			{
-				// create a new particle report, as defined above, and populate
-				// it with the relevant information about the particle
-				ParticleReport par = new ParticleReport();
-				par.PercentAreaToImageArea = NIVision.imaqMeasureParticle(binaryFrame, particleIndex, 0, NIVision.MeasurementType.MT_AREA_BY_IMAGE_AREA);
-				par.Area = NIVision.imaqMeasureParticle(binaryFrame, particleIndex, 0, NIVision.MeasurementType.MT_AREA);
-				par.BoundingRectTop = NIVision.imaqMeasureParticle(binaryFrame, particleIndex, 0, NIVision.MeasurementType.MT_BOUNDING_RECT_TOP);
-				par.BoundingRectLeft = NIVision.imaqMeasureParticle(binaryFrame, particleIndex, 0, NIVision.MeasurementType.MT_BOUNDING_RECT_LEFT);
-				par.BoundingRectBottom = NIVision.imaqMeasureParticle(binaryFrame, particleIndex, 0, NIVision.MeasurementType.MT_BOUNDING_RECT_BOTTOM);
-				par.BoundingRectRight = NIVision.imaqMeasureParticle(binaryFrame, particleIndex, 0, NIVision.MeasurementType.MT_BOUNDING_RECT_RIGHT);
-				// based on bounding box, find center (add half width to lowest edge value)
-				par.centerX = par.BoundingRectRight  + (par.BoundingRectRight - par.BoundingRectLeft)/2;
-				par.centerY = par.BoundingRectBottom + (par.BoundingRectBottom - par.BoundingRectTop)/2;
-				// score each target using arbitrary functions I made (to see which are most like the target)
-				par.AspectRatioScore = calculateAspectRatioScore(par);
-				par.AreaRatioScore = calculateAreaRatioScore(par);
-				particles.add(par);
-			}
-			particles.sort(null);
+		// make sure we have an image
+		if (frame != null && binaryFrame != null)
+		{			
+			// get images (DO NOT GET binaryFrame, its created by the threshold operation below)
+			NIVision.IMAQdxGrab(session, frame, 1);
 			
-			// then, find the best target based on its score
-			ParticleReport bestTarget = null;
-			double bestScore = 0;
+			//Update threshold values from SmartDashboard. For performance reasons it is recommended to remove this after calibration is finished.
+			HUE_RANGE.minValue = (int)SmartDashboard.getNumber("Tote hue min", HUE_RANGE.minValue);
+			HUE_RANGE.maxValue = (int)SmartDashboard.getNumber("Tote hue max", HUE_RANGE.maxValue);
+			SAT_RANGE.minValue = (int)SmartDashboard.getNumber("Tote sat min", SAT_RANGE.minValue);
+			SAT_RANGE.maxValue = (int)SmartDashboard.getNumber("Tote sat max", SAT_RANGE.maxValue);
+			VAL_RANGE.minValue = (int)SmartDashboard.getNumber("Tote val min", VAL_RANGE.minValue);
+			VAL_RANGE.maxValue = (int)SmartDashboard.getNumber("Tote val max", VAL_RANGE.maxValue);
 			
-			for (ParticleReport particle : particles)
-			{
-				if (getCumulativeScore(particle) > bestScore)
+			// threshold based on HSV
+			NIVision.imaqColorThreshold(binaryFrame, frame, 255, NIVision.ColorMode.HSV, HUE_RANGE, SAT_RANGE, VAL_RANGE);
+			
+			// show threshold for diagnostics
+//			CameraServer.getInstance().setImage(binaryFrame);
+			
+			// filter out small particles
+			areaFilterCritera[0].lower = (float) AREA_MINIMUM;
+			areaFilterCritera[0].upper = (float) AREA_MAXIMUM;
+			imaqError = NIVision.imaqParticleFilter4(binaryFrame, binaryFrame, areaFilterCritera, filterOptions, null);
+			
+			// get number of particles after filter
+			int numParticles = NIVision.imaqCountParticles(binaryFrame, 1);
+			
+			if (numParticles > 0)
+			{		
+				//Measure particles and sort by particle size
+				Vector<ParticleReport> particles = new Vector<ParticleReport>();
+				for(int particleIndex = 0; particleIndex < numParticles; particleIndex++)
 				{
-					bestTarget = particle;
-					bestScore = getCumulativeScore(particle);
-				}	
+					// create a new particle report, as defined above, and populate
+					// it with the relevant information about the particle
+					ParticleReport par = new ParticleReport();
+					par.PercentAreaToImageArea = NIVision.imaqMeasureParticle(binaryFrame, particleIndex, 0, NIVision.MeasurementType.MT_AREA_BY_IMAGE_AREA);
+					par.Area = NIVision.imaqMeasureParticle(binaryFrame, particleIndex, 0, NIVision.MeasurementType.MT_AREA);
+					par.BoundingRectTop = NIVision.imaqMeasureParticle(binaryFrame, particleIndex, 0, NIVision.MeasurementType.MT_BOUNDING_RECT_TOP);
+					par.BoundingRectLeft = NIVision.imaqMeasureParticle(binaryFrame, particleIndex, 0, NIVision.MeasurementType.MT_BOUNDING_RECT_LEFT);
+					par.BoundingRectBottom = NIVision.imaqMeasureParticle(binaryFrame, particleIndex, 0, NIVision.MeasurementType.MT_BOUNDING_RECT_BOTTOM);
+					par.BoundingRectRight = NIVision.imaqMeasureParticle(binaryFrame, particleIndex, 0, NIVision.MeasurementType.MT_BOUNDING_RECT_RIGHT);
+					// based on bounding box, find center (add half width to lowest edge value)
+					par.centerX = par.BoundingRectLeft  + (par.BoundingRectRight - par.BoundingRectLeft)/2;
+					par.centerY = par.BoundingRectTop + (par.BoundingRectBottom - par.BoundingRectTop)/2;
+					// score each target using arbitrary functions I made (to see which are most like the target)
+					par.AspectRatioScore = calculateAspectRatioScore(par);
+					par.AreaRatioScore = calculateAreaRatioScore(par);
+					particles.add(par);
+				}
+				particles.sort(null);
+				
+				// then, find the best target based on its score
+				ParticleReport bestTarget = null;
+				double bestScore = 0;
+				
+				for (ParticleReport particle : particles)
+				{
+					if (getCumulativeScore(particle) > bestScore)
+					{
+						bestTarget = particle;
+						bestScore = getCumulativeScore(particle);
+					}	
+					
+					drawBoundingBox(particle, frame);
+				}
+				
+				// draw indicator at best target
+				drawTargetIndicator((int)bestTarget.centerX, (int)bestTarget.centerY, frame);
+				
+				// we're done with processing, so display image
+				CameraServer.getInstance().setImage(frame);
+				
+				// diagnostics
+//				System.out.print(bestTarget.centerX + ", ");
+//				System.out.print(bestTarget.centerY + ": ");
+//				System.out.println(bestScore);		
+				
+				// determine if in launcher range to target
+				currentRangeToBestTarget = getRangeToBestTarget();
+				if (Robot.launcherWheels.inRange(currentRangeToBestTarget))
+					Robot.launcherstatus.setInRange();
+				else
+					Robot.launcherstatus.setOutOfRange();
+				
+				// if we've found one, cache and return it
+				// otherwise, return null (it will just default to the first value of bestTarget)
+				currentBestTarget = bestTarget;
+				return bestTarget;
 			}
-			
-			// determine if in launcher range to target
-			currentRangeToBestTarget = getRangeToBestTarget();
-			if (Robot.launcherWheels.inRange(currentRangeToBestTarget))
-				Robot.launcherstatus.setInRange();
-			else
-				Robot.launcherstatus.setOutOfRange();
-			
-			// if we've found one, cache and return it
-			// otherwise, return null (it will just default to the first value of bestTarget)
-			currentBestTarget = bestTarget;
-			return bestTarget;
 		}
-		else
-		{
-			currentBestTarget = null;
-			return null;
-		}
+		// upon failure, just display normal image
+		NIVision.IMAQdxGrab(session, frame, 1);
+		CameraServer.getInstance().setImage(frame);
+		
+		currentBestTarget = null;
+		return null;
 	}
 
 	/**
@@ -298,24 +329,37 @@ public class TargetTracker extends Subsystem {
 	 */
 	public void drawTargetIndicator(int x, int y, Image frame)
 	{      
-  		// draw four rectangles for crosshairs
+  		// draw four rectangles for crosshairs (shift so x,y is at center)
       	NIVision.Rect[] crosshairRects = new NIVision.Rect[4];
-  		crosshairRects[0] = new NIVision.Rect(x + TARGET_CROSSHAIR_SPREAD, y, 
+      	// right
+  		crosshairRects[0] = new NIVision.Rect(y - TARGET_CROSSHAIR_WIDTH/2, x + TARGET_CROSSHAIR_SPREAD,
+  											TARGET_CROSSHAIR_WIDTH, TARGET_CROSSHAIR_SIZE);
+  		// left
+  		crosshairRects[1] = new NIVision.Rect(y - TARGET_CROSSHAIR_WIDTH/2, x - TARGET_CROSSHAIR_SPREAD - TARGET_CROSSHAIR_SIZE,  
+  											TARGET_CROSSHAIR_WIDTH, TARGET_CROSSHAIR_SIZE);
+  		// top
+  		crosshairRects[2] = new NIVision.Rect(y - TARGET_CROSSHAIR_SPREAD - TARGET_CROSSHAIR_SIZE, x - TARGET_CROSSHAIR_WIDTH/2,  
   										  	TARGET_CROSSHAIR_SIZE, TARGET_CROSSHAIR_WIDTH);
-  		crosshairRects[1] = new NIVision.Rect(x - TARGET_CROSSHAIR_SPREAD, y, 
-				  							TARGET_CROSSHAIR_SIZE, TARGET_CROSSHAIR_WIDTH);
-  		crosshairRects[2] = new NIVision.Rect(x, y + TARGET_CROSSHAIR_SPREAD, 
-  										  	TARGET_CROSSHAIR_WIDTH, TARGET_CROSSHAIR_SIZE);
-  		crosshairRects[3] = new NIVision.Rect(x, y + TARGET_CROSSHAIR_SPREAD, 
-				  							TARGET_CROSSHAIR_WIDTH, TARGET_CROSSHAIR_SIZE);
+  		// bottom
+  		crosshairRects[3] = new NIVision.Rect(y + TARGET_CROSSHAIR_SPREAD, x - TARGET_CROSSHAIR_WIDTH/2,
+  											TARGET_CROSSHAIR_SIZE, TARGET_CROSSHAIR_WIDTH);
   
   		// add shapes to frame
   		for (NIVision.Rect crosshairRect : crosshairRects)
-  			NIVision.imaqDrawShapeOnImage(frame, frame, crosshairRect, DrawMode.PAINT_VALUE, ShapeMode.SHAPE_RECT, 0.0f);
+  			NIVision.imaqDrawShapeOnImage(frame, frame, crosshairRect, DrawMode.PAINT_VALUE, ShapeMode.SHAPE_RECT, 255.0f);
   	
       	// set the image
 //  		CameraServer.getInstance().setImage(frame);
     }
+	
+	private void drawBoundingBox(ParticleReport particle, Image frame)
+	{
+		NIVision.Rect boundingBox = new NIVision.Rect((int) particle.BoundingRectTop, (int) particle.BoundingRectLeft, 
+													(int) (particle.BoundingRectRight - particle.BoundingRectLeft),
+													(int) (particle.BoundingRectBottom - particle.BoundingRectTop));
+		
+		NIVision.imaqDrawShapeOnImage(frame, frame, boundingBox, DrawMode.DRAW_VALUE, ShapeMode.SHAPE_RECT, 255.0f);
+	}
 	
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.

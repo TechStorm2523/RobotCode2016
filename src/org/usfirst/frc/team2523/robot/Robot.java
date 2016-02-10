@@ -7,7 +7,12 @@ import org.usfirst.frc.team2523.robot.subsystems.*;
 import org.usfirst.frc.team2523.robot.commands.*;
 
 import com.ni.vision.NIVision;
+import com.ni.vision.NIVision.DrawMode;
+import com.ni.vision.NIVision.Image;
+import com.ni.vision.NIVision.ImageType;
+import com.ni.vision.NIVision.ShapeMode;
 
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.command.Command;
@@ -30,7 +35,7 @@ public class Robot extends IterativeRobot {
 	public static final ArmPivot armpivot = new ArmPivot();
 //	public static final Feeder feeder = new Feeder();
 	public static final LauncherWheels launcherWheels = new LauncherWheels();
-	public static final TargetTracker targetTracker = new TargetTracker();
+	public static TargetTracker targetTracker = new TargetTracker();;
 //	public static final ArmPneumatics armPneumatics = new ArmPneumatics();
 //	public static final LauncherPneumatics launcherPneumatics = new LauncherPneumatics();
 	public static final Dashboard dashboard = new Dashboard();
@@ -67,8 +72,7 @@ public class Robot extends IterativeRobot {
 //      autoChooser.addObject("My Auto", new MyAutoCommand());
         SmartDashboard.putData("Auto mode", autoChooser);
         
-        // start vision acquisition
-        NIVision.IMAQdxStartAcquisition(Robot.targetTracker.session);
+        targetTracker.init();
     }
 	
 	/**
@@ -77,7 +81,6 @@ public class Robot extends IterativeRobot {
 	 * the robot is disabled.
      */
     public void disabledInit(){
-
     }
 	
 	public void disabledPeriodic() {
@@ -127,6 +130,8 @@ public class Robot extends IterativeRobot {
         // continue until interrupted by another command, remove
         // this line or comment it out.
         if (autonomousCommand != null) autonomousCommand.cancel();
+
+        NIVision.IMAQdxStartAcquisition(Robot.targetTracker.session);
     }
 
     /**
@@ -135,6 +140,7 @@ public class Robot extends IterativeRobot {
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
         allPeriodic();
+        
     }
     
     /**
