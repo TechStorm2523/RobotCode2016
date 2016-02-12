@@ -8,7 +8,9 @@ import edu.wpi.first.wpilibj.command.Command;
  * Set's launcher wheel's RPM by the target's range
  */
 public class SetLauncherRPMByTarget extends Command {
+	final int RANGE_DIFFERENCE_THRESHOLD = 1; // feet
 	double targetRPM = 0;
+	double currentRange = 0;
 
     public SetLauncherRPMByTarget() {
         // Use requires() here to declare subsystem dependencies
@@ -21,8 +23,12 @@ public class SetLauncherRPMByTarget extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	double range = Robot.targetTracker.getRangeToBestTarget();
-    	targetRPM = Robot.launcherWheels.getRPMbyRange(range);
+    	// correct for noise in range (only change if reasonably different)
+    	// this operates partially on the assumption that we are stationary when doing this
+    	if (Math.abs(Robot.targetTracker.currentRangeToBestTarget - currentRange) > 1.0)
+    		currentRange = Robot.targetTracker.currentRangeToBestTarget;
+    	
+    	targetRPM = Robot.launcherWheels.getRPMbyRange(currentRange);
     	
     	Robot.launcherWheels.setTargetRPM(targetRPM);
     }

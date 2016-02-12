@@ -1,0 +1,58 @@
+<xml version="1.0">
+<dashboard>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.WebcamViewerExtension">
+		<location x="317" y="4"/>
+		<width>645</width>
+		<height>477</height>
+	</static-widget>
+	<widget field=" Spooled Up " type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="1212" y="435"/>
+	</widget>
+	<widget field=" Launcher Mot RPM (Front) " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.SimpleDial">
+		<location x="1097" y="488"/>
+		<width>222</width>
+	</widget>
+	<widget field=" In Range " type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="30" y="35"/>
+	</widget>
+	<widget field=" Aligned " type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="47" y="427"/>
+	</widget>
+	<widget field="Auto mode" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
+		<location x="1182" y="85"/>
+	</widget>
+	<widget field="Area min %" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="48" y="497"/>
+	</widget>
+	<widget field="Tote sat min" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="614" y="638"/>
+	</widget>
+	<widget field="Tote sat max" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="611" y="617"/>
+	</widget>
+	<widget field=" Status of Launcher " type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="168"/>
+	</widget>
+	<widget field="Tote hue max" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="441" y="617"/>
+		<height>20</height>
+	</widget>
+	<widget field="Tote val max" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="780" y="617"/>
+	</widget>
+	<widget field=" Arm Angle " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="105"/>
+	</widget>
+	<widget field="Tote val min" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="787" y="637"/>
+	</widget>
+	<widget field=" Range to Best Target " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="63"/>
+	</widget>
+	<widget field="Tote hue min" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="445" y="639"/>
+	</widget>
+</dashboard>
+<live-window>
+</live-window>
+</xml>

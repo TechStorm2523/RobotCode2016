@@ -33,25 +33,25 @@ public class TargetTracker extends Subsystem {
 	// camera/image properties
 	final double IMAGE_WIDTH = 640;
 	final double IMAGE_HEIGHT = 480;
-	final double CAMERA_FOV = 52; // 52 or 60 // TODO: NEEDS ADJUSTING // VERTICAL FOV
-	final double CAMERA_ELEVATION = 68; // degrees
+	final double CAMERA_FOV = 39.935; // VERTICAL (By measuring distance from a known size object that spans vertical FOV and using tan OR solving the equation in getRangeToBestTarget for FOV using other measurements from debug)
+	final double CAMERA_ELEVATION = 45; // degrees
 	// threshold values
 	NIVision.Range HUE_RANGE = new NIVision.Range(60, 150);	//Default hue range for target
 	NIVision.Range SAT_RANGE = new NIVision.Range(60, 255);	//Default saturation range for target
 	NIVision.Range VAL_RANGE = new NIVision.Range(100, 255);	//Default value range for target
 	// general scoring
-	final double AREA_MINIMUM = 0.5; // Default Area minimum for particle as percentage of total area (pixels are hard with NIVision)
+	final double AREA_MINIMUM = 1; // Default Area minimum for particle as percentage of total area (pixels are hard with NIVision)
 	final double AREA_MAXIMUM = 100.0; // Max area by same measure
 //	private final double MIN_SCORE = 75;
 	NIVision.ParticleFilterCriteria2 areaFilterCritera[] = new NIVision.ParticleFilterCriteria2[1];
 	NIVision.ParticleFilterOptions2 filterOptions = new NIVision.ParticleFilterOptions2(0,0,1,1);
 	
-	// target display constants
-	final int TARGET_CROSSHAIR_SIZE = 20;
+	// target crosshair display constants
+	final int TARGET_CROSSHAIR_SIZE = 20; // length from center
 	final int TARGET_CROSSHAIR_WIDTH = 5;
-	final int TARGET_CROSSHAIR_SPREAD = 5;
+	final int TARGET_CROSSHAIR_SPREAD = 5; // spread from center
 	
-	// Exterior reference variables
+	// Various cache variables
 	private ParticleReport currentBestTarget = null;
 	private ParticleReport[] allTargets = null;
 	public double currentRangeToBestTarget = 0;
@@ -195,7 +195,9 @@ public class TargetTracker extends Subsystem {
 				// we're done with processing, so display image
 				CameraServer.getInstance().setImage(frame);
 				
-				// diagnostics
+				// diagnostics (for getting constants)
+//				System.out.println("Height: " + (bestTarget.BoundingRectBottom - bestTarget.BoundingRectTop));
+//				System.out.println("Width: " + (bestTarget.BoundingRectRight - bestTarget.BoundingRectLeft));
 //				System.out.print(bestTarget.centerX + ", ");
 //				System.out.print(bestTarget.centerY + ": ");
 //				System.out.println(bestScore);		
@@ -292,11 +294,13 @@ public class TargetTracker extends Subsystem {
 	{
 		// watch for no valid target, in which case give no displacement
 		double[] distance = new double[2];
-		if (currentBestTarget != null)
+		if (currentBestTarget != null && frame != null)
 		{
+			NIVision.GetImageSizeResult size = NIVision.imaqGetImageSize(frame);
+			
 			// x increases to right, but y increased downwards, so invert y
-			distance[0] =  (currentBestTarget.centerX - IMAGE_WIDTH/2.0 ) / (IMAGE_WIDTH/2);
-			distance[1] = -(currentBestTarget.centerY - IMAGE_HEIGHT/2.0) / (IMAGE_HEIGHT/2);
+			distance[0] =  (currentBestTarget.centerX - size.width/2.0 ) / (size.width/2);
+			distance[1] = -(currentBestTarget.centerY - size.height/2.0) / (size.height/2);
 		}
 		return distance;
 	}
@@ -307,18 +311,18 @@ public class TargetTracker extends Subsystem {
 	 * Based on https://wpilib.screenstepslive.com/s/3120/m/8731/l/90361-identifying-and-processing-the-targets
 	 * and example code in 2015 Vision Retro Sample (they do it slightly differently with variables, but its the same)
 	 */
-	public double getRangeToBestTarget()
+	private double getRangeToBestTarget()
 	{
-		if (currentBestTarget != null && binaryFrame != null)
+		if (currentBestTarget != null && frame != null)
 		{
 			// get image size from binary frame
-			NIVision.GetImageSizeResult size = NIVision.imaqGetImageSize(binaryFrame);
+			NIVision.GetImageSizeResult size = NIVision.imaqGetImageSize(frame);
 			double targetHeightPixel = currentBestTarget.BoundingRectBottom - currentBestTarget.BoundingRectTop;
 			
 			// chose to use height because most consistent across view angles
 			// d = TargetHeightFeet*FOVHeightPixel / (2*TargetHeightPixel*tan(FOV/2) ) (HYPOTENUSE)
 			return TARGET_HEIGHT*size.height / (2*targetHeightPixel*Math.tan(Math.toRadians(CAMERA_FOV/2)))
-					*Math.cos(Math.toDegrees(CAMERA_ELEVATION)); // convert to horizontal
+					*Math.cos(Math.toRadians(CAMERA_ELEVATION)); // convert to horizontal
 		}
 		else
 			return 0;
@@ -355,8 +359,8 @@ public class TargetTracker extends Subsystem {
 	private void drawBoundingBox(ParticleReport particle, Image frame)
 	{
 		NIVision.Rect boundingBox = new NIVision.Rect((int) particle.BoundingRectTop, (int) particle.BoundingRectLeft, 
-													(int) (particle.BoundingRectRight - particle.BoundingRectLeft),
-													(int) (particle.BoundingRectBottom - particle.BoundingRectTop));
+												   	  (int) (particle.BoundingRectBottom - particle.BoundingRectTop),
+												   	  (int) (particle.BoundingRectRight - particle.BoundingRectLeft));
 		
 		NIVision.imaqDrawShapeOnImage(frame, frame, boundingBox, DrawMode.DRAW_VALUE, ShapeMode.SHAPE_RECT, 255.0f);
 	}

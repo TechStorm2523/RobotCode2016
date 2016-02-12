@@ -24,7 +24,7 @@ public class LauncherWheels extends Subsystem {
 	public final double LAUNCH_ANGLE = 64;
 	public final double LAUNCH_HEIGHT = 0; // feet
 	public final double TARGET_HEIGHT = 7*12+1 + 12 ; // feet
-	public final double CAM_DISTANCE_OFF_LAUNCH = 0; // feet
+	public final double CAMERA_DISTANCE_OFF_LAUNCH = 0; // feet
 
     
     Victor launch1 = new Victor(RobotMap.launcherMot1);
@@ -79,7 +79,7 @@ public class LauncherWheels extends Subsystem {
 	 */
 	private double getVelocityByRange(double range)
 	{
-		return Math.sqrt(2*(range + CAM_DISTANCE_OFF_LAUNCH)*RobotMap.GRAVITY / Math.sin(Math.toRadians(2*LAUNCH_ANGLE)));
+		return Math.sqrt(2*(range + CAMERA_DISTANCE_OFF_LAUNCH)*RobotMap.GRAVITY / Math.sin(Math.toRadians(2*LAUNCH_ANGLE)));
 	}
 	
 	public boolean inRange(double range)

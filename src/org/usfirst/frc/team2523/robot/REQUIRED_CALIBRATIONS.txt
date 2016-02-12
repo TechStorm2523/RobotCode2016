@@ -13,10 +13,13 @@ MOST AUTO COMMANDS - LOOK AT TIMES/DISTANCES IN
 RobotMap.java
 
 TargetTracker.java
-	IMAGE_WIDTH - Pixel width of image run through GRIP
-	IMAGE_HEIGHT - Pixel height of image run through GRIP
-	CAMERA_FOV Camera Field of View, can be found by math + measurements - See https://wpilib.screenstepslive.com/s/4485/m/24194/l/288985-identifying-and-processing-the-targets#Distance
-	CAMERA_ELEVATION - Simply Camera Angle
+	ALL Target geometry must be based on theory
+	HUE_RANGE, SAT_RANGE, VAL_RANGE - LOOK at http://wpilib.screenstepslive.com/s/4485/m/24194/l/288985-identifying-and-processing-the-targets
+										and set based using parameters in SmartDashboard to see how if affects tracking.
+										(make sure you put final values in the constants) 
+										SHOULD BE GOOD FOR NOW
+	(DONE) CAMERA_FOV Camera Field of View, can be found by math + measurements - See https://wpilib.screenstepslive.com/s/4485/m/24194/l/288985-identifying-and-processing-the-targets#Distance
+	CAMERA_ELEVATION - Simply Camera Angle (BE PRECISE)
 	
 ArmPivot.java
 	ARM_STARTING_ANGLE - the angle off horizontal that the arm is zero (starts) at. Set precisely, this controls the winch retraction
@@ -57,7 +60,7 @@ LauncherWheels.java
 	CAM_DISTANCE_OFF_LAUNCH - Distance of camera off center of ball at launch
 							
 SeekTarget.java - NOT super important, hopefully never used much
-	SEEK_SPEED
-	FIRST_TURN_TIME
-	MAX_TURN_TIME
-	TURN_TIME_INCREMENT
+	SEEK_SPEED - Speed to seek target at
+	FIRST_TURN_TIME - Time to turn for during initial turn
+	MAX_TURN_TIME - Length of turn (after turn has ramped up in length) at which to stop turning
+	TURN_TIME_INCREMENT - Increment of time spent turning after each sweep is completed
