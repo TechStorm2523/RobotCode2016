@@ -7,6 +7,7 @@ import org.usfirst.frc.team2523.robot.RobotMap;
 import org.usfirst.frc.team2523.robot.commands.ArmPivotComm;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
+import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
@@ -24,7 +25,8 @@ public class ArmPivot extends Subsystem {
 	private final double POTENTIOMETER_DEGREE_LIMIT = 270;
 	private final double POTENTIOMETER_START_DEGREE = 30;
 	public final double MAX_IN_MATCH_ANGLE = 80;
-	public final double ARM_PID_STOP_TOLERANCE = 3; // roughly leads to arm PID positioning precision
+	public final double ARM_PID_STOP_TOLERANCE = 2; // degrees, roughly leads to arm PID positioning precision
+	public final double JOYSTICK_DEADZONE = 0.02; // normalized units
 	
 	// variables
 	public double currentSpeed;
@@ -32,18 +34,29 @@ public class ArmPivot extends Subsystem {
 	public double pastPotentiometerAngle = 0;
 	public double lastPotentiometerRateRead = 0;
 
-	Talon arm1 = new Talon(RobotMap.lifter1);
-	Talon arm2 = new Talon(RobotMap.lifter2);
+	CANTalon arm1 = new CANTalon(RobotMap.lifter1);
+	CANTalon arm2 = new CANTalon(RobotMap.lifter2);
 	AnalogPotentiometer armPotentiometer = new AnalogPotentiometer(RobotMap.armPoten1, 
 																   POTENTIOMETER_DEGREE_LIMIT,
 																   POTENTIOMETER_START_DEGREE);
 	public PIDControl armPID = new PIDControl(PID_KP, PID_KI, 0); // No PD
 	
+	public ArmPivot()
+	{
+		setBrake(true);
+	}
+	
 	public void setArmByJoystick()
 	{
+		// we may need to limit the commanded speed to remain within the winch speed limits
 		double commandedSpeed = OI.UtilStick.getY();
-		commandedSpeed = Robot.winch.getLimitedArmSpeed(commandedSpeed);
-		set(commandedSpeed);
+		double realSpeed = Robot.winch.getLimitedArmSpeed(commandedSpeed);
+		
+		// apply deadzone
+		if (Math.abs(realSpeed) < JOYSTICK_DEADZONE)
+			realSpeed = 0;
+		
+		set(realSpeed);
 	}
 
 	public void set(double speed)
@@ -89,6 +102,16 @@ public class ArmPivot extends Subsystem {
 			currentMaxAngle = MAX_IN_MATCH_ANGLE;
 		else
 			currentMaxAngle = POTENTIOMETER_DEGREE_LIMIT;
+	}
+	
+	/**
+	 * Sets the motor to brake or coast when no power
+	 * @param brake Brakes if this is true, coasts if this is false
+	 */
+	public void setBrake(boolean brake)
+	{
+		arm1.enableBrakeMode(brake);
+		arm2.enableBrakeMode(brake);
 	}
 	
 	public void initDefaultCommand() {

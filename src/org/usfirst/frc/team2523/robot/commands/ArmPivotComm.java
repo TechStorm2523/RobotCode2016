@@ -1,10 +1,7 @@
 
 package org.usfirst.frc.team2523.robot.commands;
 
-import org.usfirst.frc.team2523.robot.OI;
 import org.usfirst.frc.team2523.robot.Robot;
-import org.usfirst.frc.team2523.robot.subsystems.ArmPivot;
-
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
@@ -40,5 +37,6 @@ public class ArmPivotComm extends Command {
 	// Called when another command which requires one or more of the same
 	// subsystems is scheduled to run
 	protected void interrupted() {
+		end();
 	}
 }

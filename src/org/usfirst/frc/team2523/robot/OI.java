@@ -63,7 +63,7 @@ public class OI {
 //    	utilButton3.whenPressed(new ArmRetract());
 //    	utilButton5.whenPressed(new ArmExtend());
     	
-    	// TODO: THIS COULD SCREW UP THE NORMAL WINCH-ARM FUNCTION!!! SET BASED ON HOW GOOD THE LIFT COMMAND WORKS
+    	// TODO: THIS COULD SCREW UP THE NORMAL WINCH-ARM FUNCTION!!! SET BASED ON HOW WELL THE LIFT COMMAND WORKS
 //    	utilButton4.whenPressed(new SetWinch(1));
 //    	utilButton4.whenReleased(new SetWinch(0));
 //    	utilButton6.whenPressed(new SetWinch(-1));

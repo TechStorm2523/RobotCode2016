@@ -35,8 +35,8 @@ DriveTrain.java
 							too low may take a while to hit or NOT hit, too high will be imprecise
 	
 Winch.java
-	ARM_PIVOT_TO_15IN Distance to 15 inch from pivot center (May want to less than 15in for leway
-	POWER_PER_INCH_PER_SECOND Power per feed rate in in/sec - need to measure emprically 
+	(DONE) ARM_PIVOT_TO_15IN Distance to 15 inch from pivot center (May want to less than 15in for leway
+	RPM_PER_INCH_PER_SECOND Power per feed rate in in/sec - need to measure emprically 
 		(easiest way is to hook up to average charge battery/ run at full to see what inch/sec is at that (full) speed
 		 , and enter 1 / INCH/SEC into this constant with that value, where the 1 represents full power (.5 is half, etc.)
 		 ALSO - multiply THIS by random coefficents to calibrate ARM MOVEMENT!!

@@ -1,14 +1,12 @@
 
 package org.usfirst.frc.team2523.robot.subsystems;
 
-import org.usfirst.frc.team2523.robot.OI;
 import org.usfirst.frc.team2523.robot.Robot;
 import org.usfirst.frc.team2523.robot.RobotMap;
 import org.usfirst.frc.team2523.robot.commands.CallArcadeDrive;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotDrive;
-import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
 

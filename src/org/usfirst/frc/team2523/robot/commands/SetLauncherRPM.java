@@ -23,13 +23,14 @@ public class SetLauncherRPM extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.launcherWheels.setTargetRPM(targetRPM);
+    	Robot.launcherWheels.set(targetRPM);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-    	// stop once RPM reached (in certain range)
-        return Math.abs(targetRPM - Robot.launcherWheels.getCurrentRPM()) < Robot.launcherWheels.TARGET_RPM_TOLERANCE;
+    	// stop once BOTH RPM reached (in certain range)
+        return Robot.launcherWheels.getCurrentRPMError()[0] < Robot.launcherWheels.TARGET_RPM_TOLERANCE && 
+        	   Robot.launcherWheels.getCurrentRPMError()[1] < Robot.launcherWheels.TARGET_RPM_TOLERANCE;
     }
 
     // Called once after isFinished returns true

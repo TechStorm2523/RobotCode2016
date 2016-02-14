@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * Class stores past error and cumulative integral error, and therefore a new instance should be used for each system. 
  * @author Robotics
  */
+@SuppressWarnings("unused")
 public class PIDControl extends Subsystem {
     
     // Put methods for controlling this subsystem

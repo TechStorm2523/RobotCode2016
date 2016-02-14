@@ -4,6 +4,9 @@ package org.usfirst.frc.team2523.robot.subsystems;
 import org.usfirst.frc.team2523.robot.Robot;
 import org.usfirst.frc.team2523.robot.RobotMap;
 
+import edu.wpi.first.wpilibj.CANTalon;
+import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
+import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -13,19 +16,44 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  */
 public class Winch extends Subsystem {
 	// constants
-	public static int ARM_PIVOT_TO_15IN = 0; // TODO: CALCULATE!!!!
-	public static int POWER_PER_INCH_PER_SECOND = 0;
-	public static int MAX_WINCH_BY_ARM_ANGLE = 60;
+	public double RPM_PID_KP = 0.1;
+	public double RPM_PID_KI = 0; // NO NEED
+	public double RPM_PID_KD = 0; // NO NEED
+	public double ENCODER_PULSE_PER_REV = 1024/10.0; // encoder is 1024 pulses per rev, but is before a 10:1 gearbox
+	public double ARM_PIVOT_TO_15IN = 39.5; // TODO: CALCULATE!!!!
+	public double RPM_PER_INCH_PER_SECOND = 0;
+	public int MAX_WINCH_BY_ARM_ANGLE = 60;
     
 	// definitions
-    Jaguar winchMotor = new Jaguar(RobotMap.winch);
+	CANTalon winchMotor = new CANTalon(RobotMap.winch);
     DoubleSolenoid winchBrake = new DoubleSolenoid(RobotMap.winchBrakeSolenoid1, RobotMap.winchBrakeSolenoid2);
     
-	public void set(double speed) {
-		winchMotor.set(speed);
+    public Winch()
+    {
+    	// tell Talon SRX to use encoder (Quadrature Encoder)
+    	winchMotor.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+    	
+    	// and tell it to operate via RPM commands
+    	winchMotor.changeControlMode(TalonControlMode.Speed);
+    	
+    	// configure PID control
+    	winchMotor.setPID(RPM_PID_KP, RPM_PID_KI, RPM_PID_KD);
+    	winchMotor.configEncoderCodesPerRev( (int) ENCODER_PULSE_PER_REV);
+    	winchMotor.setCloseLoopRampRate(0); // we ASSUME ramp rate zero means infinite ramp rate
+    	
+    	// ensure braked (Motor brake, not pneumatic brake)
+    	winchMotor.enableBrakeMode(true);
+    }
+    
+    /**
+     * 
+     * @param rpm The rpm to set the motor at
+     */
+	public void set(double rpm) {
+		winchMotor.set(rpm);
 		
 		// make sure brake released (only if not zero)
-		if (speed != 0)
+		if (rpm != 0)
 			releaseBrake();
 	}
 	
@@ -41,7 +69,7 @@ public class Winch extends Subsystem {
 	/**
 	 * @param currentAngle Current arm angle, measured from ARM_STARTING_ANGLE
 	 * @param angleDelta Rate of angle change, in degrees per second
-	 * @return The correctly scaled winch speed
+	 * @return The correctly scaled winch speed (in RPMs, or whatever value RPM_PER_INCH_PER_SECOND has in it)
 	 */
 	private double getWinchSpeed(double currentAngle, double angleDelta) 
 	{
@@ -53,7 +81,7 @@ public class Winch extends Subsystem {
 			// derived from derivative of arm radius ( d/cos(theta) ) with respect to angle multiplied by
 			// the derivative of angle with respect to time.
 			// (dr/dTheta * dtheta/dt = dr/dt)
-			return POWER_PER_INCH_PER_SECOND *
+			return RPM_PER_INCH_PER_SECOND *
 				   ARM_PIVOT_TO_15IN * 
 				   Math.tan(Math.toRadians(currentAngle - Robot.armpivot.ARM_STARTING_ANGLE)) / 
 				   Math.cos(Math.toRadians(currentAngle - Robot.armpivot.ARM_STARTING_ANGLE)) *

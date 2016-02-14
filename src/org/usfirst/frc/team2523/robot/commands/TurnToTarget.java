@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.command.Command;
  */
 public class TurnToTarget extends Command {
 	double currentXOffset = 0;
-	public final double TARGET_OFFSET_TOLERANCE = 0.02;
+	public static final double TARGET_OFFSET_TOLERANCE = 0.04;
 
     public TurnToTarget() {
         // Use requires() here to declare subsystem dependencies
