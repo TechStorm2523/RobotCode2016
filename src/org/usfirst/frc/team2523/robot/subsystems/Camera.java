@@ -1,4 +1,4 @@
-//
+// THIS IS DEPRECATED
 //package org.usfirst.frc.team2523.robot.subsystems;
 //
 //import org.usfirst.frc.team2523.robot.RobotMap;
@@ -14,6 +14,7 @@
 //
 ///**
 // * Class handling all robot camera functions
+// * @deprecated
 // */
 //public class Camera extends Subsystem {
 //	// CONSTANTS

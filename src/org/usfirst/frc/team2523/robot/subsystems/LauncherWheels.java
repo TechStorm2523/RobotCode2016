@@ -22,7 +22,7 @@ public class LauncherWheels extends Subsystem {
 	public final double RPM_PID_KP = 0.1;
 	public final double ENCODER_PULSE_PER_REV = 1024; // direct drive (this is the normal rev per pulse)
 	public final double MAX_RPM = 13050;
-	public final double RPM_PER_VELOCITY = 1 / (Math.PI*2.875/60); // inch/sec - by formula x/v = 1/(pi*d/
+	public final double RPM_PER_VELOCITY = 1 / (Math.PI*2.875/60); // inch/sec - by formula x/v = 1/(pi*d)
 	public final double TARGET_RPM_TOLERANCE = 100;
 	public final double LAUNCH_ANGLE = 64;
 	public final double LAUNCH_HEIGHT = 0; // feet

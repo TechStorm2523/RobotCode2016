@@ -13,6 +13,7 @@ import com.ni.vision.NIVision.ImageType;
 import com.ni.vision.NIVision.ShapeMode;
 
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.command.Command;
@@ -36,12 +37,11 @@ public class Robot extends IterativeRobot {
 	public static final Feeder feeder = new Feeder();
 	public static final LauncherWheels launcherWheels = new LauncherWheels();
 	public static TargetTracker targetTracker = new TargetTracker();;
-//	public static final ArmPneumatics armPneumatics = new ArmPneumatics();
-//	public static final LauncherPneumatics launcherPneumatics = new LauncherPneumatics();
+	public static final ArmPneumatics armPneumatics = new ArmPneumatics();
+	public static final LauncherPneumatics launcherPneumatics = new LauncherPneumatics();
 	public static final Dashboard dashboard = new Dashboard();
 	public static final LauncherStatus launcherstatus = new LauncherStatus();
-//	public static final Camera  camera = new Camera(); 
-//	public static final Compressor compressor = new Compressor();
+	public static final Compressor compressor = new Compressor();
 
 	// MUST be after subsystems
 	public static OI oi = new OI();

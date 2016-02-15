@@ -21,7 +21,7 @@ public class Winch extends Subsystem {
 	public double RPM_PID_KD = 0; // NO NEED
 	public double ENCODER_PULSE_PER_REV = 1024/10.0; // encoder is 1024 pulses per rev, but is before a 10:1 gearbox
 	public double ARM_PIVOT_TO_15IN = 39.5; // TODO: CALCULATE!!!!
-	public double RPM_PER_INCH_PER_SECOND = 0;
+	public double RPM_PER_INCH_PER_SECOND = 2*Math.PI / 0.75; // assuming w/v = 1/r where w(rpm) = w / 2*pi
 	public int MAX_WINCH_BY_ARM_ANGLE = 60;
     
 	// definitions
