@@ -55,7 +55,7 @@ public class OI {
 //   		driveButton5.whenPressed(new LauncherRaise());
 //   		
 //   		driveButton4.whileHeld(new FeederExpel());
-    
+    	driveButton11.whenPressed(new ManualAim());
     	// UTIL
 //    	utilButton1.whenPressed(new AutoLaunch());
     	utilButton2.whenPressed(new SetLauncherByThrottle());

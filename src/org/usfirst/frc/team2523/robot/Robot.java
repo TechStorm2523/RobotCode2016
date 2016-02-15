@@ -33,7 +33,7 @@ public class Robot extends IterativeRobot {
 	public static final DriveTrain drivetrain = new DriveTrain();
 	public static final Winch winch = new Winch();
 	public static final ArmPivot armpivot = new ArmPivot();
-//	public static final Feeder feeder = new Feeder();
+	public static final Feeder feeder = new Feeder();
 	public static final LauncherWheels launcherWheels = new LauncherWheels();
 	public static TargetTracker targetTracker = new TargetTracker();;
 //	public static final ArmPneumatics armPneumatics = new ArmPneumatics();

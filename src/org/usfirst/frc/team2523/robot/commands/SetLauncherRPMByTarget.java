@@ -30,13 +30,14 @@ public class SetLauncherRPMByTarget extends Command {
     	
     	targetRPM = Robot.launcherWheels.getRPMbyRange(currentRange);
     	
-    	Robot.launcherWheels.setTargetRPM(targetRPM);
+    	Robot.launcherWheels.set(targetRPM);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-    	// stop once RPM reached (in certain range) for BOTH wheels
-        return Math.abs(targetRPM - Robot.launcherWheels.getCurrentRPMs()) < Robot.launcherWheels.TARGET_RPM_TOLERANCE;
+    	// stop once BOTH target RPMs are reached (in certain range)
+        return Robot.launcherWheels.getCurrentRPMError()[0] < Robot.launcherWheels.TARGET_RPM_TOLERANCE && 
+        	   Robot.launcherWheels.getCurrentRPMError()[1] < Robot.launcherWheels.TARGET_RPM_TOLERANCE;
     }
 
     // Called once after isFinished returns true

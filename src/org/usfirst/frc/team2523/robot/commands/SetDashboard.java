@@ -36,7 +36,8 @@ public class SetDashboard extends Command
 		
 		// DIAGNOSTICS
 		SmartDashboard.putString(" Status of Launcher ",Robot.launcherstatus.Status );
-		SmartDashboard.putNumber(" Launcher Mot RPM (Front) ", Robot.launcherWheels.getCurrentRPMs());
+		SmartDashboard.putNumber(" Launcher Mot RPM (Front) ", Robot.launcherWheels.getCurrentRPMs()[0]);
+		SmartDashboard.putNumber(" Launcher Mot RPM (Back) ", Robot.launcherWheels.getCurrentRPMs()[1]);
 		
 		// COMMANDS
 		//SmartDashboard.putData("Set Launch Properties", new SetLauncherVelocityAndAngle());
