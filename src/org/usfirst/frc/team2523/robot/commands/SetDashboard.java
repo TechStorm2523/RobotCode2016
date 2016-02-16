@@ -27,7 +27,8 @@ public class SetDashboard extends Command
 		// Configure SmartDashboard displays
     	// ESSENTIALS
 		SmartDashboard.putNumber(" Arm Angle ", Robot.armpivot.getArmAngle());
-//		SmartDashboard.putBoolean(" Ball? ", Robot.feeder.ballstate());
+		SmartDashboard.putNumber(" Arm Rate ", Robot.armpivot.getArmRate());
+		SmartDashboard.putBoolean(" Ball? ", Robot.feeder.ballstate());
 		SmartDashboard.putBoolean(" In Range ", Robot.launcherstatus.inRange);
 		SmartDashboard.putBoolean(" Aligned ", Robot.launcherstatus.aligned ||
 					Math.abs(Robot.targetTracker.getTargetDistanceFromCenter()[0]) < TurnToTarget.TARGET_OFFSET_TOLERANCE);
@@ -38,7 +39,7 @@ public class SetDashboard extends Command
 		SmartDashboard.putString(" Status of Launcher ",Robot.launcherstatus.Status );
 		SmartDashboard.putNumber(" Launcher Mot RPM (Front) ", Robot.launcherWheels.getCurrentRPMs()[0]);
 		SmartDashboard.putNumber(" Launcher Mot RPM (Back) ", Robot.launcherWheels.getCurrentRPMs()[1]);
-		
+		SmartDashboard.putNumber(" Winch (Arm) Extension ", Robot.winch.getCurrentDistance());
 		// COMMANDS
 		//SmartDashboard.putData("Set Launch Properties", new SetLauncherVelocityAndAngle());
 		

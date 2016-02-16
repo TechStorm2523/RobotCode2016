@@ -11,7 +11,7 @@ public class ArmRetract extends Command {
 
     public ArmRetract() {
         // Use requires() here to declare subsystem dependencies
-        requires(Robot.armPneumatics);
+        requires(Robot.winch);
     }
 
     // Called just before this Command runs the first time
@@ -20,20 +20,22 @@ public class ArmRetract extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.armPneumatics.retract();
+    	Robot.winch.setDistance(0);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return true;
+        return Robot.winch.getCurrentDistance() < Robot.winch.ARM_EXTENSION_STOP_TOLERANCE;
     }
 
     // Called once after isFinished returns true
     protected void end() {
+    	Robot.winch.set(0);
     }
 
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
+    	end();
     }
 }

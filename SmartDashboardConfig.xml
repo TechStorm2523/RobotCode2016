@@ -1,5 +1,13 @@
 <xml version="1.0">
 <dashboard>
+	<widget field=" Launcher Mot Encoder " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="892" y="423"/>
+	</widget>
+	<widget field=" Ball? " type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="1028" y="290"/>
+		<width>87</width>
+		<height>68</height>
+	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
 		<location x="22" y="3"/>
 		<width>118</width>
@@ -13,7 +21,7 @@
 		<property name="Text" value="Arm Angle"/>
 	</static-widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
-		<location x="1139" y="6"/>
+		<location x="1129" y="9"/>
 		<width>139</width>
 		<height>22</height>
 		<property name="Text" value="Launcher Mot RPM"/>
@@ -24,7 +32,7 @@
 		<property name="Upper Limit" value="180.0"/>
 	</widget>
 	<widget field=" Range to Best Target " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
-		<location x="1020" y="224"/>
+		<location x="1019" y="226"/>
 		<height>37</height>
 		<property name="Font Size" value="24"/>
 	</widget>
@@ -35,22 +43,22 @@
 		<property name="Font Size" value="22"/>
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.WebcamViewerExtension">
-		<location x="271" y="1"/>
+		<location x="195" y="3"/>
 		<width>645</width>
 		<height>477</height>
 	</static-widget>
 	<widget field=" Spooled Up " type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="917" y="113"/>
+		<location x="842" y="107"/>
 		<width>145</width>
 		<height>48</height>
 	</widget>
 	<widget field=" In Range " type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="916" y="6"/>
+		<location x="842" y="4"/>
 		<width>135</width>
 		<height>46</height>
 	</widget>
 	<widget field=" Aligned " type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="917" y="59"/>
+		<location x="843" y="54"/>
 		<width>125</width>
 		<height>47</height>
 	</widget>
@@ -79,10 +87,17 @@
 	<widget field="Tote hue min" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="445" y="639"/>
 	</widget>
+	<widget field=" Launcher Mot RPM (Back) " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.SimpleDial">
+		<location x="1178" y="28"/>
+		<width>216</width>
+		<height>142</height>
+		<property name="Upper Limit" value="13050.0"/>
+		<property name="Tick Interval" value="1000.0"/>
+	</widget>
 	<widget field=" Launcher Mot RPM (Front) " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.SimpleDial">
-		<location x="1032" y="24"/>
-		<width>203</width>
-		<height>131</height>
+		<location x="1006" y="29"/>
+		<width>213</width>
+		<height>137</height>
 		<property name="Upper Limit" value="13050.0"/>
 		<property name="Tick Interval" value="1000.0"/>
 	</widget>

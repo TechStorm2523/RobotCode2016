@@ -31,8 +31,6 @@ public class TargetTracker extends Subsystem {
 	final double TARGET_WIDTH = 20 / 12.0;
 	final double TARGET_HEIGHT = 14 / 12.0;
 	// camera/image properties
-	final double IMAGE_WIDTH = 640;
-	final double IMAGE_HEIGHT = 480;
 	final double CAMERA_FOV = 39.935; // VERTICAL (By measuring distance from a known size object that spans vertical FOV and using tan OR solving the equation in getRangeToBestTarget for FOV using other measurements from debug)
 	final double CAMERA_ELEVATION = 45; // degrees
 	// threshold values
@@ -190,7 +188,8 @@ public class TargetTracker extends Subsystem {
 				}
 				
 				// draw indicator at best target
-				drawTargetIndicator((int)bestTarget.centerX, (int)bestTarget.centerY, frame);
+				if (bestTarget != null)
+					drawTargetIndicator((int)bestTarget.centerX, (int)bestTarget.centerY, frame);
 				
 				// we're done with processing, so display image
 				CameraServer.getInstance().setImage(frame);
@@ -332,28 +331,28 @@ public class TargetTracker extends Subsystem {
 	 * Draw a crosshair indicator at the given position
 	 */
 	public void drawTargetIndicator(int x, int y, Image frame)
-	{      
-  		// draw four rectangles for crosshairs (shift so x,y is at center)
-      	NIVision.Rect[] crosshairRects = new NIVision.Rect[4];
-      	// right
-  		crosshairRects[0] = new NIVision.Rect(y - TARGET_CROSSHAIR_WIDTH/2, x + TARGET_CROSSHAIR_SPREAD,
-  											TARGET_CROSSHAIR_WIDTH, TARGET_CROSSHAIR_SIZE);
-  		// left
-  		crosshairRects[1] = new NIVision.Rect(y - TARGET_CROSSHAIR_WIDTH/2, x - TARGET_CROSSHAIR_SPREAD - TARGET_CROSSHAIR_SIZE,  
-  											TARGET_CROSSHAIR_WIDTH, TARGET_CROSSHAIR_SIZE);
-  		// top
-  		crosshairRects[2] = new NIVision.Rect(y - TARGET_CROSSHAIR_SPREAD - TARGET_CROSSHAIR_SIZE, x - TARGET_CROSSHAIR_WIDTH/2,  
-  										  	TARGET_CROSSHAIR_SIZE, TARGET_CROSSHAIR_WIDTH);
-  		// bottom
-  		crosshairRects[3] = new NIVision.Rect(y + TARGET_CROSSHAIR_SPREAD, x - TARGET_CROSSHAIR_WIDTH/2,
-  											TARGET_CROSSHAIR_SIZE, TARGET_CROSSHAIR_WIDTH);
-  
-  		// add shapes to frame
-  		for (NIVision.Rect crosshairRect : crosshairRects)
-  			NIVision.imaqDrawShapeOnImage(frame, frame, crosshairRect, DrawMode.PAINT_VALUE, ShapeMode.SHAPE_RECT, 255.0f);
-  	
-      	// set the image
-//  		CameraServer.getInstance().setImage(frame);
+	{    
+		if (frame != null)
+		{
+	  		// draw four rectangles for crosshairs (shift so x,y is at center)
+	      	NIVision.Rect[] crosshairRects = new NIVision.Rect[4];
+	      	// right
+	  		crosshairRects[0] = new NIVision.Rect(y - TARGET_CROSSHAIR_WIDTH/2, x + TARGET_CROSSHAIR_SPREAD,
+	  											TARGET_CROSSHAIR_WIDTH, TARGET_CROSSHAIR_SIZE);
+	  		// left
+	  		crosshairRects[1] = new NIVision.Rect(y - TARGET_CROSSHAIR_WIDTH/2, x - TARGET_CROSSHAIR_SPREAD - TARGET_CROSSHAIR_SIZE,  
+	  											TARGET_CROSSHAIR_WIDTH, TARGET_CROSSHAIR_SIZE);
+	  		// top
+	  		crosshairRects[2] = new NIVision.Rect(y - TARGET_CROSSHAIR_SPREAD - TARGET_CROSSHAIR_SIZE, x - TARGET_CROSSHAIR_WIDTH/2,  
+	  										  	TARGET_CROSSHAIR_SIZE, TARGET_CROSSHAIR_WIDTH);
+	  		// bottom
+	  		crosshairRects[3] = new NIVision.Rect(y + TARGET_CROSSHAIR_SPREAD, x - TARGET_CROSSHAIR_WIDTH/2,
+	  											TARGET_CROSSHAIR_SIZE, TARGET_CROSSHAIR_WIDTH);
+	  
+	  		// add shapes to frame
+	  		for (NIVision.Rect crosshairRect : crosshairRects)
+	  			NIVision.imaqDrawShapeOnImage(frame, frame, crosshairRect, DrawMode.PAINT_VALUE, ShapeMode.SHAPE_RECT, 255.0f);
+		}
     }
 	
 	private void drawBoundingBox(ParticleReport particle, Image frame)

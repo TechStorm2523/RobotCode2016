@@ -11,12 +11,12 @@ public class AutoCommandChevaldeFrise extends CommandGroup {
     
     public  AutoCommandChevaldeFrise() {
     	// raise arm
-    	addSequential(new SetArmTarget( 30 ));
+    	addSequential(new SetArmAngle( 30 ));
     	addSequential(new ArmExtend());
     	addSequential(new DriveForDistance(0.5, RobotMap.DISTANCE_TO_DEFENSE_EDGE)); //TODO
     	
     	// lower to lower tippy parts
-    	addSequential(new SetArmTarget( 5 ));
+    	addSequential(new SetArmAngle( 5 ));
     	
     	// drive!
     	addSequential(new DriveForTime(1, 0, 4));

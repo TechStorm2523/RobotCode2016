@@ -11,7 +11,7 @@ import org.usfirst.frc.team2523.robot.RobotMap;
 /**
  * Used to instruct the arm to travel at some speed to a target angle
  */
-public class SetArmTarget extends Command 
+public class SetArmAngle extends Command 
 {	
 	// define globals
 	public double speed;
@@ -21,7 +21,7 @@ public class SetArmTarget extends Command
 	 * Constructor to instruct the arm to travel at max speed to target, the height of the lift
 	 * @param target The targeted arm angle in degrees
 	 */
-    public SetArmTarget(double target) 
+    public SetArmAngle(double target) 
     {
         // Use requires() here to declare subsystem dependencies
         requires(Robot.armpivot);
@@ -38,7 +38,7 @@ public class SetArmTarget extends Command
 	 * @param target The targeted lift height in inches
 	 * @param speed Max speed to move the lift at. Between 0.0 and 1.0
 	 */
-    public SetArmTarget(double target, double speed) 
+    public SetArmAngle(double target, double speed) 
     {
         // Use requires() here to declare subsystem dependencies
         requires(Robot.armpivot);

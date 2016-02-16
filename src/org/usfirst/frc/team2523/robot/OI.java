@@ -47,21 +47,21 @@ public class OI {
     public OI()
     {
     	// DRIVE
-//    	driveButton1.whenPressed(new AutoCollect());
+    	driveButton1.whenPressed(new AutoCollect());
     	
-//    	driveButton2.whileHeld(new FeederCollect());
+    	driveButton2.whileHeld(new FeederCollect());
 //   		
-//   		driveButton3.whenPressed(new LauncherLower());
-//   		driveButton5.whenPressed(new LauncherRaise());
+   		driveButton3.whenPressed(new LauncherLower());
+   		driveButton5.whenPressed(new LauncherRaise());
 //   		
-//   		driveButton4.whileHeld(new FeederExpel());
+   		driveButton4.whileHeld(new FeederExpel());
     	driveButton11.whenPressed(new ManualAim());
     	// UTIL
-//    	utilButton1.whenPressed(new AutoLaunch());
-    	utilButton2.whenPressed(new SetLauncherByThrottle());
+    	utilButton1.whenPressed(new AutoLaunch());
+    	utilButton2.whileHeld(new SetLauncherByThrottle());
     	
-//    	utilButton3.whenPressed(new ArmRetract());
-//    	utilButton5.whenPressed(new ArmExtend());
+    	utilButton3.whenPressed(new ArmRetract());
+    	utilButton5.whenPressed(new ArmExtend());
     	
     	// TODO: THIS COULD SCREW UP THE NORMAL WINCH-ARM FUNCTION!!! SET BASED ON HOW WELL THE LIFT COMMAND WORKS
 //    	utilButton4.whenPressed(new SetWinch(1));

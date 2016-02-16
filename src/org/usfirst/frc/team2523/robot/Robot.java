@@ -36,12 +36,10 @@ public class Robot extends IterativeRobot {
 	public static final ArmPivot armpivot = new ArmPivot();
 	public static final Feeder feeder = new Feeder();
 	public static final LauncherWheels launcherWheels = new LauncherWheels();
-	public static TargetTracker targetTracker = new TargetTracker();;
-	public static final ArmPneumatics armPneumatics = new ArmPneumatics();
+	public static TargetTracker targetTracker = new TargetTracker();
 	public static final LauncherPneumatics launcherPneumatics = new LauncherPneumatics();
 	public static final Dashboard dashboard = new Dashboard();
 	public static final LauncherStatus launcherstatus = new LauncherStatus();
-	public static final Compressor compressor = new Compressor();
 
 	// MUST be after subsystems
 	public static OI oi = new OI();
@@ -65,10 +63,10 @@ public class Robot extends IterativeRobot {
         autoChooser = new SendableChooser();
         autoChooser.addDefault("Drive to Defense", new AutoCommandBasic());
         autoChooser.addObject("Do Nothing", new AutoCommandNOTHING());
-//        autoChooser.addObject("Basic (Drive-Over) Defense", new AutoCommandBasicDefense());
-//        autoChooser.addDefault("Cheval de Frise (Tippy) Defense", new AutoCommandChevaldeFrise());
+        autoChooser.addObject("Basic (Drive-Over) Defense", new AutoCommandBasicDefense());
+        autoChooser.addDefault("Cheval de Frise (Tippy) Defense", new AutoCommandChevaldeFrise());
         autoChooser.addDefault("Drawbridge Defense", new AutoCommandDrawbridge());
-//        autoChooser.addDefault("Portcullis (Gate) Defense", new AutoCommandPortcullis());
+        autoChooser.addDefault("Portcullis (Gate) Defense", new AutoCommandPortcullis());
 //      autoChooser.addObject("My Auto", new MyAutoCommand());
         SmartDashboard.putData("Auto mode", autoChooser);
         
@@ -97,7 +95,7 @@ public class Robot extends IterativeRobot {
 	 * You can add additional auto modes by adding additional commands to the chooser code above (like the commented example)
 	 * or additional comparisons to the switch structure below with additional strings & commands.
 	 */
-    public void autonomousInit() {
+    public void autonomousInit() {    	
         autonomousCommand = (Command) autoChooser.getSelected();
         
         // SHOULDNT BE NEEDED
@@ -119,12 +117,15 @@ public class Robot extends IterativeRobot {
     /**
      * This function is called periodically during autonomous
      */
-    public void autonomousPeriodic() {
+    public void autonomousPeriodic() {    	
         Scheduler.getInstance().run();
         allPeriodic();
     }
 
     public void teleopInit() {
+    	// ensure that arm extends
+    	winch.setDistance(winch.MAX_ARM_EXTENSION);
+    	
 		// This makes sure that the autonomous stops running when
         // teleop starts running. If you want the autonomous to 
         // continue until interrupted by another command, remove
@@ -137,7 +138,7 @@ public class Robot extends IterativeRobot {
     /**
      * This function is called periodically during operator control
      */
-    public void teleopPeriodic() {
+    public void teleopPeriodic() {    	
         Scheduler.getInstance().run();
         allPeriodic();
         

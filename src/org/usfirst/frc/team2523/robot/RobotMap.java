@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.Timer;
  * the wiring easier and significantly reduces the number of magic numbers
  * floating around.
  */
-@SuppressWarnings("unused")
 public class RobotMap {
     // For example to map the left and right motors, you could define the
     // following variables to use with your drivetrain subsystem.
@@ -37,21 +36,20 @@ public class RobotMap {
 	public static int Rback = 1;
 	public static int Lfront = 2;
 	public static int Lback = 3;
-	public static int feeder = 4;
-	public static int launcherMot1 = 5;
-	public static int launcherMot2 = 6;
-	public static int lifter1 = 7;
-	public static int lifter2 = 8;
-	public static int winch = 9;
+	public static int feeder = 5;
 	
+	// CAM Ideas (For TalonSRXs)
+	public static int launcherMotBack = 6;
+	public static int launcherMotFront = 5;
+	public static int lifter1 = 2;
+	public static int lifter2 = 4;
+	public static int winch = 3;
 	
 	// Solenoid Outputs (PCM)
-	public static int armSolenoid1 = 0;
-	public static int armSolenoid2 = 1;
-	public static int launcherSolenoid1 = 2;
-	public static int launcherSolenoid2 = 3;
-	public static int winchBrakeSolenoid1 = 4;
-	public static int winchBrakeSolenoid2 = 5;
+	public static int launcherSolenoid1 = 0;
+	public static int launcherSolenoid2 = 1;
+	public static int winchBrakeSolenoid1 = 2;
+	public static int winchBrakeSolenoid2 = 3;
 	
 	// RELAY Outputs (Relays)
 	
@@ -60,7 +58,7 @@ public class RobotMap {
 	public static int armPoten2 = 6;
 	public static int launcherEncoder1 = 2;
 	public static int launcherEncoder2 = 3;
-	public static int ballDedectorLimSwitch = 1;
+	public static int ballDetectorLimSwitch = 1;
 	public static int driveEncoder1 = 7;
 	public static int driveEncoder2 = 8;
 			

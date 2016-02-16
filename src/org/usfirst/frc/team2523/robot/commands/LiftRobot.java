@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class LiftRobot extends CommandGroup {
     
     public LiftRobot() {
-        addSequential(new SetArmTarget(100));
+        addSequential(new SetArmAngle(100));
         addSequential(new SetWinch(1));
         
         // wait a bit before stopping (this will rarely happen)
