@@ -1,32 +1,49 @@
 *How to Calibrate PID:
- - PD is the most basic way to change how fast the arm moves to target. 
+ - KD is the most basic way to change how fast the arm moves to target. 
  	High values make it go at full power until just before the right place;
  	Low values make it slow down well before (possibly too far before -- this is what PI (Integral) is for)
- - PI controls how much the arm will react to a long time running.
+ - KI controls how much the arm will react to a long time running.
  	High values make the arm move very past and possibly overshoot if it has been running for any long time.
  	Low values mean the arm will stop before the target and take a long time before they start moving again. 
- 		It also may go too far and take to long to go back again
+ 		It also may go too far and take too long to go back again
+
+GENERAL NOTES:
+- TO DEBUG, play around with changing values on the SmartDashboard to Line Plots (Right click on something; make sure editable 
+	is enabled in the menus on SmartDashboard)
+- I think the back shooter wheel may be going to slow for some reason (maybe an issue with the motor controller?)
+	While it's firing, have someone stare at the RPM values and see what they see. 
+- The winch (hopefully i've solved this) seems to be going way to fast for the speed we set() it at. 
+	This may be an issue with ENCODER_PULSE_PER_REV or RPM_PID_KP, but they don't seem to have much affect on the actual
+	speed (though they do change the speed the encoder says it is set at (look at the graph on SmartDashboard)
+	We'll need to figure it out so we can set the RPM of the winch motor (this worked on the launcher motors, i don't know 
+	why it doesn't here.
+	ALSO, if it comes to it you can switch to power by changing the value in setMode() or whatever to be kBusPercent (or something like that, right click on the one that is there and hit "Open Declaration" to see them all) so it goes from -1 to 1 in power settings, AND change the RPM_PER_INCH_PER_SECOND to be POWER_PER_INCH_PER_SECOND so it works the same way, but with power.
+- We need to make sure the manual launching system is easy to use, because the auto seems like it won't be good to use.
+	Make sure your command works, and make sure it is easy for ONE DRIVER to activate on their own
+
 
 (MOST OF FOLLOWING UNDER RobotCode2016->src->org.usfirst ... .subsystems OR .commands
 
-MOST AUTO COMMANDS - LOOK AT TIMES/DISTANCES IN
-RobotMap.java
+******MOST AUTO COMMANDS - LOOK AT TIMES/DISTANCES IN*****
+(done) RobotMap.java
 
 TargetTracker.java
-	ALL Target geometry must be based on theory
-	HUE_RANGE, SAT_RANGE, VAL_RANGE - LOOK at http://wpilib.screenstepslive.com/s/4485/m/24194/l/288985-identifying-and-processing-the-targets
-										and set based using parameters in SmartDashboard to see how if affects tracking.
-										(make sure you put final values in the constants) 
-										SHOULD BE GOOD FOR NOW
-	(DONE) CAMERA_FOV Camera Field of View, can be found by math + measurements - See https://wpilib.screenstepslive.com/s/4485/m/24194/l/288985-identifying-and-processing-the-targets#Distance
 	CAMERA_ELEVATION - Simply Camera Angle (BE PRECISE)
+	(done) ALL Target geometry is and MUST be based on theory
+	HUE_RANGE, SAT_RANGE, VAL_RANGE - LOOK at http://wpilib.screenstepslive.com/s/4485/m/24194/l/288985-identifying-and-processing-the-targets
+				and set using parameters in SmartDashboard to see how if affects tracking.
+				(MAKE SURE you put final values in the constants) 
+				SHOULD BE GOOD FOR NOW!!
+	(DONE) CAMERA_FOV Camera Field of View, can be found by math + measurements - See https://wpilib.screenstepslive.com/s/4485/m/24194/l/288985-identifying-and-processing-the-targets#Distance
+
 	
 ArmPivot.java
 	ARM_STARTING_ANGLE - the angle off horizontal that the arm is zero (starts) at. Set precisely, this controls the winch retraction
-	POTENTIOMETER_START_DEGREE - The angle on the potentiometer the arm starts at
 	MAX_IN_MATCH_ANGLE - Max Angle (potentiometer) to be under height limit (experimentally determined)
 	ARM PID Coefficents (PID_KP and PID_KI)
-	
+	(done) POTENTIOMETER_START_DEGREE - The angle on the potentiometer the arm starts at (based on voltage at potenitometer
+	so you need to find experimentally by measuring raw potentiometer readings (after multiplying by correct degree scaler))
+
 DriveTrain.java
 	Turn PID (TURN_KP and TURN_KI)
 	Drive PID (DRIVE_KP and DRIVE_KI)
@@ -35,29 +52,34 @@ DriveTrain.java
 							too low may take a while to hit or NOT hit, too high will be imprecise
 	
 Winch.java
+	RPM PID - only KP (this may need to be high to overcome friction.) ALSO, you may need to use KI if it won't overcome friction. 
+		SEE if rotating the winch slightly yourself moves it, and if so increase either KP or KI.
+	POS PID - only KP and KI (mainly meant for extending winch initially - MAKE SURE you look in Robot.java to enable this
+		part that is de-commented)
+	ENCODER_PULSE_PER_REV This is the pulses per revolution of the OUTPUT axle - something may be WRONG here - check the
+		online guides for the real value.
 	(DONE) ARM_PIVOT_TO_15IN Distance to 15 inch from pivot center (May want to less than 15in for leway
-	RPM_PER_INCH_PER_SECOND Power per feed rate in in/sec - need to measure emprically 
+	RPM_PER_INCH_PER_SECOND Power per feed rate in in/sec - (Done) need to measure emprically 
 		(easiest way is to hook up to average charge battery/ run at full to see what inch/sec is at that (full) speed
 		 , and enter 1 / INCH/SEC into this constant with that value, where the 1 represents full power (.5 is half, etc.)
-		 ALSO - multiply THIS by random coefficents to calibrate ARM MOVEMENT!!
+		 !!! (NOT DONE) ALSO - multiply THIS by random coefficents to calibrate ARM MOVEMENT!!
 		 
-	MAX_WINCH_BY_ARM_ANGLE - set to angle that cable starts to slack (when arm is FULLY extended too)
+	MAX_WINCH_BY_ARM_ANGLE - set to angle that cable starts to slack (when arm is FULLY extended)
 	
 LauncherWheels.java
 	RPM PID - Just PID_KP
-	ENCODER_REV_PER_PULSE - the number of wheel revolutions per encoder pulse (of which there are usually 360)
+	CHECK THIS -> (done) ENCODER_REV_PER_PULSE - the number of wheel revolutions per encoder pulse (of which there are usually 1024 on the encoders (but 4096 seems more accurate after testing))
 							(can be found mathematically w/ gearboxes)
 	MAX_RPM - The max RPM the motor is capable of -- used to tell whether in range (WE HAVE THEORETICALLY)
-	RPM_PER_VELOCITY - Conversion factor to go from velocity to rpm - HAS BEEN CALCULATED THEORETICALLY, multiply to 
-						by some value to match what you see. (ALSO, we measure speed based on the SLOWER wheel on the shooter,
-						so you may have to average the value OR change the model in the code (which will be hard))
-						(see back of trajectory calculations in shooter box)
+	RPM_PER_VELOCITY - USE THIS TO CALIBRATE SHOOTER!! - Conversion factor to go from velocity to rpm - HAS BEEN CALCULATED
+		THEORETICALLY, multiply by some value to match what you see. 
+				(see back of trajectory calculations in shooter box)
 	LAUNCH_ANGLE - shooter launch angle
-	LAUNCH_HEIGHT - height of ROBOT launch (to center of ball approx.)
-	TARGET_HEIGHT
+	(done) LAUNCH_HEIGHT - height of ROBOT launch (to center of ball approx.)
+	TARGET_HEIGHT - How high target is off ground
 	TARGET_RPM_TOLERANCE - just how far off from a target RPM the robot will be satisfied that it's on target
 							too low may take a while to hit or NOT hit, too high will be imprecise
-	CAM_DISTANCE_OFF_LAUNCH - Distance of camera off center of ball at launch
+	(done) CAM_DISTANCE_OFF_LAUNCH - Distance of camera off center of ball at launch
 							
 SeekTarget.java - NOT super important, hopefully never used much
 	SEEK_SPEED - Speed to seek target at
