@@ -1,6 +1,8 @@
+
 package org.usfirst.frc.team2523.robot.commands;
 
 import org.usfirst.frc.team2523.robot.Robot;
+import org.usfirst.frc.team2523.robot.subsystems.Feeder;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
@@ -8,13 +10,15 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class ManualAim extends Command {
-
-    public ManualAim() {
+public class FeederAutoCollect extends Command {
+	private double FEEDER_STOP_EXPEL_TIME = 0.2;
+	
+	
+    public FeederAutoCollect() {
         // Use requires() here to declare subsystem dependencies
-        requires(Robot.launcherWheels);
         requires(Robot.feeder);
     }
+    
 
     // Called just before this Command runs the first time
     protected void initialize() {
@@ -22,21 +26,25 @@ public class ManualAim extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.launcherWheels.setByThrottle();
-    	Timer.delay(2);
     	Robot.feeder.feed();
-    	Timer.delay(1);
-    	Robot.feeder.stop();
-    	Robot.launcherWheels.set(0);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return true;
+    	if (Robot.feeder.ballstate()){
+    	return true;
+    	} else {
+    		return false;
+    	}
+	
     }
 
     // Called once after isFinished returns true
-    protected void end() {
+    protected void end(){
+    	Robot.feeder.expel();
+    	Timer.delay(FEEDER_STOP_EXPEL_TIME);
+    	Robot.feeder.stop();
+    	
     }
 
     // Called when another command which requires one or more of the same

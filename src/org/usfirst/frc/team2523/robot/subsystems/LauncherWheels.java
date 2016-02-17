@@ -2,6 +2,7 @@
 package org.usfirst.frc.team2523.robot.subsystems;
 
 import org.usfirst.frc.team2523.robot.OI;
+import org.usfirst.frc.team2523.robot.Robot;
 import org.usfirst.frc.team2523.robot.RobotMap;
 import org.usfirst.frc.team2523.robot.commands.SetLauncherByThrottle;
 
@@ -66,7 +67,7 @@ public class LauncherWheels extends Subsystem {
     
 	public void setByThrottle() {
 		// shift so goes from 0 at base to 1 at max (and, because setting RPM, scale to max)
-    	set(MAX_RPM*0.5*(-OI.UtilStick.getThrottle() + 1));
+    	set(MAX_RPM*0.5*(-Robot.oi.UtilStick.getThrottle() + 1));
 	}
 	
 	/**

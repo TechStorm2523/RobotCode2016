@@ -4,6 +4,7 @@ package org.usfirst.frc.team2523.robot.subsystems;
 import org.usfirst.frc.team2523.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
@@ -18,8 +19,10 @@ public class LauncherPneumatics extends Subsystem {
 	public void lower() {
 		launcherPneumatics.set(DoubleSolenoid.Value.kReverse);
 	}
-	public void off() {
-		launcherPneumatics.set(DoubleSolenoid.Value.kOff);
+	
+	public boolean getState()
+	{
+		return launcherPneumatics.get() == DoubleSolenoid.Value.kReverse;
 	}
 	
     public void initDefaultCommand() {

@@ -16,21 +16,21 @@ public class OI {
     // You create one by telling it which joystick it's on and which button
     // number it is.
     public Joystick DriveStick = new Joystick(0);
-    Button driveButton1 = new JoystickButton(UtilStick, 1),
-			driveButton2 = new JoystickButton(UtilStick, 2),
-			driveButton3 = new JoystickButton(UtilStick, 3),
-			driveButton4 = new JoystickButton(UtilStick, 4),
-			driveButton5 = new JoystickButton(UtilStick, 5),
-			driveButton6 = new JoystickButton(UtilStick, 6),
-			driveButton7 = new JoystickButton(UtilStick, 7),
-			driveButton8 = new JoystickButton(UtilStick, 8),
-			driveButton9 = new JoystickButton(UtilStick, 9),
-			driveButton10 = new JoystickButton(UtilStick, 10),
-			driveButton11 = new JoystickButton(UtilStick, 11),
-			driveButton12 = new JoystickButton(UtilStick, 12);
+    Button driveButton1 = new JoystickButton(DriveStick, 1),
+			driveButton2 = new JoystickButton(DriveStick, 2),
+			driveButton3 = new JoystickButton(DriveStick, 3),
+			driveButton4 = new JoystickButton(DriveStick, 4),
+			driveButton5 = new JoystickButton(DriveStick, 5),
+			driveButton6 = new JoystickButton(DriveStick, 6),
+			driveButton7 = new JoystickButton(DriveStick, 7),
+			driveButton8 = new JoystickButton(DriveStick, 8),
+			driveButton9 = new JoystickButton(DriveStick, 9),
+			driveButton10 = new JoystickButton(DriveStick, 10),
+			driveButton11 = new JoystickButton(DriveStick, 11),
+			driveButton12 = new JoystickButton(DriveStick, 12);
     
     
-    public static Joystick UtilStick = new Joystick (1);
+    public Joystick UtilStick = new Joystick (1);
     Button utilButton1 = new JoystickButton(UtilStick, 1),
 			utilButton2 = new JoystickButton(UtilStick, 2),
 			utilButton3 = new JoystickButton(UtilStick, 3),
@@ -56,18 +56,23 @@ public class OI {
 //   		
    		driveButton4.whileHeld(new FeederExpel());
     	driveButton11.whenPressed(new ManualAim());
+    	
     	// UTIL
     	utilButton1.whenPressed(new AutoLaunch());
     	utilButton2.whileHeld(new SetLauncherByThrottle());
     	
-    	utilButton3.whenPressed(new ArmRetract());
-    	utilButton5.whenPressed(new ArmExtend());
+//    	utilButton3.whenPressed(new ArmRetract());
+//    	utilButton5.whenPressed(new ArmExtend());
+    	
+    	utilButton7.whenPressed(new SetWinchBrake(true));
+    	utilButton9.whenPressed(new SetWinchBrake(false));
+    	
     	
     	// TODO: THIS COULD SCREW UP THE NORMAL WINCH-ARM FUNCTION!!! SET BASED ON HOW WELL THE LIFT COMMAND WORKS
-//    	utilButton4.whenPressed(new SetWinch(1));
-//    	utilButton4.whenReleased(new SetWinch(0));
-//    	utilButton6.whenPressed(new SetWinch(-1));
-//    	utilButton6.whenReleased(new SetWinch(0));
+    	utilButton4.whenPressed(new SetWinch(1));
+    	utilButton4.whenReleased(new SetWinch(0));
+    	utilButton6.whenPressed(new SetWinch(-1));
+    	utilButton6.whenReleased(new SetWinch(0));
     	
     	utilButton8.whenPressed(new LiftRobot());
 	    utilButton12.whenPressed(new GateMacro());

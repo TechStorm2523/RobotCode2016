@@ -12,7 +12,7 @@ public class ArmPivotComm extends Command {
 	public ArmPivotComm() {
 		// Use requires() here to declare subsystem dependencies
 		requires(Robot.armpivot);
-		requires(Robot.winch);
+//		requires(Robot.winch);
 	}
 
 	// Called just before this Command runs the first time
@@ -21,8 +21,8 @@ public class ArmPivotComm extends Command {
 
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
-		Robot.armpivot.setArmByJoystick();
-		Robot.winch.setWinchByArmSpeed();
+		Robot.armpivot.setArmByJoystick(); 
+//		Robot.winch.setWinchByArmSpeed();
 	}
 
 	// Make this return true when this Command no longer needs to run execute()

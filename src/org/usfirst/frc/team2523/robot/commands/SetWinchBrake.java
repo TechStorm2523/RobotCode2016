@@ -2,18 +2,19 @@ package org.usfirst.frc.team2523.robot.commands;
 
 import org.usfirst.frc.team2523.robot.Robot;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
  *
  */
-public class ManualAim extends Command {
+public class SetWinchBrake extends Command {
+	boolean braked;
 
-    public ManualAim() {
+    public SetWinchBrake(boolean braked) {
         // Use requires() here to declare subsystem dependencies
-        requires(Robot.launcherWheels);
-        requires(Robot.feeder);
+        requires(Robot.winch);
+        
+        this.braked = braked;
     }
 
     // Called just before this Command runs the first time
@@ -22,17 +23,15 @@ public class ManualAim extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.launcherWheels.setByThrottle();
-    	Timer.delay(2);
-    	Robot.feeder.feed();
-    	Timer.delay(1);
-    	Robot.feeder.stop();
-    	Robot.launcherWheels.set(0);
+    	if (braked)    	
+    		Robot.winch.setBrake();
+    	else
+    		Robot.winch.releaseBrake();
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return true;
+        return false;
     }
 
     // Called once after isFinished returns true

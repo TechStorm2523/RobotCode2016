@@ -7,6 +7,7 @@ import org.usfirst.frc.team2523.robot.commands.CallArcadeDrive;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.RobotDrive.MotorType;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
@@ -30,6 +31,11 @@ public class DriveTrain extends Subsystem {
 	
 	public DriveTrain()
 	{
+		// invert necessary motors
+		drive.setInvertedMotor(MotorType.kFrontLeft, true);
+		drive.setInvertedMotor(MotorType.kFrontRight, true);
+		
+		
 		// ensure robot will stop motors if they do not receive commands for 0.1 seconds
 		drive.setSafetyEnabled(true);
 		drive.setExpiration(0.1);

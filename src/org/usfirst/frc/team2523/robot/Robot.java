@@ -112,6 +112,8 @@ public class Robot extends IterativeRobot {
     	
     	// schedule the autonomous command (example)
         if (autonomousCommand != null) autonomousCommand.start();
+        
+        NIVision.IMAQdxStartAcquisition(Robot.targetTracker.session);
     }
 
     /**
@@ -123,8 +125,11 @@ public class Robot extends IterativeRobot {
     }
 
     public void teleopInit() {
+    	// release winch brake
+    	winch.releaseBrake();
+    	
     	// ensure that arm extends
-    	winch.setDistance(winch.MAX_ARM_EXTENSION);
+//    	winch.setDistance(winch.MAX_ARM_EXTENSION);
     	
 		// This makes sure that the autonomous stops running when
         // teleop starts running. If you want the autonomous to 
@@ -138,7 +143,7 @@ public class Robot extends IterativeRobot {
     /**
      * This function is called periodically during operator control
      */
-    public void teleopPeriodic() {    	
+    public void teleopPeriodic() {    
         Scheduler.getInstance().run();
         allPeriodic();
         

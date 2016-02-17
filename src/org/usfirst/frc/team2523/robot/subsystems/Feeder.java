@@ -5,6 +5,7 @@ import org.usfirst.frc.team2523.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
@@ -17,9 +18,9 @@ public class Feeder extends Subsystem {
 	Victor feed = new Victor(RobotMap.feeder);
     
     DigitalInput balldetector = new DigitalInput(RobotMap.ballDetectorLimSwitch);
-    
+
     public boolean ballstate(){
-    	return balldetector.get();
+    	return !balldetector.get();
     }
 	
     public void feed(){
@@ -31,6 +32,7 @@ public class Feeder extends Subsystem {
 	}	
 	
     public void stop(){
+    	// emulate braking
     	feed.set(0);
 	}
     

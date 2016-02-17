@@ -22,10 +22,12 @@ public class ArmPivot extends Subsystem {
 	private final double PID_KP = 0.05;
 	private final double PID_KI = 0.1; 
 	public final double ARM_STARTING_ANGLE = 0; // degrees, positive for down off horizontal
-	private final double POTENTIOMETER_DEGREE_LIMIT = 270;
-	private final double POTENTIOMETER_START_DEGREE = 150;
-	public final double MAX_IN_MATCH_ANGLE = 80;
+	private final double POTENTIOMETER_ANGLE_PER_VOLTS = 13500;
+	private final double POTENTIOMETER_MAX_ANGLE = 270;
+	private final double POTENTIOMETER_START_DEGREE = 13297.5 + 30; // first term is to zero at zero point, second is arm angle off potentiometer start
+	public final double MAX_IN_MATCH_ANGLE = 160;
 	public final double ARM_PID_STOP_TOLERANCE = 2; // degrees, roughly leads to arm PID positioning precision
+	public final double MAX_JOYSTICK_SPEED = 0.5;
 	public final double JOYSTICK_DEADZONE = 0.02; // normalized units
 	
 	// variables
@@ -36,9 +38,7 @@ public class ArmPivot extends Subsystem {
 
 	CANTalon arm1 = new CANTalon(RobotMap.lifter1);
 	CANTalon arm2 = new CANTalon(RobotMap.lifter2);
-	AnalogPotentiometer armPotentiometer = new AnalogPotentiometer(RobotMap.armPoten1, 
-																   POTENTIOMETER_DEGREE_LIMIT,
-																   POTENTIOMETER_START_DEGREE);
+	public AnalogPotentiometer armPotentiometer = new AnalogPotentiometer(RobotMap.armPoten1, POTENTIOMETER_ANGLE_PER_VOLTS);
 	public PIDControl armPID = new PIDControl(PID_KP, PID_KI, 0); // No PD
 	
 	public ArmPivot()
@@ -49,14 +49,14 @@ public class ArmPivot extends Subsystem {
 	public void setArmByJoystick()
 	{
 		// we may need to limit the commanded speed to remain within the winch speed limits
-		double commandedSpeed = OI.UtilStick.getY();
-		double realSpeed = Robot.winch.getLimitedArmSpeed(commandedSpeed);
+		double commandedSpeed = MAX_JOYSTICK_SPEED*Robot.oi.UtilStick.getY();
+		double realSpeed = commandedSpeed;//Robot.winch.getLimitedArmSpeed(commandedSpeed);
 		
 		// apply deadzone
 		if (Math.abs(realSpeed) < JOYSTICK_DEADZONE)
 			realSpeed = 0;
 		
-		set(realSpeed);
+		set(realSpeed); // JACK - consider using armPID and setTargetAngle for this so the arm stays up (also see whether the motors are braking...)
 	}
 
 	public void set(double speed)
@@ -80,7 +80,7 @@ public class ArmPivot extends Subsystem {
 	
 	public double getArmAngle()
 	{
-		return armPotentiometer.get();
+		return POTENTIOMETER_MAX_ANGLE - (armPotentiometer.get() - POTENTIOMETER_START_DEGREE);
 	}
 	
 	/**
@@ -101,7 +101,7 @@ public class ArmPivot extends Subsystem {
 		if (RobotMap.MATCH_LENGTH - Timer.getMatchTime() > 20)
 			currentMaxAngle = MAX_IN_MATCH_ANGLE;
 		else
-			currentMaxAngle = POTENTIOMETER_DEGREE_LIMIT;
+			currentMaxAngle = 10e6; // infinite
 	}
 	
 	/**

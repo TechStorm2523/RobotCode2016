@@ -1,12 +1,37 @@
 <xml version="1.0">
 <dashboard>
+	<widget field=" Arm Rate " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.SimpleDial">
+		<location x="1042" y="382"/>
+		<width>130</width>
+		<height>83</height>
+		<property name="Upper Limit" value="1.0"/>
+		<property name="Lower Limit" value="-1.0"/>
+		<property name="Tick Interval" value="0.1"/>
+	</widget>
+	<widget field=" Winch Braked? " type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="843" y="298"/>
+		<width>148</width>
+		<height>58</height>
+	</widget>
+	<widget field=" Launcher Mot RPM (Front) " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.SimpleDial">
+		<location x="976" y="27"/>
+		<width>228</width>
+		<height>152</height>
+	</widget>
+	<widget field=" Launcher Mot RPM (Back) " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.SimpleDial">
+		<location x="1160" y="28"/>
+		<width>234</width>
+	</widget>
+	<widget field=" Winch (Arm) Extension " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="804" y="515"/>
+	</widget>
 	<widget field=" Launcher Mot Encoder " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
-		<location x="892" y="423"/>
+		<location x="-37" y="414"/>
 	</widget>
 	<widget field=" Ball? " type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="1028" y="290"/>
-		<width>87</width>
-		<height>68</height>
+		<location x="844" y="224"/>
+		<width>99</width>
+		<height>65</height>
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
 		<location x="22" y="3"/>
@@ -15,22 +40,17 @@
 		<property name="Text" value="Auto Mode Select"/>
 	</static-widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
-		<location x="1179" y="280"/>
+		<location x="1110" y="306"/>
 		<width>108</width>
 		<height>21</height>
-		<property name="Text" value="Arm Angle"/>
+		<property name="Text" value="Arm"/>
 	</static-widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
-		<location x="1129" y="9"/>
+		<location x="1110" y="9"/>
 		<width>139</width>
 		<height>22</height>
 		<property name="Text" value="Launcher Mot RPM"/>
 	</static-widget>
-	<widget field=" Arm Angle " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.SimpleDial">
-		<location x="1110" y="297"/>
-		<height>166</height>
-		<property name="Upper Limit" value="180.0"/>
-	</widget>
 	<widget field=" Range to Best Target " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
 		<location x="1019" y="226"/>
 		<height>37</height>
@@ -87,19 +107,9 @@
 	<widget field="Tote hue min" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="445" y="639"/>
 	</widget>
-	<widget field=" Launcher Mot RPM (Back) " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.SimpleDial">
-		<location x="1178" y="28"/>
-		<width>216</width>
-		<height>142</height>
-		<property name="Upper Limit" value="13050.0"/>
-		<property name="Tick Interval" value="1000.0"/>
-	</widget>
-	<widget field=" Launcher Mot RPM (Front) " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.SimpleDial">
-		<location x="1006" y="29"/>
-		<width>213</width>
-		<height>137</height>
-		<property name="Upper Limit" value="13050.0"/>
-		<property name="Tick Interval" value="1000.0"/>
+	<widget field=" Arm Angle " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.SimpleDial">
+		<location x="1126" y="309"/>
+		<height>161</height>
 	</widget>
 </dashboard>
 <live-window>
