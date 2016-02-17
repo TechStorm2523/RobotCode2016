@@ -113,13 +113,15 @@ public class Winch extends Subsystem {
 	private double getWinchSpeed(double currentAngle, double angleDelta) 
 	{
 		// disable if above max angle to avoid infinite speed issues and cable slack
+		// !!! TODO: Maybe juse use getCurrentDistance and stop whenever the winch has extended to full arm length
 		if (currentAngle > MAX_WINCH_BY_ARM_ANGLE)
 			return 0;
 		else
 		{
 			// derived from derivative of arm radius ( d/cos(theta) ) with respect to angle multiplied by
 			// the derivative of angle with respect to time.
-			// (dr/dTheta * dtheta/dt = dr/dt)
+			// (dr/dTheta (i.e. ARM... GLE)) * dtheta/dt (i.e. angleDelta) = dr/dt)
+			// TODO: (Ask Chen or Uutkhu about the math to do this if it doesn't work at all, otherwise just change the constant if the arm bows inward or outward)
 			return RPM_PER_INCH_PER_SECOND *
 				   ARM_PIVOT_TO_15IN * 
 				   Math.tan(Math.toRadians(currentAngle - Robot.armpivot.ARM_STARTING_ANGLE)) / 
