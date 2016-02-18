@@ -47,35 +47,35 @@ public class OI {
     public OI()
     {
     	// DRIVE
-    	driveButton1.whenPressed(new AutoCollect());
-    	
-    	driveButton2.whileHeld(new FeederCollect());
-//   		
-   		driveButton3.whenPressed(new LauncherLower());
-   		driveButton5.whenPressed(new LauncherRaise());
-//   		
-   		driveButton4.whileHeld(new FeederExpel());
-    	driveButton11.whenPressed(new ManualAim());
+//    	driveButton1.whenPressed(new AutoCollect());
+//    	
+//    	driveButton2.whileHeld(new FeederCollect());
+////   		
+//   		driveButton3.whenPressed(new LauncherLower());
+//   		driveButton5.whenPressed(new LauncherRaise());
+////   		
+//   		driveButton4.whileHeld(new FeederExpel());
+//    	driveButton11.whenPressed(new ManualAim());
     	
     	// UTIL
-    	utilButton1.whenPressed(new AutoLaunch());
-    	utilButton2.whileHeld(new SetLauncherByThrottle());
+//    	utilButton1.whenPressed(new AutoLaunch());
+//    	utilButton11.whileHeld(new SetLauncherByThrottle());
     	
-//    	utilButton3.whenPressed(new ArmRetract());
-//    	utilButton5.whenPressed(new ArmExtend());
+   	    utilButton3.whenPressed(new ArmRetract());
+     	utilButton5.whenPressed(new ArmExtend());
     	
-    	utilButton7.whenPressed(new SetWinchBrake(true));
-    	utilButton9.whenPressed(new SetWinchBrake(false));
+//    	utilButton7.whenPressed(new SetWinchBrake(true));
+//    	utilButton9.whenPressed(new SetWinchBrake(false));
     	
-    	
+    	utilButton1.whenPressed(new ManualAim());
     	// TODO: THIS COULD SCREW UP THE NORMAL WINCH-ARM FUNCTION!!! SET BASED ON HOW WELL THE LIFT COMMAND WORKS
-    	utilButton4.whenPressed(new SetWinch(1));
-    	utilButton4.whenReleased(new SetWinch(0));
-    	utilButton6.whenPressed(new SetWinch(-1));
-    	utilButton6.whenReleased(new SetWinch(0));
+//    	utilButton4.whenPressed(new SetWinch(1));
+//    	utilButton4.whenReleased(new SetWinch(0));
+//    	utilButton6.whenPressed(new SetWinch(-1));
+//    	utilButton6.whenReleased(new SetWinch(0));
     	
-    	utilButton8.whenPressed(new LiftRobot());
-	    utilButton12.whenPressed(new GateMacro());
+//    	utilButton8.whenPressed(new LiftRobot());
+//	    utilButton12.whenPressed(new GateMacro());
     
 	    // There are a few additional built in buttons you can use. Additionally,
 	    // by subclassing Button you can create custom triggers and bind those to

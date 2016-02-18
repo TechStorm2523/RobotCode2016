@@ -2,18 +2,16 @@ package org.usfirst.frc.team2523.robot.commands;
 
 import org.usfirst.frc.team2523.robot.Robot;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
  *
  */
-public class ManualAim extends Command {
+public class ReShutUpCamera extends Command {
 
-    public ManualAim() {
+    public ReShutUpCamera() {
         // Use requires() here to declare subsystem dependencies
-        requires(Robot.launcherWheels);
-        requires(Robot.feeder);
+        requires(Robot.targetTracker);
     }
 
     // Called just before this Command runs the first time
@@ -22,14 +20,6 @@ public class ManualAim extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.launcherPneumatics.lower();
-    	Robot.launcherWheels.setByThrottle();
-    	Timer.delay(1);
-    	Robot.feeder.feed();
-    	Timer.delay(1);
-    	Robot.feeder.stop();
-    	Robot.launcherWheels.set(0);
-    	Robot.launcherPneumatics.raise();
     }
 
     // Make this return true when this Command no longer needs to run execute()
@@ -44,5 +34,6 @@ public class ManualAim extends Command {
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
+    	System.out.println("All Power To Phasers");
     }
 }

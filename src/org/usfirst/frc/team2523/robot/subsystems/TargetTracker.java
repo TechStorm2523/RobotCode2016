@@ -5,6 +5,7 @@ import java.util.Vector;
 
 import org.usfirst.frc.team2523.robot.Robot;
 import org.usfirst.frc.team2523.robot.commands.IdentifyBestTarget;
+import org.usfirst.frc.team2523.robot.commands.ShutUpCamera;
 
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.DrawMode;
@@ -366,6 +367,7 @@ public class TargetTracker extends Subsystem {
 	
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
+    	setDefaultCommand(new ShutUpCamera());
 //        setDefaultCommand(new IdentifyBestTarget());
     }
 }

@@ -1,5 +1,14 @@
 <xml version="1.0">
 <dashboard>
+	<widget field=" Winch Speed " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="32" y="32"/>
+	</widget>
+	<widget field=" Potentiometer Reading" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="502"/>
+	</widget>
+	<widget field=" Launcher Lowered? " type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="32" y="481"/>
+	</widget>
 	<widget field=" Arm Rate " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.SimpleDial">
 		<location x="1042" y="382"/>
 		<width>130</width>

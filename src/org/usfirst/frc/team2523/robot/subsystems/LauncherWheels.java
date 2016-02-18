@@ -24,7 +24,7 @@ public class LauncherWheels extends Subsystem {
 	public final double RPM_PID_KI = 0;//0.001;
 	public final double RPM_PID_KD = 0; //0.05;
 	public final double ENCODER_PULSE_PER_REV = 4096; // direct drive (this is the normal rev per pulse)
-	public final double MAX_RPM = 10000;
+	public final double MAX_RPM = 8000;
 	public final double RPM_PER_VELOCITY = 1 / (Math.PI*2.875/60); // inch/sec - by formula x/v = 1/(pi*d)
 	public final double TARGET_RPM_TOLERANCE = 100;
 	public final double LAUNCH_ANGLE = 64;
@@ -67,7 +67,13 @@ public class LauncherWheels extends Subsystem {
     
 	public void setByThrottle() {
 		// shift so goes from 0 at base to 1 at max (and, because setting RPM, scale to max)
-    	set(MAX_RPM*0.5*(-Robot.oi.UtilStick.getThrottle() + 1));
+		if (!Robot.feeder.ballstate()) {
+	        set(MAX_RPM*0.5*(-Robot.oi.UtilStick.getThrottle() + 1));
+	    } else {
+	        System.out.println("No Ball!");
+	    } 
+
+    	
 	}
 	
 	/**

@@ -10,16 +10,14 @@
 GENERAL NOTES:
 - TO DEBUG, play around with changing values on the SmartDashboard to Line Plots (Right click on something; make sure editable 
 	is enabled in the menus on SmartDashboard)
-- I think the back shooter wheel may be going to slow for some reason (maybe an issue with the motor controller?)
-	While it's firing, have someone stare at the RPM values and see what they see. 
+
+	
 - The winch (hopefully i've solved this) seems to be going way to fast for the speed we set() it at. 
 	This may be an issue with ENCODER_PULSE_PER_REV or RPM_PID_KP, but they don't seem to have much affect on the actual
 	speed (though they do change the speed the encoder says it is set at (look at the graph on SmartDashboard)
 	We'll need to figure it out so we can set the RPM of the winch motor (this worked on the launcher motors, i don't know 
 	why it doesn't here.
 	ALSO, if it comes to it you can switch to power by changing the value in setMode() or whatever to be kBusPercent (or something like that, right click on the one that is there and hit "Open Declaration" to see them all) so it goes from -1 to 1 in power settings, AND change the RPM_PER_INCH_PER_SECOND to be POWER_PER_INCH_PER_SECOND so it works the same way, but with power.
-- We need to make sure the manual launching system is easy to use, because the auto seems like it won't be good to use.
-	Make sure your command works, and make sure it is easy for ONE DRIVER to activate on their own
 
 
 (MOST OF FOLLOWING UNDER RobotCode2016->src->org.usfirst ... .subsystems OR .commands
