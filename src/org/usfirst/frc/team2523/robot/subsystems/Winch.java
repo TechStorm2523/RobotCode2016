@@ -23,7 +23,7 @@ public class Winch extends Subsystem {
 	public double POS_PID_KP = 0.1;
 	public double POS_PID_KI = 0.01;
 	public double POS_PID_KD = 0; // NO NEED
-	public double ENCODER_PULSE_PER_REV = 1000000*4096*10.0; // encoder is 1024 pulses per rev, but is before a 10:1 gearbox
+	public double ENCODER_PULSE_PER_REV = 4096*10.0; // encoder is 1024 pulses per rev, but is before a 10:1 gearbox
 	public double REV_PER_INCH = 10/(2*Math.PI*0.75); // circumference inches in one revolution
 	
 	public double MAX_ARM_EXTENSION = 18; // inches

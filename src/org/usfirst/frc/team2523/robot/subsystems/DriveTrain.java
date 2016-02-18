@@ -38,13 +38,24 @@ public class DriveTrain extends Subsystem {
 		
 		// ensure robot will stop motors if they do not receive commands for 0.1 seconds
 		drive.setSafetyEnabled(true);
-		drive.setExpiration(0.1);
+		drive.setExpiration(0.25);
 		
 		driveEncoder.setDistancePerPulse(DISTANCE_PER_ENCODER_PULSE);
 	}
 	
 	public void arcadedrivebyjoystick() {
 		drive.arcadeDrive(Robot.oi.DriveStick);
+		
+		// then make it so joystick output goes to x^2:
+		// if 
+		// 
+		// 
+		// how to do arcade drive
+		// given an x and y speeds:
+		// right side power = x - y
+		// left side power = x + y
+		// set the two motors on each side to the right power
+		
 	}
 	
 	/**

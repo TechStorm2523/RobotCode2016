@@ -22,6 +22,7 @@ public class ManualAim extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+    	Robot.launcherPneumatics.lower();
     	Robot.launcherWheels.setByThrottle();
     	Timer.delay(2);
     	Robot.feeder.feed();
