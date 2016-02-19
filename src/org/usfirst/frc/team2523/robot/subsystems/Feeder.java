@@ -17,7 +17,7 @@ public class Feeder extends Subsystem {
 	
 	Victor feed = new Victor(RobotMap.feeder);
     
-    DigitalInput balldetector = new DigitalInput(RobotMap.ballDetectorLimSwitch);
+     DigitalInput balldetector = new DigitalInput(RobotMap.ballDetectorLimSwitch);
 
     public boolean ballstate(){
     	return !balldetector.get();
