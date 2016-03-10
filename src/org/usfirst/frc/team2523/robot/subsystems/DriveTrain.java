@@ -34,9 +34,11 @@ public class DriveTrain extends Subsystem {
 		// invert necessary motors
 		drive.setInvertedMotor(MotorType.kFrontLeft, true);
 		drive.setInvertedMotor(MotorType.kFrontRight, true);
+		drive.setInvertedMotor(MotorType.kRearLeft, true);
+		drive.setInvertedMotor(MotorType.kRearRight, true);
 		
 		
-		// ensure robot will stop motors if they do not receive commands for 0.1 seconds
+		// ensure robot will stop motors if they do not receive commands for 0.25 seconds
 		drive.setSafetyEnabled(true);
 		drive.setExpiration(0.25);
 		

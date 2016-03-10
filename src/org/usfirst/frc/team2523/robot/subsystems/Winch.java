@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  */
 public class Winch extends Subsystem {
 	// constants
-	public double RPM_PID_KP = 0.5;
+	public double RPM_PID_KP = 4;
 	public double RPM_PID_KI = 0; // NO NEED
 	public double RPM_PID_KD = 0; // NO NEED
 	public double POS_PID_KP = 0.1;
@@ -104,7 +104,7 @@ public class Winch extends Subsystem {
 	public void setWinchByArmSpeed()
 	{
 		// get speed based on current angle
-		set(getWinchSpeed(Robot.armpivot.getArmAngle(), Robot.armpivot.getArmRate()));
+		//set(getWinchSpeed(Robot.armpivot.getArmAngle(), Robot.armpivot.getArmRate()));
 	}
 	
 	/**
