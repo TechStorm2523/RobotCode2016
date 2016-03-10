@@ -17,13 +17,16 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  */
 public class Winch extends Subsystem {
 	// constants
+	public double MAX_RPM = 62.5;
+	public double RPM_PID_KF = 1023 / (MAX_RPM/60 * 0.1 * 4096); // feed forward
 	public double RPM_PID_KP = 4;
 	public double RPM_PID_KI = 0; // NO NEED
 	public double RPM_PID_KD = 0; // NO NEED
 	public double POS_PID_KP = 0.1;
 	public double POS_PID_KI = 0.01;
 	public double POS_PID_KD = 0; // NO NEED
-	public double ENCODER_PULSE_PER_REV = 4096*10.0; // encoder is 1024 pulses per rev, but is before a 10:1 gearbox
+	public double GEARBOX_CONVERSION_FACTOR = 0.01; // 100:1 gearbox
+//	public double ENCODER_PULSE_PER_REV = 4096*10.0; // encoder is 1024 pulses per rev, but is before a 10:1 gearbox
 	public double REV_PER_INCH = 10/(2*Math.PI*0.75); // circumference inches in one revolution
 	
 	public double MAX_ARM_EXTENSION = 18; // inches
@@ -39,15 +42,16 @@ public class Winch extends Subsystem {
     public Winch()
     {
     	// tell Talon SRX to use encoder (Quadrature Encoder)
-    	winchMotor.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+    	winchMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+    	winchMotor.reverseSensor(false);
     	
     	// and tell it to operate via RPM commands (for now)
     	winchMotor.changeControlMode(TalonControlMode.Speed);
     	
     	// configure PID control for BOTH modes (we ASSUME ramp rate zero means infinite ramp rate)
-    	winchMotor.setPID(RPM_PID_KP, RPM_PID_KI, RPM_PID_KD, 0, 0, 0, 0); // all other values are zero, but create 2 profiles
+    	winchMotor.setPID(RPM_PID_KP, RPM_PID_KI, RPM_PID_KD, RPM_PID_KF, 1, 0, 0); // ramp rate is zero, but create 2 profiles
     	winchMotor.setPID(POS_PID_KP, POS_PID_KI, POS_PID_KD, 0, 1, 0, 1); // limit integral accumulation for position
-    	winchMotor.configEncoderCodesPerRev( (int) ENCODER_PULSE_PER_REV); 	
+//    	winchMotor.configEncoderCodesPerRev( (int) ENCODER_PULSE_PER_REV); 	
     	
     	// ensure braked (Motor brake, not pneumatic brake)
     	winchMotor.enableBrakeMode(true);
@@ -65,9 +69,9 @@ public class Winch extends Subsystem {
     	winchMotor.changeControlMode(TalonControlMode.Speed);
     	winchMotor.setProfile(0);
     	
-		winchMotor.set(rpm);
+		winchMotor.set(rpm*GEARBOX_CONVERSION_FACTOR);
 		
-		System.out.println(rpm + "     " + winchMotor.get() + "      " + winchMotor.getEncVelocity());
+		System.out.println("RPM: " + rpm + "Target:     " + winchMotor.get() + "Actual Speed:      " + winchMotor.getEncVelocity());
 		
 		// make sure brake released (only if not zero)
 		if (rpm != 0)
@@ -84,9 +88,9 @@ public class Winch extends Subsystem {
     	winchMotor.setProfile(1);
     	
     	// set in revolutions
-    	winchMotor.set(distance*REV_PER_INCH);
+    	winchMotor.set(distance*GEARBOX_CONVERSION_FACTOR*REV_PER_INCH);
     	
-		// make sure brake released (only if not zero)
+		// make sure brake released
     	releaseBrake();
 	}
 	
@@ -95,7 +99,7 @@ public class Winch extends Subsystem {
 	 */
 	public double getCurrentDistance()
 	{
-		return winchMotor.getEncPosition() / REV_PER_INCH;
+		return winchMotor.getEncPosition() / (REV_PER_INCH * GEARBOX_CONVERSION_FACTOR);
 	}
 	
 	/**
@@ -104,7 +108,7 @@ public class Winch extends Subsystem {
 	public void setWinchByArmSpeed()
 	{
 		// get speed based on current angle
-		//set(getWinchSpeed(Robot.armpivot.getArmAngle(), Robot.armpivot.getArmRate()));
+		set(getWinchSpeed(Robot.armpivot.getArmAngle(), Robot.armpivot.getArmRate()));
 	}
 	
 	/**
@@ -141,12 +145,13 @@ public class Winch extends Subsystem {
 		double winchSpeed = getWinchSpeed(Robot.armpivot.getArmAngle(),
 										  Robot.armpivot.getArmRate());
 		
+		// TODO: DOESN'T WORK!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		if (winchSpeed > 1.0)
-			return 1.0;
+			return Robot.armpivot.getArmRate() / 0; // whatever conversion we need to get power
 		else if (winchSpeed < -1.0)
-			return -1.0;
+			return -Robot.armpivot.getArmRate() / 0;
 		else
-			return winchSpeed;
+			return commandedSpeed;
 	}
 	
 	public void fullextend(){

@@ -8,6 +8,7 @@ import org.usfirst.frc.team2523.robot.commands.CallArcadeDrive;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.RobotDrive.MotorType;
+import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
@@ -24,6 +25,11 @@ public class DriveTrain extends Subsystem {
 	public final double RAMP_UP_DURATION = 1;
 	
 	RobotDrive drive = new RobotDrive(RobotMap.Lfront, RobotMap.Lback, RobotMap.Rfront, RobotMap.Rback);
+	Talon lfront = new Talon(RobotMap.Lfront);
+	Talon lback = new Talon(RobotMap.Lback);
+	Talon rfront = new Talon(RobotMap.Rfront);
+	Talon rback = new Talon(RobotMap.Rback);
+
 	Encoder driveEncoder = new Encoder(RobotMap.driveEncoder1, RobotMap.driveEncoder2, 
 									false, Encoder.EncodingType.k4X);
 	public PIDControl turnPID = new PIDControl(TURN_KP, TURN_KI, 0); // PI control intended
@@ -58,8 +64,17 @@ public class DriveTrain extends Subsystem {
 		// left side power = x + y
 		// set the two motors on each side to the right power
 		
+		if (Robot.oi.DriveStick.getY() < 0){
+		
+			rightSpeed = 
+			
+		lfront.set(Robot.oi.DriveStick.getZ() + Robot.oi.DriveStick.getY());
+		rfront.set(Robot.oi.DriveStick.getZ() - Robot.oi.DriveStick.getY());
+		lback.set(Robot.oi.DriveStick.getZ() + Robot.oi.DriveStick.getY());
+		rback.set(Robot.oi.DriveStick.getZ() - Robot.oi.DriveStick.getY());
+		
+		}
 	}
-	
 	/**
 	 * @param driveRate Rate of drive from -1 to 1
 	 * @param turnRate Rate of turn from -1 to 1

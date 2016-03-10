@@ -23,7 +23,7 @@ public class LauncherWheels extends Subsystem {
 	public final double RPM_PID_KP = 0.005;
 	public final double RPM_PID_KI = 0;//0.001;
 	public final double RPM_PID_KD = 0; //0.05;
-	public final double ENCODER_PULSE_PER_REV = 4096; // direct drive (this is the normal rev per pulse)
+//	public final double ENCODER_PULSE_PER_REV = 4096; // direct drive (this is the normal rev per pulse)
 	public final double MAX_RPM = 8000;
 	public final double RPM_PER_VELOCITY = 1 / (Math.PI*2.875/60); // inch/sec - by formula x/v = 1/(pi*d)
 	public final double TARGET_RPM_TOLERANCE = 100;
@@ -42,8 +42,8 @@ public class LauncherWheels extends Subsystem {
     public LauncherWheels()
     {
     	// tell Talon SRXs to use encoder (Quadrature Encoder)
-    	launchBack.setFeedbackDevice(FeedbackDevice.QuadEncoder);
-    	launchFront.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+    	launchBack.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+    	launchFront.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
     	
     	// and tell it to operate via RPM commands
     	launchBack.changeControlMode(TalonControlMode.Speed);
@@ -52,8 +52,8 @@ public class LauncherWheels extends Subsystem {
     	// configure PID control
     	launchBack.setPID(RPM_PID_KP, RPM_PID_KI, RPM_PID_KD); // I and D can be zero, it should never have difficulty
     	launchFront.setPID(RPM_PID_KP, RPM_PID_KI, RPM_PID_KD);
-    	launchBack.configEncoderCodesPerRev( (int) ENCODER_PULSE_PER_REV);
-    	launchFront.configEncoderCodesPerRev( (int) ENCODER_PULSE_PER_REV);
+//    	launchBack.configEncoderCodesPerRev( (int) ENCODER_PULSE_PER_REV);
+//    	launchFront.configEncoderCodesPerRev( (int) ENCODER_PULSE_PER_REV);
     	launchBack.setCloseLoopRampRate(0); // we ASSUME ramp rate zero means infinite ramp rate
     	launchFront.setCloseLoopRampRate(0); // we ASSUME ramp rate zero means infinite ramp rate
     	
