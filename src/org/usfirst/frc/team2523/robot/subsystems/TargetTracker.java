@@ -5,6 +5,7 @@ import java.util.Vector;
 
 import org.usfirst.frc.team2523.robot.Robot;
 import org.usfirst.frc.team2523.robot.commands.IdentifyBestTarget;
+import org.usfirst.frc.team2523.robot.commands.SendBasicImage;
 import org.usfirst.frc.team2523.robot.commands.ShutUpCamera;
 
 import com.ni.vision.NIVision;
@@ -111,6 +112,15 @@ public class TargetTracker extends Subsystem {
 	}
 	
 	/**
+	 * Simply grabs the image from the camera and sends it to the DS without processing
+	 */
+	public void transferImagetoDS()
+	{
+		NIVision.IMAQdxGrab(session, frame, 1);
+		CameraServer.getInstance().setImage(frame);
+	}
+	
+	/**
 	 * Generates complete scores for all found targets,
 	 * then deduces the best. Sets this class's best target
 	 * reference to the one found
@@ -127,12 +137,12 @@ public class TargetTracker extends Subsystem {
 			NIVision.IMAQdxGrab(session, frame, 1);
 			
 			//Update threshold values from SmartDashboard. For performance reasons it is recommended to remove this after calibration is finished.
-			HUE_RANGE.minValue = (int)SmartDashboard.getNumber("Tote hue min", HUE_RANGE.minValue);
-			HUE_RANGE.maxValue = (int)SmartDashboard.getNumber("Tote hue max", HUE_RANGE.maxValue);
-			SAT_RANGE.minValue = (int)SmartDashboard.getNumber("Tote sat min", SAT_RANGE.minValue);
-			SAT_RANGE.maxValue = (int)SmartDashboard.getNumber("Tote sat max", SAT_RANGE.maxValue);
-			VAL_RANGE.minValue = (int)SmartDashboard.getNumber("Tote val min", VAL_RANGE.minValue);
-			VAL_RANGE.maxValue = (int)SmartDashboard.getNumber("Tote val max", VAL_RANGE.maxValue);
+//			HUE_RANGE.minValue = (int)SmartDashboard.getNumber("Tote hue min", HUE_RANGE.minValue);
+//			HUE_RANGE.maxValue = (int)SmartDashboard.getNumber("Tote hue max", HUE_RANGE.maxValue);
+//			SAT_RANGE.minValue = (int)SmartDashboard.getNumber("Tote sat min", SAT_RANGE.minValue);
+//			SAT_RANGE.maxValue = (int)SmartDashboard.getNumber("Tote sat max", SAT_RANGE.maxValue);
+//			VAL_RANGE.minValue = (int)SmartDashboard.getNumber("Tote val min", VAL_RANGE.minValue);
+//			VAL_RANGE.maxValue = (int)SmartDashboard.getNumber("Tote val max", VAL_RANGE.maxValue);
 			
 			// threshold based on HSV
 			NIVision.imaqColorThreshold(binaryFrame, frame, 255, NIVision.ColorMode.HSV, HUE_RANGE, SAT_RANGE, VAL_RANGE);
@@ -216,8 +226,7 @@ public class TargetTracker extends Subsystem {
 			}
 		}
 		// upon failure, just display normal image
-		NIVision.IMAQdxGrab(session, frame, 1);
-		CameraServer.getInstance().setImage(frame);
+		transferImagetoDS();
 		
 		currentBestTarget = null;
 		return null;
@@ -367,7 +376,7 @@ public class TargetTracker extends Subsystem {
 	
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
-    	setDefaultCommand(new ShutUpCamera());
+    	setDefaultCommand(new SendBasicImage());
 //        setDefaultCommand(new IdentifyBestTarget());
     }
 }

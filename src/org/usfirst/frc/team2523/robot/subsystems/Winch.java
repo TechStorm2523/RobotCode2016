@@ -19,7 +19,7 @@ public class Winch extends Subsystem {
 	// constants
 	public double MAX_RPM = 62.5;
 	public double RPM_PID_KF = 1023 / (MAX_RPM/60 * 0.1 * 4096); // feed forward
-	public double RPM_PID_KP = 4;
+	public double RPM_PID_KP = 0.5 * 1023 / 900.0;
 	public double RPM_PID_KI = 0; // NO NEED
 	public double RPM_PID_KD = 0; // NO NEED
 	public double POS_PID_KP = 0.1;
@@ -51,7 +51,7 @@ public class Winch extends Subsystem {
     	// configure PID control for BOTH modes (we ASSUME ramp rate zero means infinite ramp rate)
     	winchMotor.setPID(RPM_PID_KP, RPM_PID_KI, RPM_PID_KD, RPM_PID_KF, 1, 0, 0); // ramp rate is zero, but create 2 profiles
     	winchMotor.setPID(POS_PID_KP, POS_PID_KI, POS_PID_KD, 0, 1, 0, 1); // limit integral accumulation for position
-//    	winchMotor.configEncoderCodesPerRev( (int) ENCODER_PULSE_PER_REV); 	
+//    	winchMotor.configEncoderCodesPerRev( (int) ENCODER_PULSE_PER_REV);  // no need with ctreMagEncoder
     	
     	// ensure braked (Motor brake, not pneumatic brake)
     	winchMotor.enableBrakeMode(true);
@@ -99,7 +99,7 @@ public class Winch extends Subsystem {
 	 */
 	public double getCurrentDistance()
 	{
-		return winchMotor.getEncPosition() / (REV_PER_INCH * GEARBOX_CONVERSION_FACTOR);
+		return winchMotor.getPosition() / (REV_PER_INCH * GEARBOX_CONVERSION_FACTOR);
 	}
 	
 	/**

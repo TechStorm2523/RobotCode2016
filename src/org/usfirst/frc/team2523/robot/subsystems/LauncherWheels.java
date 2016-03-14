@@ -20,11 +20,13 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  */
 public class LauncherWheels extends Subsystem {
 	// constants
-	public final double RPM_PID_KP = 0.005;
+	public final double MAX_RPM = 8000;
+	public final double RPM_PID_KF = 1023 / (MAX_RPM/60 * 0.1 * 4096); // feed forward
+	public final double RPM_PID_KP = 0.1 * 1023 / 900.0; // set to 10% throttle when going 900 ticks/0.1s
 	public final double RPM_PID_KI = 0;//0.001;
 	public final double RPM_PID_KD = 0; //0.05;
-//	public final double ENCODER_PULSE_PER_REV = 4096; // direct drive (this is the normal rev per pulse)
-	public final double MAX_RPM = 8000;
+//	public double GEARBOX_CONVERSION_FACTOR = 1; // 1:1 gearbox
+//	public final double ENCODER_PULSE_PER_REV = 4096; // direct drive (this is the normal rev per pulse) // no need with CtreMagEncoder
 	public final double RPM_PER_VELOCITY = 1 / (Math.PI*2.875/60); // inch/sec - by formula x/v = 1/(pi*d)
 	public final double TARGET_RPM_TOLERANCE = 100;
 	public final double LAUNCH_ANGLE = 64;
@@ -32,8 +34,7 @@ public class LauncherWheels extends Subsystem {
 	public final double TARGET_HEIGHT = 7*12+1 + 12 ; // feet (target base + to target center)
 	public final double CAMERA_DISTANCE_OFF_LAUNCH = 7 / 12.0; // feet
 
-    
-    public CANTalon launchBack = new CANTalon(RobotMap.launcherMotBack);
+    CANTalon launchBack = new CANTalon(RobotMap.launcherMotBack);
     CANTalon launchFront = new CANTalon(RobotMap.launcherMotFront);
 //    Encoder rpmEncoder = new Encoder(RobotMap.launcherEncoder1, RobotMap.launcherEncoder2, 
 //									false, Encoder.EncodingType.k4X);
@@ -50,12 +51,10 @@ public class LauncherWheels extends Subsystem {
     	launchFront.changeControlMode(TalonControlMode.Speed);
     	
     	// configure PID control
-    	launchBack.setPID(RPM_PID_KP, RPM_PID_KI, RPM_PID_KD); // I and D can be zero, it should never have difficulty
-    	launchFront.setPID(RPM_PID_KP, RPM_PID_KI, RPM_PID_KD);
-//    	launchBack.configEncoderCodesPerRev( (int) ENCODER_PULSE_PER_REV);
+    	launchBack.setPID(RPM_PID_KP, RPM_PID_KI, RPM_PID_KD, RPM_PID_KF, 0, 0, 0); // I and D can be zero, it should never have difficulty
+    	launchFront.setPID(RPM_PID_KP, RPM_PID_KI, RPM_PID_KD, RPM_PID_KF, 0, 0, 0); // we ASSUME ramp rate zero means infinite ramp rate
+//    	launchBack.configEncoderCodesPerRev( (int) ENCODER_PULSE_PER_REV); // no need with CtreMagEncoder
 //    	launchFront.configEncoderCodesPerRev( (int) ENCODER_PULSE_PER_REV);
-    	launchBack.setCloseLoopRampRate(0); // we ASSUME ramp rate zero means infinite ramp rate
-    	launchFront.setCloseLoopRampRate(0); // we ASSUME ramp rate zero means infinite ramp rate
     	
     	// ensure NOT braked
     	launchBack.enableBrakeMode(false);
@@ -71,9 +70,7 @@ public class LauncherWheels extends Subsystem {
 	        set(MAX_RPM*0.5*(-Robot.oi.UtilStick.getThrottle() + 1));
 	    } else {
 	        System.out.println("No Ball!");
-	    } 
-
-    	
+	    }
 	}
 	
 	/**
@@ -91,8 +88,8 @@ public class LauncherWheels extends Subsystem {
 	public double[] getCurrentRPMs()
 	{
 		double[] rpms = new double[2];
-		rpms[0] = launchBack.getEncVelocity(); // ?? MAY BE IN revs per SECOND... multiply by 60?
-		rpms[1] = launchFront.getEncVelocity();
+		rpms[0] = launchBack.getSpeed(); //getEncVelocity(); // look at the Talon SRX Software Manual for explanation
+		rpms[1] = launchFront.getSpeed();
 		return rpms; 
 	}
 	

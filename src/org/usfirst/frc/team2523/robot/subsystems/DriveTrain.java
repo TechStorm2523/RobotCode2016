@@ -23,6 +23,7 @@ public class DriveTrain extends Subsystem {
 	final double DISTANCE_PER_ENCODER_PULSE = 0; // feet
 	public final double TARGET_DISTANCE_TOLERANCE = 0.2; // feet, or same as DISTANCE_PER_ENCODER_PULSE
 	public final double RAMP_UP_DURATION = 1;
+	final double EXPONENETIAL_FACTOR = 2;
 	
 	RobotDrive drive = new RobotDrive(RobotMap.Lfront, RobotMap.Lback, RobotMap.Rfront, RobotMap.Rback);
 	Talon lfront = new Talon(RobotMap.Lfront);
@@ -55,25 +56,27 @@ public class DriveTrain extends Subsystem {
 		drive.arcadeDrive(Robot.oi.DriveStick);
 		
 		// then make it so joystick output goes to x^2:
-		// if 
-		// 
-		// 
 		// how to do arcade drive
 		// given an x and y speeds:
 		// right side power = x - y
 		// left side power = x + y
 		// set the two motors on each side to the right power
+		double forwardSpeed = Robot.oi.DriveStick.getY();
+		double turnSpeed = Robot.oi.DriveStick.getZ();
 		
-		if (Robot.oi.DriveStick.getY() < 0){
+		// scale the speeds so they are exponential
+		forwardSpeed = getExpodentialValue(forwardSpeed);
+		turnSpeed = getExpodentialValue(turnSpeed);
 		
-			rightSpeed = 
+		// convert to arcadedrive power
+		double rightSpeed = forwardSpeed + turnSpeed;
+		double leftSpeed = forwardSpeed - turnSpeed;
 			
-		lfront.set(Robot.oi.DriveStick.getZ() + Robot.oi.DriveStick.getY());
-		rfront.set(Robot.oi.DriveStick.getZ() - Robot.oi.DriveStick.getY());
-		lback.set(Robot.oi.DriveStick.getZ() + Robot.oi.DriveStick.getY());
-		rback.set(Robot.oi.DriveStick.getZ() - Robot.oi.DriveStick.getY());
-		
-		}
+		// set correct motors
+		lfront.set(leftSpeed);
+		lback.set(leftSpeed);
+		rfront.set(rightSpeed);
+		rback.set(rightSpeed);		
 	}
 	/**
 	 * @param driveRate Rate of drive from -1 to 1
@@ -125,6 +128,23 @@ public class DriveTrain extends Subsystem {
 	{
 		driveEncoder.reset();
 		Timer.delay(1);
+	}
+	
+	/**
+	 * Changes the given input to an exponential value
+	 * @param input Input to be translated to exponential between -1.0 and 1.0
+	 * @return Returns the exponential value between -1.0 and 1.0
+	 */
+	public double getExpodentialValue(double input)
+	{
+		if (input > 0)
+		{
+			return Math.pow(input, EXPONENETIAL_FACTOR);
+		}
+		else 
+		{
+			return -1.0 * Math.pow(input, EXPONENETIAL_FACTOR);
+		}
 	}
 	
 	public void initDefaultCommand() {

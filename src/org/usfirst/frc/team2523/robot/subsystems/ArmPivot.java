@@ -4,7 +4,7 @@ package org.usfirst.frc.team2523.robot.subsystems;
 import org.usfirst.frc.team2523.robot.OI;
 import org.usfirst.frc.team2523.robot.Robot;
 import org.usfirst.frc.team2523.robot.RobotMap;
-import org.usfirst.frc.team2523.robot.commands.ArmPivotComm;
+import org.usfirst.frc.team2523.robot.commands.SetArmByJoystick;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.CANTalon;
@@ -116,7 +116,7 @@ public class ArmPivot extends Subsystem {
 	
 	public void initDefaultCommand() {
 		// Set the default command for a subsystem here.
-		setDefaultCommand(new ArmPivotComm());
+		setDefaultCommand(new SetArmByJoystick());
 	}
 	/* public static void up(){
 

@@ -47,32 +47,28 @@ public class OI {
     public OI()
     {
     	// DRIVE
-    	utilButton2.whenPressed(new AutoCollect());
-//    	
-//    	driveButton2.whileHeld(new FeederCollect());
-////   		
+    	driveButton1.whenPressed(new AutoCollect());
+    	driveButton2.whileHeld(new FeederExpel()); // AutoExpel()????
+    	
    		driveButton3.whenPressed(new LauncherLower());
    		driveButton5.whenPressed(new LauncherRaise());
-////   		
-//   		driveButton4.whileHeld(new FeederExpel());
-    	driveButton1.whenPressed(new ManualAim());
     	
     	// UTIL
-//    	utilButton1.whenPressed(new AutoLaunch());
-//    	utilButton11.whileHeld(new SetLauncherByThrottle());
+   		utilButton1.whileHeld(new ManualLaunch());
+//   		utilButton1.whileHeld(new SetLauncherByThrottle());
+    	utilButton2.whenPressed(new AutoLaunch());
     	
-   	  //  utilButton3.whenPressed(new ArmRetract());
-     	// utilButton5.whenPressed(new ArmExtend());
-    	
-    		utilButton7.whenPressed(new SetWinchBrake(true));
-    		utilButton9.whenPressed(new SetWinchBrake(false));
-    	
-    	utilButton1.whenPressed(new ManualAim());
+    	utilButton3.whileHeld(new FeederExpel());
+    	utilButton5.whileHeld(new FeederFire());
+
     	// TODO: THIS COULD SCREW UP THE NORMAL WINCH-ARM FUNCTION!!! SET BASED ON HOW WELL THE LIFT COMMAND WORKS
-    	utilButton4.whenPressed(new SetWinch(1));
+    	utilButton4.whenPressed(new SetWinch(-0.5)); // slower
     	utilButton4.whenReleased(new SetWinch(0));
-    	utilButton6.whenPressed(new SetWinch(-1));
+    	utilButton6.whenPressed(new SetWinch(1));
     	utilButton6.whenReleased(new SetWinch(0));
+    	
+		utilButton7.whenPressed(new SetWinchBrake(true));
+		utilButton8.whenPressed(new SetWinchBrake(false));
     	
 //    	utilButton8.whenPressed(new LiftRobot());
 //	    utilButton12.whenPressed(new GateMacro());

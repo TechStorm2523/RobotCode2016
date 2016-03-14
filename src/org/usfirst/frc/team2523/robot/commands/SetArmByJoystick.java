@@ -7,9 +7,9 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class ArmPivotComm extends Command {
+public class SetArmByJoystick extends Command {
 
-	public ArmPivotComm() {
+	public SetArmByJoystick() {
 		// Use requires() here to declare subsystem dependencies
 		requires(Robot.armpivot);
 //		requires(Robot.winch);

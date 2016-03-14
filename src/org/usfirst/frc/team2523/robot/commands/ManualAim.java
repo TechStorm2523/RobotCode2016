@@ -6,13 +6,14 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
- *
+ *@deprecated
  */
 public class ManualAim extends Command {
 
     public ManualAim() {
         // Use requires() here to declare subsystem dependencies
         requires(Robot.launcherWheels);
+        requires(Robot.launcherPneumatics);
         requires(Robot.feeder);
     }
 

@@ -19,13 +19,13 @@ public class AutoLaunch extends CommandGroup {
         addSequential(new Wait( 0.5 ));
         
         // FIRE!
-        
         addSequential(new FeederFire());
         addParallel(new SetStatusFiring());
         // wait, then shutdown
-        addSequential(new Wait( 2 ));
+        addSequential(new Wait( 1 ));
         addSequential(new FeederOff());
         addSequential(new SetStatusIdle());
         addSequential(new SetLauncherRPM(0));
+        addSequential(new ShutUpCamera());
     }
 }
