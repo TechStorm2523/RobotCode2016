@@ -57,8 +57,8 @@ public class Winch extends Subsystem {
     	winchMotor.enableBrakeMode(true);
     	
     	// set base position to here and reset
-//    	winchMotor.setPosition(0);
-//    	winchMotor.reset();
+    	winchMotor.setPosition(0);
+    	winchMotor.reset();
     }
     
     /**
@@ -120,7 +120,7 @@ public class Winch extends Subsystem {
 	{
 		// disable if above max angle to avoid infinite speed issues and cable slack
 		// !!! TODO: Maybe juse use getCurrentDistance and stop whenever the winch has extended to full arm length
-		if (currentAngle > MAX_WINCH_BY_ARM_ANGLE)
+		if (getCurrentDistance() > MAX_ARM_EXTENSION) // (currentAngle > MAX_WINCH_BY_ARM_ANGLE)
 			return 0;
 		else
 		{
@@ -143,13 +143,19 @@ public class Winch extends Subsystem {
 	public double getLimitedArmSpeed(double commandedSpeed) 
 	{
 		double winchSpeed = getWinchSpeed(Robot.armpivot.getArmAngle(),
-										  Robot.armpivot.getArmRate());
+										  Robot.armpivot.getArmRate());				
 		
-		// TODO: DOESN'T WORK!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		if (winchSpeed > 1.0)
-			return Robot.armpivot.getArmRate() / 0; // whatever conversion we need to get power
-		else if (winchSpeed < -1.0)
-			return -Robot.armpivot.getArmRate() / 0;
+		// max winch speed = 1.0 so max arm speed = 1.0 / [the conversion factor in above function]
+		double maxArmSpeed = 1.0 / 
+			   (RPM_PER_INCH_PER_SECOND *
+			    ARM_PIVOT_TO_15IN * 
+			    Math.tan(Math.toRadians(Robot.armpivot.getArmAngle() - Robot.armpivot.ARM_STARTING_ANGLE)) / 
+			    Math.cos(Math.toRadians(Robot.armpivot.getArmAngle() - Robot.armpivot.ARM_STARTING_ANGLE)));
+		
+		if (winchSpeed > MAX_RPM)
+			return maxArmSpeed; // 1 rev/min = 60 degrees/sec
+		else if (winchSpeed < -MAX_RPM)
+			return -maxArmSpeed;
 		else
 			return commandedSpeed;
 	}

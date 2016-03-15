@@ -20,7 +20,8 @@ public class ArmPivot extends Subsystem {
 	
 	// constants
 	private final double PID_KP = 0.05;
-	private final double PID_KI = 0.1; 
+	private final double PID_KI = 0.0005; 
+	private final double PID_KD = 0.5; 
 	public final double ARM_STARTING_ANGLE = 0; // degrees, positive for down off horizontal
 	private final double POTENTIOMETER_ANGLE_PER_VOLTS = 13500;
 	private final double POTENTIOMETER_MAX_ANGLE = 270;
@@ -32,6 +33,7 @@ public class ArmPivot extends Subsystem {
 	
 	// variables
 	public double currentSpeed;
+	public double currentTargetAngle;
 	public double currentMaxAngle = MAX_IN_MATCH_ANGLE;
 	public double pastPotentiometerAngle = 0;
 	public double lastPotentiometerRateRead = 0;
@@ -39,7 +41,7 @@ public class ArmPivot extends Subsystem {
 	CANTalon arm1 = new CANTalon(RobotMap.lifter1);
 	CANTalon arm2 = new CANTalon(RobotMap.lifter2);
 	public AnalogPotentiometer armPotentiometer = new AnalogPotentiometer(RobotMap.armPoten1, POTENTIOMETER_ANGLE_PER_VOLTS);
-	public PIDControl armPID = new PIDControl(PID_KP, PID_KI, 0); // No PD
+	public PIDControl armPID = new PIDControl(PID_KP, PID_KI, PID_KD); // No PD
 	
 	public ArmPivot()
 	{
@@ -48,15 +50,20 @@ public class ArmPivot extends Subsystem {
 	
 	public void setArmByJoystick()
 	{
-		// we may need to limit the commanded speed to remain within the winch speed limits
+		// alternate between pid and throttle controls here based one whether joystick in deadzone
+		// consider using armPID and setTargetAngle for this so the arm stays up (also see whether the motors are braking...)
 		double commandedSpeed = MAX_JOYSTICK_SPEED*Robot.oi.UtilStick.getY();
+		
+		// apply deadzone, and if in it, use PID
+		if (Math.abs(commandedSpeed) < JOYSTICK_DEADZONE)
+			commandedSpeed = armPID.getPIDoutput(currentTargetAngle, getArmAngle());
+		
+		// we may need to limit the commanded speed to remain within the winch speed limits
 		double realSpeed = commandedSpeed;//Robot.winch.getLimitedArmSpeed(commandedSpeed);
 		
-		// apply deadzone
-		if (Math.abs(realSpeed) < JOYSTICK_DEADZONE)
-			realSpeed = 0;
-		
-		set(realSpeed); // JACK - consider using armPID and setTargetAngle for this so the arm stays up (also see whether the motors are braking...)
+		// set motors, and log current position to hold
+		set(realSpeed);
+		currentTargetAngle = getArmAngle();		
 	}
 
 	public void set(double speed)

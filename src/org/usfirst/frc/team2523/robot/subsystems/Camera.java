@@ -38,6 +38,15 @@
 //        NIVision.IMAQdxConfigureGrab(session);
 //    }    
 //    
+//	/**
+//	 * Simply grabs the image from the camera and sends it to the DS without processing
+//	 */
+//	public void transferImagetoDS()
+//	{
+//		NIVision.IMAQdxGrab(session, frame, 1);
+//		CameraServer.getInstance().setImage(frame);
+//	}
+// change to draw target indicatorSSS
 //    /**
 //     * Draw a crosshair indicator at the given position
 //     */

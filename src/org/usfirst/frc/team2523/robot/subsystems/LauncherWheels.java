@@ -31,7 +31,7 @@ public class LauncherWheels extends Subsystem {
 	public final double TARGET_RPM_TOLERANCE = 100;
 	public final double LAUNCH_ANGLE = 64;
 	public final double LAUNCH_HEIGHT = 29.0 / 12.0; // feet
-	public final double TARGET_HEIGHT = 7*12+1 + 12 ; // feet (target base + to target center)
+	public final double TARGET_HEIGHT = 7*12+1 + 24 ; // feet (target base + to target center) (SHOOT HIGH FOR AIR RESISTANCE)
 	public final double CAMERA_DISTANCE_OFF_LAUNCH = 7 / 12.0; // feet
 
     CANTalon launchBack = new CANTalon(RobotMap.launcherMotBack);
@@ -119,7 +119,14 @@ public class LauncherWheels extends Subsystem {
 	 */
 	private double getVelocityByRange(double range)
 	{
-		return Math.sqrt(2*(range + CAMERA_DISTANCE_OFF_LAUNCH)*RobotMap.GRAVITY / Math.sin(Math.toRadians(2*LAUNCH_ANGLE)));
+		// shift range by camera
+		range = range + CAMERA_DISTANCE_OFF_LAUNCH;
+		
+		return range / Math.cos(Math.toRadians(LAUNCH_ANGLE)) *
+			   Math.sqrt(RobotMap.GRAVITY / (2*range*Math.tan(LAUNCH_ANGLE) - 2*TARGET_HEIGHT));
+
+		// to hit at peak (WRONG)
+//		return Math.sqrt(2*(range + CAMERA_DISTANCE_OFF_LAUNCH)*RobotMap.GRAVITY / Math.sin(Math.toRadians(2*LAUNCH_ANGLE)));
 	}
 	
 	public boolean inRange(double range)

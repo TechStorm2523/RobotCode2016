@@ -53,12 +53,12 @@ public class TargetTracker extends Subsystem {
 	
 	// Various cache variables
 	private ParticleReport currentBestTarget = null;
-	private ParticleReport[] allTargets = null;
+//	private ParticleReport[] allTargets = null;
 	public double currentRangeToBestTarget = 0;
 	
 	// A structure to hold measurements of a particle
 	public class ParticleReport implements Comparator<ParticleReport>, Comparable<ParticleReport>{
-		double PercentAreaToImageArea;
+//		double PercentAreaToImageArea;
 		double Area;
 		double centerX;
 		double centerY;
@@ -167,7 +167,7 @@ public class TargetTracker extends Subsystem {
 					// create a new particle report, as defined above, and populate
 					// it with the relevant information about the particle
 					ParticleReport par = new ParticleReport();
-					par.PercentAreaToImageArea = NIVision.imaqMeasureParticle(binaryFrame, particleIndex, 0, NIVision.MeasurementType.MT_AREA_BY_IMAGE_AREA);
+//					par.PercentAreaToImageArea = NIVision.imaqMeasureParticle(binaryFrame, particleIndex, 0, NIVision.MeasurementType.MT_AREA_BY_IMAGE_AREA);
 					par.Area = NIVision.imaqMeasureParticle(binaryFrame, particleIndex, 0, NIVision.MeasurementType.MT_AREA);
 					par.BoundingRectTop = NIVision.imaqMeasureParticle(binaryFrame, particleIndex, 0, NIVision.MeasurementType.MT_BOUNDING_RECT_TOP);
 					par.BoundingRectLeft = NIVision.imaqMeasureParticle(binaryFrame, particleIndex, 0, NIVision.MeasurementType.MT_BOUNDING_RECT_LEFT);
