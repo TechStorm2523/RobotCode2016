@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc.team2523.robot.Robot;
 import org.usfirst.frc.team2523.robot.RobotMap;
+import org.usfirst.frc.team2523.robot.subsystems.LauncherWheels;
 
 /**
  *
@@ -39,7 +40,7 @@ public class SetDashboard extends Command
 		SmartDashboard.putNumber(" Launcher Mot RPM (Front) ", Robot.launcherWheels.getCurrentRPMs()[0]);
 		SmartDashboard.putNumber(" Launcher Mot RPM (Back) ", Robot.launcherWheels.getCurrentRPMs()[1]);
 		SmartDashboard.putNumber(" Potentiometer Reading", Robot.armpivot.armPotentiometer.get());
-		SmartDashboard.putNumber(" Current Throttle ", 100*0.5*(-Robot.oi.UtilStick.getThrottle() + 1)); // from 0 to 100
+		SmartDashboard.putNumber(" Current Thottle RPM Target ", LauncherWheels.MAX_RPM*0.5*(-Robot.oi.UtilStick.getThrottle() + 1)); // from 0 to 100
 		
 		// DIAGNOSTICS
 		SmartDashboard.putString(" Status of Launcher ",Robot.launcherstatus.Status );

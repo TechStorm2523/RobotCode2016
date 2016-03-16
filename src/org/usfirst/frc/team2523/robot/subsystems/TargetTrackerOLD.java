@@ -13,17 +13,17 @@
 // */
 //public class TargetTracker extends Subsystem {	
 //	// CONSTANTS
-//	private final String CONTOUR_NET_TABLE = "GRIP/ContoursReport";
+//	private static final String CONTOUR_NET_TABLE = "GRIP/ContoursReport";
 //	// target geometry
-//	private final double IDEAL_ASPECT_RATIO = 20.0 / 14.0;
-//	private final double IDEAL_AREA_RATIO =  88.0 / 280.0;
-//	private final double TARGET_WIDTH = 20 / 12.0;
-//	private final double TARGET_HEIGHT = 14 / 12.0;
+//	private static final double IDEAL_ASPECT_RATIO = 20.0 / 14.0;
+//	private static final double IDEAL_AREA_RATIO =  88.0 / 280.0;
+//	private static final double TARGET_WIDTH = 20 / 12.0;
+//	private static final double TARGET_HEIGHT = 14 / 12.0;
 //	// camera/image properties
-//	private final double IMAGE_WIDTH = 640;
-//	private final double IMAGE_HEIGHT = 480;
-//	private final double CAMERA_FOV = 68.5; // TODO: NEEDS ADJUSTING // VERTICAL FOV
-//	private final double CAMERA_ELEVATION = 68; // degrees
+//	private static final double IMAGE_WIDTH = 640;
+//	private static final double IMAGE_HEIGHT = 480;
+//	private static final double CAMERA_FOV = 68.5; // TODO: NEEDS ADJUSTING // VERTICAL FOV
+//	private static final double CAMERA_ELEVATION = 68; // degrees
 //	
 //	// Objects Used
 //	NetworkTable netTable;

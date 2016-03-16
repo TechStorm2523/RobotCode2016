@@ -5,9 +5,9 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 /**
  *
  */
-public class BrideMacro extends CommandGroup {
+public class BridgeMacro extends CommandGroup {
     
-    public  BrideMacro() {
+    public  BridgeMacro() {
         // Add Commands here:
         // e.g. addSequential(new Command1());
         //      addSequential(new Command2());

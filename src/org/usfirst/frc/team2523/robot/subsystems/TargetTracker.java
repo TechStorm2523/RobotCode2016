@@ -28,20 +28,20 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class TargetTracker extends Subsystem {	
 	// CONSTANTS
 	// target geometry
-	final double IDEAL_ASPECT_RATIO = 20.0 / 14.0;
-	final double IDEAL_AREA_RATIO =  88.0 / 280.0;
-	final double TARGET_WIDTH = 20 / 12.0;
-	final double TARGET_HEIGHT = 14 / 12.0;
+	final static double IDEAL_ASPECT_RATIO = 20.0 / 14.0;
+	final static double IDEAL_AREA_RATIO =  88.0 / 280.0;
+	final static double TARGET_WIDTH = 20 / 12.0;
+	final static double TARGET_HEIGHT = 14 / 12.0;
 	// camera/image properties
-	final double CAMERA_FOV = 39.935; // VERTICAL (By measuring distance from a known size object that spans vertical FOV and using tan OR solving the equation in getRangeToBestTarget for FOV using other measurements from debug)
-	final double CAMERA_ELEVATION = 45; // degrees
+	final static double CAMERA_FOV = 39.935; // VERTICAL (By measuring distance from a known size object that spans vertical FOV and using tan OR solving the equation in getRangeToBestTarget for FOV using other measurements from debug)
+	final static double CAMERA_ELEVATION = 45; // degrees
 	// threshold values
 	NIVision.Range HUE_RANGE = new NIVision.Range(60, 150);	//Default hue range for target
 	NIVision.Range SAT_RANGE = new NIVision.Range(60, 255);	//Default saturation range for target
 	NIVision.Range VAL_RANGE = new NIVision.Range(100, 255);	//Default value range for target
 	// general scoring
-	final double AREA_MINIMUM = 1; // Default Area minimum for particle as percentage of total area (pixels are hard with NIVision)
-	final double AREA_MAXIMUM = 100.0; // Max area by same measure
+	final static double AREA_MINIMUM = 1; // Default Area minimum for particle as percentage of total area (pixels are hard with NIVision)
+	final static double AREA_MAXIMUM = 100.0; // Max area by same measure
 //	private final double MIN_SCORE = 75;
 	NIVision.ParticleFilterCriteria2 areaFilterCritera[] = new NIVision.ParticleFilterCriteria2[1];
 	NIVision.ParticleFilterOptions2 filterOptions = new NIVision.ParticleFilterOptions2(0,0,1,1);

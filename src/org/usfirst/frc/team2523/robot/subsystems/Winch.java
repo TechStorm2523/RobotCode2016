@@ -3,6 +3,7 @@ package org.usfirst.frc.team2523.robot.subsystems;
 
 import org.usfirst.frc.team2523.robot.Robot;
 import org.usfirst.frc.team2523.robot.RobotMap;
+import org.usfirst.frc.team2523.robot.commands.SetWinchByThrottle;
 
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
@@ -17,23 +18,23 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  */
 public class Winch extends Subsystem {
 	// constants
-	public double MAX_RPM = 62.5;
-	public double RPM_PID_KF = 1023 / (MAX_RPM/60 * 0.1 * 4096); // feed forward
-	public double RPM_PID_KP = 0.5 * 1023 / 900.0;
-	public double RPM_PID_KI = 0; // NO NEED
-	public double RPM_PID_KD = 0; // NO NEED
-	public double POS_PID_KP = 0.1;
-	public double POS_PID_KI = 0.01;
-	public double POS_PID_KD = 0; // NO NEED
-	public double GEARBOX_CONVERSION_FACTOR = 0.01; // 100:1 gearbox
-//	public double ENCODER_PULSE_PER_REV = 4096*10.0; // encoder is 1024 pulses per rev, but is before a 10:1 gearbox
-	public double REV_PER_INCH = 10/(2*Math.PI*0.75); // circumference inches in one revolution
+	public static final double MAX_RPM = 62.5;
+	public static final double RPM_PID_KF = 1023 / (MAX_RPM/60 * 0.1 * 4096); // feed forward
+	public static final double RPM_PID_KP = 0.5 * 1023 / 900.0;
+	public static final double RPM_PID_KI = 0; // NO NEED
+	public static final double RPM_PID_KD = 0; // NO NEED
+	public static final double POS_PID_KP = 0.1;
+	public static final double POS_PID_KI = 0.01;
+	public static final double POS_PID_KD = 0; // NO NEED
+	public static final double GEARBOX_CONVERSION_FACTOR = 0.01; // 100:1 gearbox
+//	public static final double ENCODER_PULSE_PER_REV = 4096*10.0; // encoder is 1024 pulses per rev, but is before a 10:1 gearbox
+	public static final double REV_PER_INCH = 10/(2*Math.PI*0.75); // circumference inches in one revolution
 	
-	public double MAX_ARM_EXTENSION = 18; // inches
-	public double ARM_PIVOT_TO_15IN = 39.5; // inches
-	public double RPM_PER_INCH_PER_SECOND = 5000.0/39.27; // assuming w/v = 1/r where w(rpm) = w / 2*pi
-	public int MAX_WINCH_BY_ARM_ANGLE = 60;
-	public double ARM_EXTENSION_STOP_TOLERANCE = 0.1; // inches, distance off target winch position to stop at
+	public static final double MAX_ARM_EXTENSION = 18; // inches
+	public static final double ARM_PIVOT_TO_15IN = 39.5; // inches
+	public static final double RPM_PER_INCH_PER_SECOND = 5000.0/39.27; // assuming w/v = 1/r where w(rpm) = w / 2*pi
+	public static final int MAX_WINCH_BY_ARM_ANGLE = 60;
+	public static final double ARM_EXTENSION_STOP_TOLERANCE = 0.1; // inches, distance off target winch position to stop at
     
 	// definitions
 	public CANTalon winchMotor = new CANTalon(RobotMap.winch);
@@ -189,6 +190,7 @@ public class Winch extends Subsystem {
 	}
 	
     public void initDefaultCommand() {
+    	setDefaultCommand(new SetWinchByThrottle());
     }
 }
 

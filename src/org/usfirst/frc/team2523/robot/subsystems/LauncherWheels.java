@@ -20,19 +20,19 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  */
 public class LauncherWheels extends Subsystem {
 	// constants
-	public final double MAX_RPM = 8000;
-	public final double RPM_PID_KF = 1023 / (MAX_RPM/60 * 0.1 * 4096); // feed forward
-	public final double RPM_PID_KP = 0.1 * 1023 / 900.0; // set to 10% throttle when going 900 ticks/0.1s
-	public final double RPM_PID_KI = 0;//0.001;
-	public final double RPM_PID_KD = 0; //0.05;
-//	public double GEARBOX_CONVERSION_FACTOR = 1; // 1:1 gearbox
-//	public final double ENCODER_PULSE_PER_REV = 4096; // direct drive (this is the normal rev per pulse) // no need with CtreMagEncoder
-	public final double RPM_PER_VELOCITY = 1 / (Math.PI*2.875/60); // inch/sec - by formula x/v = 1/(pi*d)
-	public final double TARGET_RPM_TOLERANCE = 100;
-	public final double LAUNCH_ANGLE = 64;
-	public final double LAUNCH_HEIGHT = 29.0 / 12.0; // feet
-	public final double TARGET_HEIGHT = 7*12+1 + 24 ; // feet (target base + to target center) (SHOOT HIGH FOR AIR RESISTANCE)
-	public final double CAMERA_DISTANCE_OFF_LAUNCH = 7 / 12.0; // feet
+	public static final double MAX_RPM = 8000;
+	public static final double RPM_PID_KF = 1023 / (MAX_RPM/60 * 0.1 * 4096); // feed forward
+	public static final double RPM_PID_KP = 0.1 * 1023 / 900.0; // set to 10% throttle when going 900 ticks/0.1s
+	public static final double RPM_PID_KI = 0;//0.001;
+	public static final double RPM_PID_KD = 0; //0.05;
+//	public static final double GEARBOX_CONVERSION_FACTOR = 1; // 1:1 gearbox
+//	public static final double ENCODER_PULSE_PER_REV = 4096; // direct drive (this is the normal rev per pulse) // no need with CtreMagEncoder
+	public static final double RPM_PER_VELOCITY = 1 / (Math.PI*2.875/60); // inch/sec - by formula x/v = 1/(pi*d)
+	public static final double TARGET_RPM_TOLERANCE = 100;
+	public static final double LAUNCH_ANGLE = 64;
+	public static final double LAUNCH_HEIGHT = 29.0 / 12.0; // feet
+	public static final double TARGET_HEIGHT = 7*12+1 + 24 ; // feet (target base + to target center) (SHOOT HIGH FOR AIR RESISTANCE)
+	public static final double CAMERA_DISTANCE_OFF_LAUNCH = 7 / 12.0; // feet
 
     CANTalon launchBack = new CANTalon(RobotMap.launcherMotBack);
     CANTalon launchFront = new CANTalon(RobotMap.launcherMotFront);
@@ -66,11 +66,11 @@ public class LauncherWheels extends Subsystem {
     
 	public void setByThrottle() {
 		// shift so goes from 0 at base to 1 at max (and, because setting RPM, scale to max)
-		if (!Robot.feeder.ballstate()) {
-	        set(MAX_RPM*0.5*(-Robot.oi.UtilStick.getThrottle() + 1));
-	    } else {
-	        System.out.println("No Ball!");
-	    }
+//		if (!Robot.feeder.ballstate()) {
+        set(MAX_RPM*0.5*(-Robot.oi.UtilStick.getThrottle() + 1));
+//	    } else {
+//	        System.out.println("No Ball!");
+//	    }
 	}
 	
 	/**
