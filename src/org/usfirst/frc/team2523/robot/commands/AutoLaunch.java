@@ -16,13 +16,13 @@ public class AutoLaunch extends CommandGroup {
     	addParallel(new TurnToTarget());
         addParallel(new LauncherLower());
         addSequential(new SetLauncherRPMByTarget());
-        addSequential(new Wait( 0.5 ));
+        addSequential(new Wait( 0.25 ));
         
         // FIRE!
         addSequential(new FeederFire());
         addParallel(new SetStatusFiring());
         // wait, then shutdown
-        addSequential(new Wait( 1 ));
+        addSequential(new Wait( 0.8 ));
         addSequential(new FeederOff());
         addSequential(new SetStatusIdle());
         addSequential(new SetLauncherRPM(0));

@@ -15,7 +15,8 @@ public class OI {
     // One type of button is a joystick button which is any button on a joystick.
     // You create one by telling it which joystick it's on and which button
     // number it is.
-    public Joystick DriveStick = new Joystick(0);
+//    public Joystick DriveStick = new Joystick(0);
+    public RecordingJoystick DriveStick = new RecordingJoystick(0);
     Button driveButton1 = new JoystickButton(DriveStick, 1),
 			driveButton2 = new JoystickButton(DriveStick, 2),
 			driveButton3 = new JoystickButton(DriveStick, 3),
@@ -30,7 +31,8 @@ public class OI {
 			driveButton12 = new JoystickButton(DriveStick, 12);
     
     
-    public Joystick UtilStick = new Joystick (1);
+//    public Joystick UtilStick = new Joystick (1);
+    public RecordingJoystick UtilStick = new RecordingJoystick(1);
     Button utilButton1 = new JoystickButton(UtilStick, 1),
 			utilButton2 = new JoystickButton(UtilStick, 2),
 			utilButton3 = new JoystickButton(UtilStick, 3),
