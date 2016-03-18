@@ -1,10 +1,13 @@
 package org.usfirst.frc.team2523.robot;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.Joystick.AxisType;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.communication.FRCNetworkCommunicationsLibrary;
@@ -20,24 +23,26 @@ import edu.wpi.first.wpilibj.communication.FRCNetworkCommunicationsLibrary;
  * @author Mckenna-2523
  */
 public class RecordingJoystick extends GenericHID {
-	static final double STATE_STORE_FREQ = 20; // or n*20 to slow down... 20 in min // ms
+	static final double STATE_STORE_FREQ = 20; // or n*20 to slow down... 20 is minimum // ms
 	static final double AUTO_PERIOD_LENGTH = 15*10e3; // ms
 	static final double MAX_PLAYBACK_DURATION = 10e6; // Arbitrarily large number // ms
-	static final String PLAYBACK_FILE_EXTENSION = ".joy";
+	static final String PLAYBACK_FILE_EXTENSION = ".ser";
+	
 	// modes
 	static final int MODE_NORMAL_OPERATION = 0;
 	static final int MODE_RECORDING = 1;
 	static final int MODE_PLAYBACK = 2;
+	
 	// Note: with the following maximums, 
 	// too low values will result in lost data from recordings, while
-	// too much data will result in excessive DS console logs.
+	// too high values will result in excessive DS console logs.
 	static final int MAX_JOYSTICK_AXES = FRCNetworkCommunicationsLibrary.kMaxJoystickAxes;
 	static final int MAX_JOYSTICK_POVS = FRCNetworkCommunicationsLibrary.kMaxJoystickPOVs;
-	static final int MAX_JOYSTICK_BUTTONS = 12;
+	static final int MAX_JOYSTICK_BUTTONS = 14;
 
 	/**
 	 * Instead of re-implementing a whole joystick, we will use a traditional
-	 * Joystick object to actually read from the driver station the axis values.
+	 * Joystick object to actually read values from the driver station.
 	 */
 	Joystick inputJoystick;
 
@@ -52,7 +57,7 @@ public class RecordingJoystick extends GenericHID {
 	 * 				configures itself internally to match a previous Recording
 	 * 				on the same timescale as that Recording.
 	 * 
-	 * This variable denotes which of these modes is currently active
+	 * This variable denotes which of these modes is currently active.
 	 * 
 	 * The joystick always begins in Normal Operation, then transitions to either 
 	 * Recording or Playback based on the method call.
@@ -64,7 +69,7 @@ public class RecordingJoystick extends GenericHID {
 	 * these will be used to store and retrieve the inputJoystick's changes over
 	 * time.
 	 */
-	private static class JoystickState {
+	private static class JoystickState implements java.io.Serializable {
 		// axes values
 		public double xVal;
 		public double yVal;
@@ -108,15 +113,15 @@ public class RecordingJoystick extends GenericHID {
 	private ArrayList<JoystickState> joystickStates;
 	
 	/**
-	 * The current state and total state progress, used only in Playback, is stored here.
+	 * The current state and total state progress, used only in Playback, are stored here.
 	 * (Normal Operation and Recording states are drawn from DS interaction)
 	 */
 	private JoystickState currentState;
 	private int currentStateIndex;
 	
 	/**
-	 * Variables to handle timed ecordings 
-	 * (playbacks are based solely on state indexes)
+	 * Variables to handle progress through timed recordings.
+	 * (Playbacks are based solely on state indexes)
 	 */
 	private double desiredDuration; // ms
 	private double elapsedDuration; // ms
@@ -129,15 +134,17 @@ public class RecordingJoystick extends GenericHID {
 	 * The following variables are used to keep track of the progress since this 
 	 * method's last call.
 	 */
-	private double lastStateCheck = 0; // ns
-	private double lastStateSave = 0; // ns
+	private double lastStateCheck = 0; // nanoseconds
+	private double lastStateSave = 0; // nanoseconds
 	
 	
 	/**
 	 * The RecordingJoystick has the option to set a command from the
 	 * Command-Based Programming robot program design scheme to be started
-	 * once the Joystick playback has been completed.
+	 * once the Joystick playback has been completed. 
 	 * Use the setCompletionCommand() method to do this.
+	 * (Any commands assigned to buttons which are pressed during 
+	 * recording will also be run)
 	 */
 	private Command completionCommand = null;
 	
@@ -148,7 +155,7 @@ public class RecordingJoystick extends GenericHID {
 	 */
 	private String playbackFile;
 	
-	// TODO: Implement playback indexes?
+	// TODO: Implement playback indexes for default playback files?
 	
 	/**
 	 * Construct an instance of a recording joystick. The joystick index is the
@@ -165,16 +172,14 @@ public class RecordingJoystick extends GenericHID {
 	
 	/**
 	 * Starts recording JoystickStates.
-	 * Will run until stopRecording() is called (or for .
+	 * Will run until stopRecording() is called (or for timed recordings, for a certain duration).
 	 * @param playbackFileName A String (absolute) path to the name of the file to record to.
 	 * Do not include a file extension, it will be added.
+	 * (The RoboRio appears to only support absolute paths to files)
 	 */
 	public void startRecording(String playbackFileName)
 	{
-		playbackFile = playbackFileName + PLAYBACK_FILE_EXTENSION;
-		desiredDuration = MAX_PLAYBACK_DURATION;
-		elapsedDuration = 0;
-		currentMode = MODE_RECORDING;
+		startRecording(playbackFileName, MAX_PLAYBACK_DURATION);
 	}
 	
 	/**
@@ -182,12 +187,15 @@ public class RecordingJoystick extends GenericHID {
 	 * Once that duration has passed, automatically calls stopRecording().
 	 * @param playbackFileName A String (absolute) path to the name of the file to record to.
 	 * Do not include a file extension, it will be added.
+	 * (The RoboRio appears to only support absolute paths to files)
 	 * @param duration The duration to record for, in milliseconds.
 	 */
 	public void startRecording(String playbackFileName, double duration)
 	{
-		startRecording(playbackFileName);
-		desiredDuration = duration;
+		playbackFile = playbackFileName + PLAYBACK_FILE_EXTENSION;
+		desiredDuration = duration*10e3; // convert to milliseconds
+		elapsedDuration = 0;
+		currentMode = MODE_RECORDING;
 	}
 	
 	/**
@@ -206,7 +214,7 @@ public class RecordingJoystick extends GenericHID {
 	 * Begins playback of the given playback file.
 	 * @param playbackFileName The absolute path to the playback file
 	 * (without extension).
-	 * (The RoboRio appears to only support relative paths to files)
+	 * (The RoboRio appears to only support absolute paths to files)
 	 * @return true if playback file was read correctly, else false 
 	 * if there was an error.
 	 */
@@ -218,7 +226,7 @@ public class RecordingJoystick extends GenericHID {
 		
 		if (loadSuccess)
 		{
-			// start off first state
+			// setup first state
 			currentStateIndex = 0;
 			currentState = joystickStates.get(0);
 			currentMode = MODE_PLAYBACK;
@@ -228,11 +236,14 @@ public class RecordingJoystick extends GenericHID {
 	}
 	
 	/**
-	 * Halts the current Playback.
+	 * Stops the current Playback, and runs any completionCommand.
 	 * No need to call normally, as playback will be stopped once finished.
 	 */
 	public void stopPlayback()
 	{
+		if (completionCommand != null)
+			completionCommand.start();
+		
 		currentMode = MODE_NORMAL_OPERATION;
 	}
 	
@@ -240,7 +251,7 @@ public class RecordingJoystick extends GenericHID {
 	 * Sets the Command-Based Programming command to be started once playback has finished.
 	 * Can be called at any time between when startRecording() and stopRecording() are called.
 	 * TODO: In the future, it may be better to store the completionCommand with a particular
-	 * playback file, OUTSIDE of the JoystickStates.
+	 * playback file, OUTSIDE of the array of JoystickStates.
 	 * @param command The command to be started.
 	 */
 	public void setCompletionCommand(Command command)
@@ -250,13 +261,13 @@ public class RecordingJoystick extends GenericHID {
 
 	/**
 	 * Must be called during Recording and Playback at the highest 
-	 * frequency available (or at least higher than STATE_STORE_FREQ)
-	 * It is optimal, however, that the call frequency be THE SAME
-	 * as STATE_STORE_FREQ to avoid odd "beat" effects and varying 
-	 * update intervals.
-	 * (default STATE_STORE_FREQ should be optimized for use in autonomousPeriodic()
-	 * and teleopPeriodic methods, which operate at approximately 50hz, so it
-	 * should be a MULTIPLE OF 50HZ)
+	 * frequency available such that the call frequency is the SAME
+	 * or a POWER OF TWO FRACTION MULTIPLE (1/2, 1/4, 1/8, etc.)
+	 * of STATE_STORE_FREQ, to avoid odd "beat" effects and the 
+	 * resulting variations in update intervals.
+	 * (The default STATE_STORE_FREQ is optimized for use in autonomousPeriodic()
+	 * and teleopPeriodic() methods, which operate at approximately 50hz - 
+	 * so it is either 50hz, 25hz, 12.5hz, etc.)
 	 */
 	public void updateState()
 	{
@@ -291,12 +302,15 @@ public class RecordingJoystick extends GenericHID {
 		}
 		
 		// log bad update frequency 
-		// (if check frequency is less than our desired update frequency
+		// (if check frequency is less than our desired update frequency)
 		if (System.nanoTime() - lastStateCheck > STATE_STORE_FREQ*10e6)
+		{
 			System.out.println("RecordingJoystick's state is not updated frequently enough (" + 
 						(System.nanoTime() - lastStateCheck) + "ns vs desired " + STATE_STORE_FREQ*10e6 + "ns)");
+		}
 		
-		lastStateCheck = System.nanoTime();		
+		elapsedDuration += (System.nanoTime() - lastStateCheck) / 10e6;
+		lastStateCheck = System.nanoTime();
 	}
 	
 	/**
@@ -321,16 +335,16 @@ public class RecordingJoystick extends GenericHID {
 			rawAxes[i] = getPOV(i);
 		
 		JoystickState currentState = new JoystickState(
-				getX(),
-				getY(),
-				getZ(),
-				getTwist(),
-				getThrottle(),
-				rawAxes,
-				getTrigger(),
-				getTop(),
-				rawButtons,
-				povVals);
+									getX(),
+									getY(),
+									getZ(),
+									getTwist(),
+									getThrottle(),
+									rawAxes,
+									getTrigger(),
+									getTop(),
+									rawButtons,
+									povVals);
 		
 		joystickStates.add(currentState);
 	}
@@ -339,7 +353,6 @@ public class RecordingJoystick extends GenericHID {
 	 * Inherited methods; wrap those of Joystick in Normal Operation and Recording, but
 	 * simply playback states in Playback mode.
 	 */
-	
 	
 	/* (non-Javadoc)
 	 * @see edu.wpi.first.wpilibj.GenericHID#getX(edu.wpi.first.wpilibj.GenericHID.Hand)
@@ -465,19 +478,62 @@ public class RecordingJoystick extends GenericHID {
 	 * Saves the JoystickStates to a playback file.
 	 * @return true if playback file was read correctly, else false 
 	 * if there was an error.
+	 * Adapted from examples at http://www.tutorialspoint.com/java/java_serialization.htm
 	 */
-	private boolean savePlaybackFile(String playbackFile)
+	private boolean savePlaybackFile(String playbackFileName)
 	{
-		
+		try 
+		{
+			FileOutputStream fileOut = new FileOutputStream(playbackFileName);
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			
+			// write the entire joystickStates array
+			out.writeObject(joystickStates);
+			
+			out.close();
+			fileOut.close();
+			
+			System.out.println("A RecordingJoystick playback file was saved at " + playbackFileName);
+			return true;
+		} 
+		catch (IOException e) 
+		{
+			System.out.println("The RecordingJoystick playback file " + playbackFileName + " could not be saved: " + e);
+			e.printStackTrace();
+			return false;
+		}
 	}
 	
 	/**
 	 * Reads a set of JoystickStates from a playback file into that variable.
 	 * @return true if playback file was read correctly, else false 
 	 * if there was an error.
+	 * Adapted from examples at http://www.tutorialspoint.com/java/java_serialization.htm
 	 */
-	private boolean loadPlaybackFile(String playbackFile)
+	private boolean loadPlaybackFile(String playbackFileName)
 	{
-		
+		try 
+		{
+			FileInputStream fileIn = new FileInputStream(playbackFileName);
+			ObjectInputStream in = new ObjectInputStream(fileIn);
+			
+			// read in the data and assign it to the joystickStates array
+			joystickStates = (ArrayList<JoystickState>) in.readObject();
+			
+			in.close();
+			fileIn.close();
+			
+			return true;
+		} 
+		catch (IOException e) 
+		{
+			System.out.println("The RecordingJoystick playback file " + playbackFileName + " could not be openned: " + e);
+			return false;
+		} 
+		catch (ClassNotFoundException e) 
+		{
+			System.out.println("The RecordingJoystick playback file " + playbackFileName + " could not be imported: " + e);
+			return false;
+		}
 	}
 }
