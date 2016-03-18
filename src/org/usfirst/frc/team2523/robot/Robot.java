@@ -95,23 +95,32 @@ public class Robot extends IterativeRobot {
 	 * You can add additional auto modes by adding additional commands to the chooser code above (like the commented example)
 	 * or additional comparisons to the switch structure below with additional strings & commands.
 	 */
-    public void autonomousInit() {    	
-        autonomousCommand = (Command) autoChooser.getSelected();
-        
-        // SHOULDNT BE NEEDED
-		/* String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
-		switch(autoSelected) {
-		case "My Auto":
-			autonomousCommand = new MyAutoCommand();
-			break;
-		case "Default Auto":
-		default:
-			autonomousCommand = new ExampleCommand();
-			break;
-		} */
-    	
-    	// schedule the autonomous command (example)
-        if (autonomousCommand != null) autonomousCommand.start();
+    public void autonomousInit() {    	      
+		String autoSelected = SmartDashboard.getString("Auto Mode", "Default");
+		
+		// Any joystick recording auto command must have 'RecordedAuto' in it
+		if (autoSelected.indexOf("RecordedAuto") != -1)
+		{
+			oi.DriveStick.startPlayback(autoSelected + "_drive");
+			oi.UtilStick.startPlayback(autoSelected + "_util");
+		}
+		else
+		{
+			// MAY NEED THIS IF CANT GET STRING FROM 
+//			switch(autoSelected) {
+//			case "My Auto":
+//				autonomousCommand = new MyAutoCommand();
+//				break;
+//			case "Default Auto":
+//			default:
+//				autonomousCommand = new ExampleCommand();
+//				break;		
+//			}
+	        autonomousCommand = (Command) autoChooser.getSelected();
+	    	
+	    	// schedule the autonomous command (example)
+	        if (autonomousCommand != null) autonomousCommand.start();
+		}
         
         NIVision.IMAQdxStartAcquisition(Robot.targetTracker.session);
     }
@@ -120,7 +129,7 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic() {    	
-        Scheduler.getInstance().run();
+        Scheduler.getInstance().run();       
         allPeriodic();
     }
 
@@ -135,6 +144,8 @@ public class Robot extends IterativeRobot {
         // teleop starts running. If you want the autonomous to 
         // continue until interrupted by another command, remove
         // this line or comment it out.
+    	oi.DriveStick.stopPlayback();
+    	oi.UtilStick.stopPlayback();
         if (autonomousCommand != null) autonomousCommand.cancel();
 
         NIVision.IMAQdxStartAcquisition(Robot.targetTracker.session);
@@ -163,5 +174,9 @@ public class Robot extends IterativeRobot {
     private void allPeriodic()
     {
 		armpivot.updateArmProperties();
+		
+        // update joystick recording
+        oi.DriveStick.updateState();
+        oi.UtilStick.updateState();
     }
 }
