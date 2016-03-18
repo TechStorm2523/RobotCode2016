@@ -26,6 +26,7 @@ public class RobotMap {
 	public static final double GRAVITY = 32.2; // ft/sec^2
 	public static final double MATCH_LENGTH = 150; //2min 30secs
 	public static final String CONTOUR_NET_TABLE = "GRIP/ContoursReport";
+	public static final String JOYSTICK_RECORDINGS_SAVE_LOCATION = "/usr/2523/"; // on roboorio
 	
 	// PWM Outputs (Motors)
 	public static int Rfront = 0;

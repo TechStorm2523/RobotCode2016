@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc.team2523.robot.Robot;
 import org.usfirst.frc.team2523.robot.RobotMap;
+import org.usfirst.frc.team2523.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team2523.robot.subsystems.LauncherWheels;
 
 /**
@@ -34,7 +35,7 @@ public class SetDashboard extends Command
 		SmartDashboard.putBoolean(" Launcher Lowered? ", Robot.launcherPneumatics.getState());
 		SmartDashboard.putBoolean(" In Range ", Robot.launcherstatus.inRange);
 		SmartDashboard.putBoolean(" Aligned ", Robot.launcherstatus.aligned ||
-					Math.abs(Robot.targetTracker.getTargetDistanceFromCenter()[0]) < TurnToTarget.TARGET_OFFSET_TOLERANCE);
+					Math.abs(Robot.targetTracker.getTargetDistanceFromCenter()[0]) < DriveTrain.VISION_TARGET_OFFSET_TOLERANCE);
 		SmartDashboard.putBoolean(" Spooled Up ", Robot.launcherstatus.spooledUp);
 		SmartDashboard.putNumber(" Range to Best Target ", Robot.targetTracker.currentRangeToBestTarget);
 		SmartDashboard.putNumber(" Launcher Mot RPM (Front) ", Robot.launcherWheels.getCurrentRPMs()[0]);

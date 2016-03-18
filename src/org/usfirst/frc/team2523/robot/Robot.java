@@ -108,8 +108,8 @@ public class Robot extends IterativeRobot {
 		// The null auto command indicates we should try tos use a joystick recording
 		if (autonomousCommand == null && !joystickRecording.equalsIgnoreCase("none"))
 		{
-			oi.DriveStick.startPlayback(joystickRecording + "_drive");
-			oi.UtilStick.startPlayback(joystickRecording + "_util");
+			oi.DriveStick.startPlayback(RobotMap.JOYSTICK_RECORDINGS_SAVE_LOCATION + joystickRecording + "_drive");
+			oi.UtilStick.startPlayback(RobotMap.JOYSTICK_RECORDINGS_SAVE_LOCATION + joystickRecording + "_util");
 		}
 		else
 		{			
@@ -168,8 +168,8 @@ public class Robot extends IterativeRobot {
 //        	double recordLen = SmartDashboard.getNumber("New Recorded Auto Length", 0);
         	
         	// record for length of auto
-        	oi.DriveStick.startRecording(filename + "_drive", 15); // recordLen*1000
-        	oi.UtilStick.startRecording(filename + "_util", 15);
+        	oi.DriveStick.startRecording(RobotMap.JOYSTICK_RECORDINGS_SAVE_LOCATION + filename + "_drive", 15); // recordLen
+        	oi.UtilStick.startRecording(RobotMap.JOYSTICK_RECORDINGS_SAVE_LOCATION + filename + "_util", 15);
         }
     }
 
