@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc.team2523.robot.Robot;
 import org.usfirst.frc.team2523.robot.RobotMap;
+import org.usfirst.frc.team2523.robot.subsystems.ArmPivot;
 
 
 /**
@@ -13,9 +14,9 @@ import org.usfirst.frc.team2523.robot.RobotMap;
  */
 public class SetArmAngle extends Command 
 {	
-	// define globals
 	public double speed;
 	public double target;
+	public boolean holdAngle;
 	
 	/**
 	 * Constructor to instruct the arm to travel at max speed to target, the height of the lift
@@ -50,6 +51,23 @@ public class SetArmAngle extends Command
         this.speed = speed;
     }
     
+	/**
+	 * Constructor to instruct the lift to travel at a certain speed to target, the height of the lift
+	 * @param target The targeted lift height in inches
+	 * @param speed Max speed to move the lift at. Between 0.0 and 1.0
+	 * @param hold If true, the command will continue to run while holding the given angle
+	 */
+    public SetArmAngle(double target, double speed, boolean hold) 
+    {
+        // Use requires() here to declare subsystem dependencies
+        requires(Robot.armpivot);
+        
+        // set target, speed, and whether to hold
+        this.target = target;
+        this.speed = speed;
+        this.holdAngle = hold;
+    }
+    
     // Called just before this Command runs the first time
     protected void initialize() 
     {
@@ -75,7 +93,8 @@ public class SetArmAngle extends Command
     protected boolean isFinished() 
     {
     	// return true if the robot is at limits OR we are less than STOP_TOLERANCE from the target
-        return Math.abs(target - Robot.armpivot.getArmAngle()) <= Robot.armpivot.ARM_PID_STOP_TOLERANCE;
+    	// also, ensure that if holdAngle is true, we never stop (until interrupted
+        return !holdAngle && Math.abs(target - Robot.armpivot.getArmAngle()) <= ArmPivot.ARM_STOP_TOLERANCE;
     }
 
     // Called once after isFinished returns true

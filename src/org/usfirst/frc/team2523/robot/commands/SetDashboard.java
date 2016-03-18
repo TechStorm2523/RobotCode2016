@@ -46,6 +46,11 @@ public class SetDashboard extends Command
 		SmartDashboard.putString(" Status of Launcher ",Robot.launcherstatus.Status );
 		SmartDashboard.putNumber(" Winch (Arm) Extension ", Robot.winch.getCurrentDistance());
 		SmartDashboard.putNumber(" Winch Speed ", Robot.winch.winchMotor.get());
+		
+		// SETTINGS from THE DASHBOARD
+		Robot.launcherWheels.rpmPerVelocityCoefficent = SmartDashboard.getNumber(" Launcher RPM to Velocity Coefficent: ", Robot.launcherWheels.rpmPerVelocityCoefficent);
+		Robot.winch.revPerInchPerSecCoefficent = SmartDashboard.getNumber(" Arm by Winch Coefficent: ", Robot.winch.revPerInchPerSecCoefficent);
+		
 		// COMMANDS
 		//SmartDashboard.putData("Set Launch Properties", new SetLauncherVelocityAndAngle());
 		

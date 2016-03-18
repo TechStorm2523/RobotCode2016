@@ -8,8 +8,6 @@ import org.usfirst.frc.team2523.robot.commands.SetWinchByThrottle;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
 import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
@@ -19,23 +17,26 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class Winch extends Subsystem {
 	// constants
 	public static final double MAX_RPM = 62.5;
-	public static final double RPM_PID_KF = 1023 / (MAX_RPM/60 * 0.1 * 4096); // feed forward
-	public static final double RPM_PID_KP = 0.5 * 1023 / 900.0;
-	public static final double RPM_PID_KI = 0; // NO NEED
-	public static final double RPM_PID_KD = 0; // NO NEED
-	public static final double POS_PID_KP = 0.1;
-	public static final double POS_PID_KI = 0.01;
-	public static final double POS_PID_KD = 0; // NO NEED
-	public static final double GEARBOX_CONVERSION_FACTOR = 0.01; // 100:1 gearbox
-//	public static final double ENCODER_PULSE_PER_REV = 4096*10.0; // encoder is 1024 pulses per rev, but is before a 10:1 gearbox
-	public static final double REV_PER_INCH = 10/(2*Math.PI*0.75); // circumference inches in one revolution
+	//						feed forward: max pow  |rev per sec  | time conversion |  native units per rot
+	private static final double RPM_PID_KF = 1023 / (MAX_RPM/60 * 0.1 * 4096); 
+	private static final double RPM_PID_KP = 0.5 * 1023 / 900.0; // set to 50% of max throttle (1023) when going 900 ticks/0.1s
+	private static final double RPM_PID_KI = 0; // NO NEED
+	private static final double RPM_PID_KD = 0; // NO NEED
+	private static final double POS_PID_KP = 0.1;
+	private static final double POS_PID_KI = 0.01;
+	private static final double POS_PID_KD = 0; // NO NEED
+	private static final double GEARBOX_CONVERSION_FACTOR = 100; // 100:1 gearbox
+	private static final double REV_PER_INCH = 1/(2*Math.PI*0.75); // circumference inches in one revolution
 	
 	public static final double MAX_ARM_EXTENSION = 18; // inches
-	public static final double ARM_PIVOT_TO_15IN = 39.5; // inches
-	public static final double RPM_PER_INCH_PER_SECOND = 5000.0/39.27; // assuming w/v = 1/r where w(rpm) = w / 2*pi
-	public static final int MAX_WINCH_BY_ARM_ANGLE = 60;
-	public static final double ARM_EXTENSION_STOP_TOLERANCE = 0.1; // inches, distance off target winch position to stop at
+	private static final double ARM_PIVOT_TO_15IN = 39.5; // inches
+	private static final double RPM_PER_INCH_PER_SECOND = REV_PER_INCH*60; // to convert rev/sec to rpm //5000.0/39.27; // assuming w/v = 1/r where w(rpm) = w / 2*pi
+//	public static final int MAX_WINCH_BY_ARM_ANGLE = 60; // using getCurrentDistance() we think
+	public static final double ARM_EXTENSION_STOP_TOLERANCE = 0.05; // inches, distance off target winch position to stop at
     
+	// variables for adjusting constants
+	public double revPerInchPerSecCoefficent = 1;
+	
 	// definitions
 	public CANTalon winchMotor = new CANTalon(RobotMap.winch);
     Solenoid winchBrake = new Solenoid(RobotMap.winchBrakeSolenoid);
@@ -46,13 +47,10 @@ public class Winch extends Subsystem {
     	winchMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
     	winchMotor.reverseSensor(false);
     	
-    	// and tell it to operate via RPM commands (for now)
-    	winchMotor.changeControlMode(TalonControlMode.Speed);
-    	
     	// configure PID control for BOTH modes (we ASSUME ramp rate zero means infinite ramp rate)
     	winchMotor.setPID(RPM_PID_KP, RPM_PID_KI, RPM_PID_KD, RPM_PID_KF, 1, 0, 0); // ramp rate is zero, but create 2 profiles
-    	winchMotor.setPID(POS_PID_KP, POS_PID_KI, POS_PID_KD, 0, 1, 0, 1); // limit integral accumulation for position
-//    	winchMotor.configEncoderCodesPerRev( (int) ENCODER_PULSE_PER_REV);  // no need with ctreMagEncoder
+    	winchMotor.setPID(POS_PID_KP, POS_PID_KI, POS_PID_KD, 0, 1, 0, 1); // limit integral accumulation too
+//    	winchMotor.configEncoderCodesPerRev( (int) ENCODER_PULSE_PER_REV);  // no need with ctreMagEncoder (would be 4096 in quadrature)
     	
     	// ensure braked (Motor brake, not pneumatic brake)
     	winchMotor.enableBrakeMode(true);
@@ -72,7 +70,7 @@ public class Winch extends Subsystem {
     	
 		winchMotor.set(rpm*GEARBOX_CONVERSION_FACTOR);
 		
-		System.out.println("RPM: " + rpm + "Target:     " + winchMotor.get() + "Actual Speed:      " + winchMotor.getEncVelocity());
+		System.out.println("RPM: " + rpm + "		Current RPM: " + winchMotor.getSpeed() + "		Enc Velocity: " + winchMotor.getEncVelocity());
 		
 		// make sure brake released (only if not zero)
 		if (rpm != 0)
@@ -89,7 +87,7 @@ public class Winch extends Subsystem {
     	winchMotor.setProfile(1);
     	
     	// set in revolutions
-    	winchMotor.set(distance*GEARBOX_CONVERSION_FACTOR*REV_PER_INCH);
+    	winchMotor.set(distance * GEARBOX_CONVERSION_FACTOR * REV_PER_INCH);
     	
 		// make sure brake released
     	releaseBrake();
@@ -100,7 +98,7 @@ public class Winch extends Subsystem {
 	 */
 	public double getCurrentDistance()
 	{
-		return winchMotor.getPosition() / (REV_PER_INCH * GEARBOX_CONVERSION_FACTOR);
+		return winchMotor.getPosition() / (GEARBOX_CONVERSION_FACTOR * REV_PER_INCH);
 	}
 	
 	/**
@@ -128,11 +126,10 @@ public class Winch extends Subsystem {
 			// derived from derivative of arm radius ( d/cos(theta) ) with respect to angle multiplied by
 			// the derivative of angle with respect to time.
 			// (dr/dTheta (i.e. ARM... GLE)) * dtheta/dt (i.e. angleDelta) = dr/dt)
-			// TODO: (Ask Chen or Uutkhu about the math to do this if it doesn't work at all, otherwise just change the constant if the arm bows inward or outward)
-			return RPM_PER_INCH_PER_SECOND *
+			return revPerInchPerSecCoefficent * RPM_PER_INCH_PER_SECOND *
 				   ARM_PIVOT_TO_15IN * 
-				   Math.tan(Math.toRadians(currentAngle - Robot.armpivot.ARM_STARTING_ANGLE)) / 
-				   Math.cos(Math.toRadians(currentAngle - Robot.armpivot.ARM_STARTING_ANGLE)) *
+				   Math.tan(Math.toRadians(currentAngle - ArmPivot.ARM_STARTING_ANGLE)) / 
+				   Math.cos(Math.toRadians(currentAngle - ArmPivot.ARM_STARTING_ANGLE)) *
 				   angleDelta;
 		}
 	}
@@ -143,20 +140,22 @@ public class Winch extends Subsystem {
 	 */
 	public double getLimitedArmSpeed(double commandedSpeed) 
 	{
-		double winchSpeed = getWinchSpeed(Robot.armpivot.getArmAngle(),
-										  Robot.armpivot.getArmRate());				
+		// max winch speed = 1.0, and winch=k*arm, so (max) arm=1.0/k,
+		// where k is the conversion factor in above function
+		// (this will be in degrees per second - we're getting angleDelta above)
+		double currentMaxArmSpeed = 1.0 / 
+							   (revPerInchPerSecCoefficent * RPM_PER_INCH_PER_SECOND *
+							    ARM_PIVOT_TO_15IN * 
+							    Math.tan(Math.toRadians(Robot.armpivot.getArmAngle() - ArmPivot.ARM_STARTING_ANGLE)) / 
+							    Math.cos(Math.toRadians(Robot.armpivot.getArmAngle() - ArmPivot.ARM_STARTING_ANGLE)));
 		
-		// max winch speed = 1.0 so max arm speed = 1.0 / [the conversion factor in above function]
-		double maxArmSpeed = 1.0 / 
-			   (RPM_PER_INCH_PER_SECOND *
-			    ARM_PIVOT_TO_15IN * 
-			    Math.tan(Math.toRadians(Robot.armpivot.getArmAngle() - Robot.armpivot.ARM_STARTING_ANGLE)) / 
-			    Math.cos(Math.toRadians(Robot.armpivot.getArmAngle() - Robot.armpivot.ARM_STARTING_ANGLE)));
+		double winchSpeed = getWinchSpeed(Robot.armpivot.getArmAngle(),
+				  						  Robot.armpivot.getArmRate());				
 		
 		if (winchSpeed > MAX_RPM)
-			return maxArmSpeed; // 1 rev/min = 60 degrees/sec
+			return currentMaxArmSpeed / 6.0; // 1 rev/min = 6 degrees/sec
 		else if (winchSpeed < -MAX_RPM)
-			return -maxArmSpeed;
+			return -currentMaxArmSpeed / 6.0;
 		else
 			return commandedSpeed;
 	}

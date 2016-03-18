@@ -1,6 +1,7 @@
 package org.usfirst.frc.team2523.robot.commands;
 
 import org.usfirst.frc.team2523.robot.Robot;
+import org.usfirst.frc.team2523.robot.subsystems.LauncherWheels;
 
 import edu.wpi.first.wpilibj.command.Command;
 
@@ -29,8 +30,8 @@ public class SetLauncherRPM extends Command {
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
     	// stop once BOTH target RPMs are reached (in certain range)
-        return Robot.launcherWheels.getCurrentRPMError()[0] < Robot.launcherWheels.TARGET_RPM_TOLERANCE && 
-        	   Robot.launcherWheels.getCurrentRPMError()[1] < Robot.launcherWheels.TARGET_RPM_TOLERANCE;
+        return Robot.launcherWheels.getCurrentRPMError()[0] < LauncherWheels.TARGET_RPM_TOLERANCE && 
+        	   Robot.launcherWheels.getCurrentRPMError()[1] < LauncherWheels.TARGET_RPM_TOLERANCE;
     }
 
     // Called once after isFinished returns true

@@ -2,7 +2,6 @@
 package org.usfirst.frc.team2523.robot.commands;
 
 import org.usfirst.frc.team2523.robot.Robot;
-import org.usfirst.frc.team2523.robot.subsystems.Feeder;
 
 import edu.wpi.first.wpilibj.command.Command;
 

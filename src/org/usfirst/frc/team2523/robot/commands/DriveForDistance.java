@@ -1,6 +1,7 @@
 package org.usfirst.frc.team2523.robot.commands;
 
 import org.usfirst.frc.team2523.robot.Robot;
+import org.usfirst.frc.team2523.robot.subsystems.DriveTrain;
 
 import edu.wpi.first.wpilibj.command.Command;
 
@@ -37,12 +38,12 @@ public class DriveForDistance extends Command {
     	
     	// if ramp up has not expired, apply a ramp
     	if((System.nanoTime() - rampUpStartTime) * 10e9 
-		 	< Robot.drivetrain.RAMP_UP_DURATION)
+		 	< DriveTrain.RAMP_UP_DURATION)
     	{
-    		// use PID max/min to set speed
+    		// use PID max/min to set speed, to allow for really short travel distances (ramp is not min)
         	Robot.drivetrain.drivePID.setMaxMin(
         			Robot.drivetrain.getSpeedByRamp(maxSpeed, System.nanoTime() - rampUpStartTime) * 10e9 
-    														 / Robot.drivetrain.RAMP_UP_DURATION);
+    														 / DriveTrain.RAMP_UP_DURATION);
     	}
     	
     	Robot.drivetrain.setDriveTarget(target);

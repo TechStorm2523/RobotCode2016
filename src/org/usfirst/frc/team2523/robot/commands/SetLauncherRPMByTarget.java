@@ -1,6 +1,7 @@
 package org.usfirst.frc.team2523.robot.commands;
 
 import org.usfirst.frc.team2523.robot.Robot;
+import org.usfirst.frc.team2523.robot.subsystems.LauncherWheels;
 
 import edu.wpi.first.wpilibj.command.Command;
 
@@ -8,7 +9,6 @@ import edu.wpi.first.wpilibj.command.Command;
  * Set's launcher wheel's RPM by the target's range
  */
 public class SetLauncherRPMByTarget extends Command {
-	final int RANGE_DIFFERENCE_THRESHOLD = 1; // feet
 	double targetRPM = 0;
 	double currentRange = 0;
 
@@ -25,7 +25,7 @@ public class SetLauncherRPMByTarget extends Command {
     protected void execute() {
     	// correct for noise in range (only change if reasonably different)
     	// this operates partially on the assumption that we are stationary when doing this
-    	if (Math.abs(Robot.targetTracker.currentRangeToBestTarget - currentRange) > 1.0)
+    	if (Math.abs(Robot.targetTracker.currentRangeToBestTarget - currentRange) > LauncherWheels.RANGE_DIFFERENCE_THRESHOLD)
     		currentRange = Robot.targetTracker.currentRangeToBestTarget;
     	
     	targetRPM = Robot.launcherWheels.getRPMbyRange(currentRange);
@@ -36,8 +36,8 @@ public class SetLauncherRPMByTarget extends Command {
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
     	// stop once BOTH target RPMs are reached (in certain range)
-        return Robot.launcherWheels.getCurrentRPMError()[0] < Robot.launcherWheels.TARGET_RPM_TOLERANCE && 
-        	   Robot.launcherWheels.getCurrentRPMError()[1] < Robot.launcherWheels.TARGET_RPM_TOLERANCE;
+        return Robot.launcherWheels.getCurrentRPMError()[0] < LauncherWheels.TARGET_RPM_TOLERANCE && 
+        	   Robot.launcherWheels.getCurrentRPMError()[1] < LauncherWheels.TARGET_RPM_TOLERANCE;
     }
 
     // Called once after isFinished returns true

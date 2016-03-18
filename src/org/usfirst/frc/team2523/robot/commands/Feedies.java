@@ -11,7 +11,7 @@
 //        //Add Commands here:
 //        addSequential(new LauncherLower());
 //        addSequential(new Wait(.2));
-//        addSequential(new FeederCollect());
+//        addSequential(new FeederCollect()); is this for 
 //        // these will run in order.
 //
 //        // To run multiple commands at the same time,

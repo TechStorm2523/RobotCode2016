@@ -22,14 +22,14 @@ public class ArmPivot extends Subsystem {
 	private static final double PID_KP = 0.05;
 	private static final double PID_KI = 0.0005; 
 	private static final double PID_KD = 0.5; 
-	public static final double ARM_STARTING_ANGLE = 0; // degrees, positive for down off horizontal
+	public static final double ARM_STARTING_ANGLE = 0; //TODO!!!!!!!!!!!!!!!! // degrees, positive for down off horizontal
 	private static final double POTENTIOMETER_ANGLE_PER_VOLTS = 13500;
 	private static final double POTENTIOMETER_MAX_ANGLE = 270;
 	private static final double POTENTIOMETER_START_DEGREE = 13297.5 + 30; // first term is to zero at zero point, second is arm angle off potentiometer start
 	public static final double MAX_IN_MATCH_ANGLE = 160;
-	public static final double ARM_PID_STOP_TOLERANCE = 2; // degrees, roughly leads to arm PID positioning precision
-	public static final double MAX_JOYSTICK_SPEED = 0.5;
-	public static final double JOYSTICK_DEADZONE = 0.02; // normalized units
+	public static final double ARM_STOP_TOLERANCE = 2; // degrees, roughly leads to arm PID positioning precision
+	public static final double MAX_JOYSTICK_SPEED = 0.5; 
+	public static final double JOYSTICK_DEADZONE = 0.01; // normalized units
 	
 	// variables
 	public double currentSpeed;
@@ -53,16 +53,21 @@ public class ArmPivot extends Subsystem {
 		// alternate between pid and throttle controls here based one whether joystick in deadzone
 		// consider using armPID and setTargetAngle for this so the arm stays up (also see whether the motors are braking...)
 		double commandedSpeed = MAX_JOYSTICK_SPEED*Robot.oi.UtilStick.getY();
-		
+
 		// apply deadzone, and if in it, use PID
 		if (Math.abs(commandedSpeed) < JOYSTICK_DEADZONE)
-			commandedSpeed = 0; //armPID.getPIDoutput(currentTargetAngle, getArmAngle());
-		
-		// we may need to limit the commanded speed to remain within the winch speed limits
-		double realSpeed = commandedSpeed;//Robot.winch.getLimitedArmSpeed(commandedSpeed);
-		
-		// set motors, and log current position to hold
-		set(realSpeed);
+			set(0); //setTargetAngle(currentTargetAngle);	
+		else
+		{
+			// use drivetrain function to get a curved input
+			commandedSpeed = DriveTrain.getExpodentialValue(commandedSpeed);
+			
+			set(commandedSpeed);
+			
+			// reset PID integral so old error is ignored
+			armPID.resetIntegral();
+		}
+		// log current position to hold
 		currentTargetAngle = getArmAngle();
 	}
 
@@ -74,15 +79,18 @@ public class ArmPivot extends Subsystem {
 			arm2.set(0);
 			this.currentSpeed = 0;
 		} else {
+			// we may need to limit the commanded speed to remain within the winch speed limits
+			speed = speed;//Robot.winch.getLimitedArmSpeed(speed);
+			
 			arm1.set(speed);
 			arm2.set(-speed);
 			this.currentSpeed = speed;
-		}
+		}	
 	}
 	
 	public void setTargetAngle(double angle)
 	{
-		set(armPID.getPIoutput(angle, getArmAngle()));
+		set(armPID.getPIDoutput(angle, getArmAngle()));
 	}
 	
 	public double getArmAngle()
@@ -99,6 +107,10 @@ public class ArmPivot extends Subsystem {
 			   ((System.nanoTime() - lastPotentiometerRateRead)*10e6);
 	}
 	
+	/**
+	 * Must be called periodically for getArmRate() to work, AND for arm 
+	 * max angle to increase at end of match
+	 */
 	public void updateArmProperties()
 	{
 		lastPotentiometerRateRead = System.nanoTime();

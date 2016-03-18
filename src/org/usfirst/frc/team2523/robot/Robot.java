@@ -40,27 +40,42 @@ public class Robot extends IterativeRobot {
 	public static final LauncherPneumatics launcherPneumatics = new LauncherPneumatics();
 	public static final Dashboard dashboard = new Dashboard();
 	public static final LauncherStatus launcherstatus = new LauncherStatus();
-
-	// MUST be after subsystems
-	public static OI oi = new OI();
+	public static OI oi;
 	
-	// nettables
-	public static NetworkTable netTable;
+	// nettables (reduntant with internal one in TargetTracker?
+//	public static NetworkTable netTable;
 	
     Command autonomousCommand;
     SendableChooser autoChooser;
 
     public Robot()
     {
-    	netTable = NetworkTable.getTable(RobotMap.CONTOUR_NET_TABLE);
+//    	netTable = NetworkTable.getTable(RobotMap.CONTOUR_NET_TABLE);
     }
     
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
-    public void robotInit() {        
-        targetTracker.init();
+    public void robotInit() {  
+    	// MUST be after subsystems
+    	oi = new OI();
+    	
+    	// auto chooser
+        autoChooser = new SendableChooser();
+        autoChooser.addDefault("Drive to Defense", new AutoCommandBasic());
+        autoChooser.addObject("Do Nothing", new AutoCommandNOTHING());
+        autoChooser.addObject("Basic (Drive-Over) Defense", new AutoCommandBasicDefense());
+        autoChooser.addObject("Cheval de Frise (Tippy) Defense", new AutoCommandChevaldeFrise());
+        autoChooser.addObject("Drawbridge Defense", new AutoCommandDrawbridge());
+        autoChooser.addObject("Portcullis (Gate) Defense", new AutoCommandPortcullis());
+//      autoChooser.addObject("My Auto", new MyAutoCommand());
+        SmartDashboard.putData("Auto mode", autoChooser);
+        
+        // provide a list of joystick recordings to choose from
+        SmartDashboard.putString("Available JOYSTICK Recordings: ", " ... ");
+        
+    	targetTracker.init();
     }
 	
 	/**
@@ -86,42 +101,32 @@ public class Robot extends IterativeRobot {
 	 * or additional comparisons to the switch structure below with additional strings & commands.
 	 */
     public void autonomousInit() {    	      
-		String autoSelected = SmartDashboard.getString("Auto Mode", "Default");
+		String joystickRecording = SmartDashboard.getString("Joystick Recording to Play Back: ", "None");
 		
-		// Any joystick recording auto command must have 'RecordedAuto' in it
-		if (autoSelected.indexOf("RecordedAuto") != -1)
+		autonomousCommand = (Command) autoChooser.getSelected();
+		
+		// The null auto command indicates we should try tos use a joystick recording
+		if (autonomousCommand == null && !joystickRecording.equalsIgnoreCase("none"))
 		{
-			oi.DriveStick.startPlayback(autoSelected + "_drive");
-			oi.UtilStick.startPlayback(autoSelected + "_util");
+			oi.DriveStick.startPlayback(joystickRecording + "_drive");
+			oi.UtilStick.startPlayback(joystickRecording + "_util");
 		}
 		else
-		{
-	        autoChooser = new SendableChooser();
-	        autoChooser.addDefault("Drive to Defense", new AutoCommandBasic());
-	        autoChooser.addObject("Do Nothing", new AutoCommandNOTHING());
-	        autoChooser.addObject("Basic (Drive-Over) Defense", new AutoCommandBasicDefense());
-	        autoChooser.addObject("Cheval de Frise (Tippy) Defense", new AutoCommandChevaldeFrise());
-	        autoChooser.addObject("Drawbridge Defense", new AutoCommandDrawbridge());
-	        autoChooser.addObject("Portcullis (Gate) Defense", new AutoCommandPortcullis());
-//	      autoChooser.addObject("My Auto", new MyAutoCommand());
-	        SmartDashboard.putData("Auto mode", autoChooser);
-			
-			switch(autoSelected) {
-			case "My Auto":
-				autonomousCommand = new MyAutoCommand();
-				break;
-			case "Default Auto":
-			default:
-				autonomousCommand = new ExampleCommand();
-				break;		
-			}
-	        autonomousCommand = (Command) autoChooser.getSelected();
-	    	
-	    	// schedule the autonomous command (example)
+		{			
+	    	// schedule the chosen autonomous command otherwise
 	        if (autonomousCommand != null) autonomousCommand.start();
 		}
         
-        NIVision.IMAQdxStartAcquisition(Robot.targetTracker.session);
+		
+		
+		
+		
+		// POSSIBLE BUG POINT (AND BElOW)
+//        NIVision.IMAQdxStartAcquisition(Robot.targetTracker.session);
+		
+		
+		
+		
     }
 
     /**
@@ -147,7 +152,14 @@ public class Robot extends IterativeRobot {
     	oi.UtilStick.stopPlayback();
         if (autonomousCommand != null) autonomousCommand.cancel();
 
-        NIVision.IMAQdxStartAcquisition(Robot.targetTracker.session);
+        
+        
+        
+		// POSSIBLE BUG POINT
+//        NIVision.IMAQdxStartAcquisition(Robot.targetTracker.session);
+        
+        
+        
         
         // check if we should start recording joysticks
         if (SmartDashboard.getBoolean("Record New Joystick Auto?", false))
@@ -156,8 +168,8 @@ public class Robot extends IterativeRobot {
 //        	double recordLen = SmartDashboard.getNumber("New Recorded Auto Length", 0);
         	
         	// record for length of auto
-        	oi.DriveStick.startRecording(filename, 15); // recordLen*1000
-        	oi.UtilStick.startRecording(filename, 15);
+        	oi.DriveStick.startRecording(filename + "_drive", 15); // recordLen*1000
+        	oi.UtilStick.startRecording(filename + "_util", 15);
         }
     }
 

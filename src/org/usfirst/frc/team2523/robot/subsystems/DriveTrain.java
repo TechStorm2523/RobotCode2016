@@ -16,14 +16,23 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  *
  */
 public class DriveTrain extends Subsystem {
-	final double TURN_KP = 0.5;
-	final double TURN_KI = 0.05;
-	final double DRIVE_KP = 0.5;
-	final double DRIVE_KI = 0.05;
-	final double DISTANCE_PER_ENCODER_PULSE = 0; // feet
-	public final double TARGET_DISTANCE_TOLERANCE = 0.2; // feet, or same as DISTANCE_PER_ENCODER_PULSE
-	public final double RAMP_UP_DURATION = 1;
-	final double EXPONENETIAL_FACTOR = 2;
+	static final double TURN_KP = 0.5;
+	static final double TURN_KI = 0.01;
+	static final double DRIVE_KP = 0.5;
+	static final double DRIVE_KI = 0.005;
+	static final double ENCODER_DISTANCE_PER_PULSE = 0; // feet
+	static final double ENCODER_RESET_TIME = 0.5; // s
+	public static final double TARGET_DISTANCE_TOLERANCE = 0.2; // feet, or same as ENCODER_DISTANCE_PER_PULSE
+	public static final double RAMP_UP_DURATION = 0.75; // s
+	static final double EXPONENETIAL_FACTOR = 2; // changes arm too
+	
+	// CONSTANTS (for AUTO)
+	public static final double VISION_TARGET_OFFSET_TOLERANCE = 0.04; // normalized units, used in TurnToTarget
+	public static final double DISTANCE_TO_DEFENSE_EDGE = 7.5; // feet
+	public static final double DISTANCE_TO_DEFENSE_MIDDLE = 8.16;
+	public static final double OBSTACLE_CLEAR_SPEED = 0.75; // power
+	public static final double OBSTACLE_CLEAR_TIME = 6; // s // at OBSTACLE_CLEAR_SPEED
+	public static final double TIME_INTO_COURTYARD_FROM_DEFENSE = 3; // at OBSTACLE_CLEAR_SPEED
 	
 	RobotDrive drive = new RobotDrive(RobotMap.Lfront, RobotMap.Lback, RobotMap.Rfront, RobotMap.Rback);
 	Talon lfront = new Talon(RobotMap.Lfront);
@@ -49,7 +58,7 @@ public class DriveTrain extends Subsystem {
 		drive.setSafetyEnabled(true);
 		drive.setExpiration(0.25);
 		
-		driveEncoder.setDistancePerPulse(DISTANCE_PER_ENCODER_PULSE);
+		driveEncoder.setDistancePerPulse(ENCODER_DISTANCE_PER_PULSE);
 	}
 	
 	public void arcadedrivebyjoystick() {
@@ -127,7 +136,7 @@ public class DriveTrain extends Subsystem {
 	public void resetDistance()
 	{
 		driveEncoder.reset();
-		Timer.delay(1);
+		Timer.delay(ENCODER_RESET_TIME);
 	}
 	
 	/**
@@ -135,7 +144,7 @@ public class DriveTrain extends Subsystem {
 	 * @param input Input to be translated to exponential between -1.0 and 1.0
 	 * @return Returns the exponential value between -1.0 and 1.0
 	 */
-	public double getExpodentialValue(double input)
+	public static double getExpodentialValue(double input)
 	{
 		if (input > 0)
 		{

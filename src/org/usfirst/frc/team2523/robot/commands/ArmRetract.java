@@ -1,6 +1,7 @@
 package org.usfirst.frc.team2523.robot.commands;
 
 import org.usfirst.frc.team2523.robot.Robot;
+import org.usfirst.frc.team2523.robot.subsystems.Winch;
 
 import edu.wpi.first.wpilibj.command.Command;
 
@@ -25,7 +26,7 @@ public class ArmRetract extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return Robot.winch.getCurrentDistance() < Robot.winch.ARM_EXTENSION_STOP_TOLERANCE;
+        return Robot.winch.getCurrentDistance() < Winch.ARM_EXTENSION_STOP_TOLERANCE;
     }
 
     // Called once after isFinished returns true

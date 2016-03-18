@@ -1,6 +1,7 @@
 package org.usfirst.frc.team2523.robot.commands;
 
 import org.usfirst.frc.team2523.robot.Robot;
+import org.usfirst.frc.team2523.robot.subsystems.LauncherWheels;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
@@ -27,7 +28,7 @@ public class ManualAim extends Command {
     	Robot.launcherWheels.setByThrottle();
     	Timer.delay(1);
     	Robot.feeder.feed();
-    	Timer.delay(1);
+    	Timer.delay(LauncherWheels.POST_LAUNCH_WAIT_TIME);
     	Robot.feeder.stop();
     	Robot.launcherWheels.set(0);
     	Robot.launcherPneumatics.raise();

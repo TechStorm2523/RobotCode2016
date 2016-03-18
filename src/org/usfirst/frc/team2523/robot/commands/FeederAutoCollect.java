@@ -11,8 +11,6 @@ import edu.wpi.first.wpilibj.command.Command;
  *
  */
 public class FeederAutoCollect extends Command {
-	private double FEEDER_STOP_EXPEL_TIME = 0.2;
-	
 	
     public FeederAutoCollect() {
         // Use requires() here to declare subsystem dependencies
@@ -31,18 +29,18 @@ public class FeederAutoCollect extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-    	if (Robot.feeder.ballstate()){
-    	return true;
+    	if (Robot.feeder.ballstate())
+    	{
+    		return true;
     	} else {
     		return false;
     	}
-	
     }
 
     // Called once after isFinished returns true
     protected void end(){
     	Robot.feeder.expel();
-    	Timer.delay(FEEDER_STOP_EXPEL_TIME);
+    	Timer.delay(Feeder.AUTOCOLLECT_EXPEL_TIME);
     	Robot.feeder.stop();
     	
     }

@@ -13,11 +13,12 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  *
  */
 public class Feeder extends Subsystem {
-	private double FEED_SPEED = 1;
+	private static final double FEED_SPEED = 1;
+	public static final double AUTOCOLLECT_EXPEL_TIME = 0.2;
 	
 	Victor feed = new Victor(RobotMap.feeder);
     
-     DigitalInput balldetector = new DigitalInput(RobotMap.ballDetectorLimSwitch);
+    DigitalInput balldetector = new DigitalInput(RobotMap.ballDetectorLimSwitch);
 
     public boolean ballstate(){
     	return !balldetector.get();
@@ -32,7 +33,7 @@ public class Feeder extends Subsystem {
 	}	
 	
     public void stop(){
-    	// emulate braking
+    	// emulate braking?
     	feed.set(0);
 	}
     

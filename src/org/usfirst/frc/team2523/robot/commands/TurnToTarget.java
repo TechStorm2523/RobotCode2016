@@ -1,6 +1,7 @@
 package org.usfirst.frc.team2523.robot.commands;
 
 import org.usfirst.frc.team2523.robot.Robot;
+import org.usfirst.frc.team2523.robot.subsystems.DriveTrain;
 
 import edu.wpi.first.wpilibj.command.Command;
 
@@ -9,7 +10,6 @@ import edu.wpi.first.wpilibj.command.Command;
  */
 public class TurnToTarget extends Command {
 	double currentXOffset = 0;
-	public static final double TARGET_OFFSET_TOLERANCE = 0.04;
 
     public TurnToTarget() {
         // Use requires() here to declare subsystem dependencies
@@ -30,7 +30,7 @@ public class TurnToTarget extends Command {
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
     	// we measure distance relative to 0, so it's simple
-        return Math.abs(currentXOffset) < TARGET_OFFSET_TOLERANCE;
+        return Math.abs(currentXOffset) < DriveTrain.VISION_TARGET_OFFSET_TOLERANCE;
     }
 
     // Called once after isFinished returns true

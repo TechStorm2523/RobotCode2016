@@ -9,9 +9,9 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class SendBasicImage extends Command {
+public class TransferImagetoDS extends Command {
 
-    public SendBasicImage() {
+    public TransferImagetoDS() {
         // Use requires() here to declare subsystem dependencies
         requires(Robot.targetTracker);
     }

@@ -8,15 +8,15 @@ import edu.wpi.first.wpilibj.command.Command;
  * Turn's the robot's chassis until it finds a target
  */
 public class SeekTarget extends Command {
-	final double SEEK_SPEED = 0.5;
-	final double FIRST_TURN_TIME = 0.5;
-	final double MAX_TURN_TIME = 5; // turn time to give up
-	final double TURN_TIME_INCREMENT = 0.5; // time to turn more on each cycle of 
+	static final double SEEK_SPEED = 0.5;
+	static final double FIRST_TURN_DURATION = 0.5;
+	static final double MAX_TURN_DURATION = 2; // turn time to give up
+	static final double TURN_TIME_INCREMENT = 0.5; // time to turn more on each cycle 
 	
 	// can be used to change initial turn direction
 	boolean turningRight = true;
 	
-	double currentTurnTime = FIRST_TURN_TIME;
+	double currentTurnDuration = FIRST_TURN_DURATION;
 	double timeAtTurnSwitch = 0;
 
     public SeekTarget() {
@@ -33,12 +33,12 @@ public class SeekTarget extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
     	// switch direction after turn time
-    	if ((System.nanoTime() - timeAtTurnSwitch) * 10e9 >= currentTurnTime)
+    	if ((System.nanoTime() - timeAtTurnSwitch) * 10e9 >= currentTurnDuration)
     	{
     		// add time if we have completed a sweep 
     		// (this happens after a complete initial sweep because it's opposite of right turn)
     		if (!turningRight)
-    			currentTurnTime += TURN_TIME_INCREMENT;
+    			currentTurnDuration += TURN_TIME_INCREMENT;
     		
     		// switch directions after timeout
     		turningRight = !turningRight;
@@ -58,7 +58,7 @@ public class SeekTarget extends Command {
     protected boolean isFinished() {
     	// if target is found, there will be a non-zero target offset (also quit if we need to)
         return Robot.targetTracker.getTargetDistanceFromCenter()[0] != 0 ||
-        		currentTurnTime > MAX_TURN_TIME;
+        		currentTurnDuration > MAX_TURN_DURATION;
     }
 
     // Called once after isFinished returns true

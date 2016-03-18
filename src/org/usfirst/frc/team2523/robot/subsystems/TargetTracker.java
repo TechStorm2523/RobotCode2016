@@ -5,7 +5,7 @@ import java.util.Vector;
 
 import org.usfirst.frc.team2523.robot.Robot;
 import org.usfirst.frc.team2523.robot.commands.IdentifyBestTarget;
-import org.usfirst.frc.team2523.robot.commands.SendBasicImage;
+import org.usfirst.frc.team2523.robot.commands.TransferImagetoDS;
 import org.usfirst.frc.team2523.robot.commands.ShutUpCamera;
 
 import com.ni.vision.NIVision;
@@ -102,13 +102,16 @@ public class TargetTracker extends Subsystem {
 		// create images
 		frame = NIVision.imaqCreateImage(ImageType.IMAGE_RGB, 0);
 		binaryFrame = NIVision.imaqCreateImage(ImageType.IMAGE_U8, 0);
+		
 		areaFilterCritera[0] = new NIVision.ParticleFilterCriteria2(
 				NIVision.MeasurementType.MT_AREA_BY_IMAGE_AREA, AREA_MINIMUM, AREA_MAXIMUM, 0, 0);
+		
 		// the camera name (ex "cam0") can be found through the roborio web interface
         session = NIVision.IMAQdxOpenCamera("cam0",
                 NIVision.IMAQdxCameraControlMode.CameraControlModeController);
+        
         NIVision.IMAQdxConfigureGrab(session);
-        System.out.println("INITING");
+//        System.out.println("INITING");
 	}
 	
 	/**
@@ -376,7 +379,7 @@ public class TargetTracker extends Subsystem {
 	
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
-    	setDefaultCommand(new SendBasicImage());
+    	setDefaultCommand(new TransferImagetoDS());
 //        setDefaultCommand(new IdentifyBestTarget());
     }
 }
