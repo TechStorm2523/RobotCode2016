@@ -59,17 +59,7 @@ public class Robot extends IterativeRobot {
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
-    public void robotInit() {
-        autoChooser = new SendableChooser();
-        autoChooser.addDefault("Drive to Defense", new AutoCommandBasic());
-        autoChooser.addObject("Do Nothing", new AutoCommandNOTHING());
-        autoChooser.addObject("Basic (Drive-Over) Defense", new AutoCommandBasicDefense());
-        autoChooser.addDefault("Cheval de Frise (Tippy) Defense", new AutoCommandChevaldeFrise());
-        autoChooser.addDefault("Drawbridge Defense", new AutoCommandDrawbridge());
-        autoChooser.addDefault("Portcullis (Gate) Defense", new AutoCommandPortcullis());
-//      autoChooser.addObject("My Auto", new MyAutoCommand());
-        SmartDashboard.putData("Auto mode", autoChooser);
-        
+    public void robotInit() {        
         targetTracker.init();
     }
 	
@@ -106,16 +96,25 @@ public class Robot extends IterativeRobot {
 		}
 		else
 		{
-			// MAY NEED THIS IF CANT GET STRING FROM 
-//			switch(autoSelected) {
-//			case "My Auto":
-//				autonomousCommand = new MyAutoCommand();
-//				break;
-//			case "Default Auto":
-//			default:
-//				autonomousCommand = new ExampleCommand();
-//				break;		
-//			}
+	        autoChooser = new SendableChooser();
+	        autoChooser.addDefault("Drive to Defense", new AutoCommandBasic());
+	        autoChooser.addObject("Do Nothing", new AutoCommandNOTHING());
+	        autoChooser.addObject("Basic (Drive-Over) Defense", new AutoCommandBasicDefense());
+	        autoChooser.addObject("Cheval de Frise (Tippy) Defense", new AutoCommandChevaldeFrise());
+	        autoChooser.addObject("Drawbridge Defense", new AutoCommandDrawbridge());
+	        autoChooser.addObject("Portcullis (Gate) Defense", new AutoCommandPortcullis());
+//	      autoChooser.addObject("My Auto", new MyAutoCommand());
+	        SmartDashboard.putData("Auto mode", autoChooser);
+			
+			switch(autoSelected) {
+			case "My Auto":
+				autonomousCommand = new MyAutoCommand();
+				break;
+			case "Default Auto":
+			default:
+				autonomousCommand = new ExampleCommand();
+				break;		
+			}
 	        autonomousCommand = (Command) autoChooser.getSelected();
 	    	
 	    	// schedule the autonomous command (example)
@@ -149,6 +148,17 @@ public class Robot extends IterativeRobot {
         if (autonomousCommand != null) autonomousCommand.cancel();
 
         NIVision.IMAQdxStartAcquisition(Robot.targetTracker.session);
+        
+        // check if we should start recording joysticks
+        if (SmartDashboard.getBoolean("Record New Joystick Auto?", false))
+        {
+        	String filename = SmartDashboard.getString("New Recorded Auto Name: ", "RecordedAuto...");
+//        	double recordLen = SmartDashboard.getNumber("New Recorded Auto Length", 0);
+        	
+        	// record for length of auto
+        	oi.DriveStick.startRecording(filename, 15); // recordLen*1000
+        	oi.UtilStick.startRecording(filename, 15);
+        }
     }
 
     /**
