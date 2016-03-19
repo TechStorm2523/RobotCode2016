@@ -92,11 +92,6 @@ public class TargetTracker extends Subsystem {
 	Image binaryFrame;
 	int imaqError;
 	
-	public void TargetReport()
-	{
-		
-	}
-	
 	public void init()
 	{
 		// create images

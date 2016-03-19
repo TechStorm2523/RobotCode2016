@@ -19,20 +19,25 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class ArmPivot extends Subsystem {
 	
 	// constants
-	private static final double PID_KP = 0.05;
-	private static final double PID_KI = 0.0005; 
-	private static final double PID_KD = 0.5; 
-	public static final double ARM_STARTING_ANGLE = 0; //TODO!!!!!!!!!!!!!!!! // degrees, positive for down off horizontal
-	private static final double POTENTIOMETER_ANGLE_PER_VOLTS = 13500;
-	private static final double POTENTIOMETER_MAX_ANGLE = 270;
-	private static final double POTENTIOMETER_START_DEGREE = 13297.5 + 30; // first term is to zero at zero point, second is arm angle off potentiometer start
-	public static final double MAX_IN_MATCH_ANGLE = 160;
+	private static final double PID_KP = 0.009;
+	private static final double PID_KI = 0.001; 
+	private static final double PID_KD = 0;
+	private static final double DEG_PER_SEC_PER_POWER = 336/1;
+	public static final double ARM_STARTING_ANGLE = 61; //TODO!!!!!!!!!!!!!!!! // degrees, positive for down off horizontal
+	private static final double POTENTIOMETER_MAX_ANGLE = 315;
+	private static final double POTENTIOMETER_ANGLE_PER_VOLTS = -2.307*2*70.4106; // TODO!!!!!!!
+	private static final double POTENTIOMETER_START_DEGREE = -322.2; // raw potentiometer reading at start angle
+	private static final double POTENTIOMETER_READ_DEADZONE = 0.25; // degrees
+	public static final double MAX_IN_MATCH_ANGLE = 300; //87;
 	public static final double ARM_STOP_TOLERANCE = 2; // degrees, roughly leads to arm PID positioning precision
-	public static final double MAX_JOYSTICK_SPEED = 0.5; 
+	public static final double MAX_JOYSTICK_SPEED = 0.7;
+	public static final double MAX_PID_SPEED = 0.25;
 	public static final double JOYSTICK_DEADZONE = 0.01; // normalized units
+//	public static final double ARM_PROPS_READ_FREQUENCY = 0.05;
 	
 	// variables
 	public double currentSpeed;
+	public double lastOfficalAngle = 0;
 	public double currentTargetAngle;
 	public double currentMaxAngle = MAX_IN_MATCH_ANGLE;
 	public double pastPotentiometerAngle = 0;
@@ -41,11 +46,19 @@ public class ArmPivot extends Subsystem {
 	CANTalon arm1 = new CANTalon(RobotMap.lifter1);
 	CANTalon arm2 = new CANTalon(RobotMap.lifter2);
 	public AnalogPotentiometer armPotentiometer = new AnalogPotentiometer(RobotMap.armPoten1, POTENTIOMETER_ANGLE_PER_VOLTS);
+//	public AnalogPotentiometer armPotentiometer = new AnalogPotentiometer(RobotMap.armPoten1, POTENTIOMETER_MAX_ANGLE, 
+//																							  POTENTIOMETER_START_DEGREE);
 	public PIDControl armPID = new PIDControl(PID_KP, PID_KI, PID_KD);
 	
 	public ArmPivot()
 	{
 		setBrake(true);
+		armPID.setMaxMin(-MAX_PID_SPEED, MAX_PID_SPEED);
+		
+		arm1.enableBrakeMode(true);
+		arm2.enableBrakeMode(true);
+		
+		currentTargetAngle = getArmAngle();
 	}
 	
 	public void setArmByJoystick()
@@ -56,7 +69,9 @@ public class ArmPivot extends Subsystem {
 
 		// apply deadzone, and if in it, use PID
 		if (Math.abs(commandedSpeed) < JOYSTICK_DEADZONE)
-			set(0); //setTargetAngle(currentTargetAngle);	
+		{
+			setTargetAngle(currentTargetAngle);	
+		}
 		else
 		{
 			// use drivetrain function to get a curved input
@@ -64,11 +79,12 @@ public class ArmPivot extends Subsystem {
 			
 			set(commandedSpeed);
 			
+			// log current position to hold
+			currentTargetAngle = getArmAngle();
+			
 			// reset PID integral so old error is ignored
 			armPID.resetIntegral();
 		}
-		// log current position to hold
-		currentTargetAngle = getArmAngle();
 	}
 
 	public void set(double speed)
@@ -80,22 +96,27 @@ public class ArmPivot extends Subsystem {
 			this.currentSpeed = 0;
 		} else {
 			// we may need to limit the commanded speed to remain within the winch speed limits
-			speed = speed;//Robot.winch.getLimitedArmSpeed(speed);
+			speed = speed; //Robot.winch.getLimitedArmSpeed(speed);
 			
-			arm1.set(speed);
-			arm2.set(-speed);
+			arm1.set(-speed);
+			arm2.set(speed);
 			this.currentSpeed = speed;
 		}	
 	}
 	
 	public void setTargetAngle(double angle)
 	{
-		set(armPID.getPIDoutput(angle, getArmAngle()));
+		set(-armPID.getPIDoutput(angle, getArmAngle()));
 	}
 	
 	public double getArmAngle()
 	{
-		return POTENTIOMETER_MAX_ANGLE - (armPotentiometer.get() - POTENTIOMETER_START_DEGREE);
+		if (Math.abs(lastOfficalAngle - armPotentiometer.get()) >= POTENTIOMETER_READ_DEADZONE)
+			return armPotentiometer.get() - POTENTIOMETER_START_DEGREE;
+		else
+			return lastOfficalAngle;
+		
+		// OR  POTENTIOMETER_MAX_ANGLE - (armPotentiometer.get() + POTENTIOMETER_START_DEGREE);
 	}
 	
 	/**
@@ -103,8 +124,11 @@ public class ArmPivot extends Subsystem {
 	 */
 	public double getArmRate()
 	{
-		return ( pastPotentiometerAngle - getArmAngle() ) / 
-			   ((System.nanoTime() - lastPotentiometerRateRead)*10e6);
+//		System.out.println(( getArmAngle() - pastPotentiometerAngle ) / 
+//			   ((System.nanoTime() - lastPotentiometerRateRead)/10e9));
+		
+		return (getArmAngle() - pastPotentiometerAngle) / // currentSpeed * DEGREE_PER_SEC_PER_POWER
+			   ((System.nanoTime() - lastPotentiometerRateRead)/10e9);
 	}
 	
 	/**
@@ -113,14 +137,17 @@ public class ArmPivot extends Subsystem {
 	 */
 	public void updateArmProperties()
 	{
-		lastPotentiometerRateRead = System.nanoTime();
-		pastPotentiometerAngle = getArmAngle();
-		
-		// set max angle based on match time
-		if (RobotMap.MATCH_LENGTH - Timer.getMatchTime() > 20)
-			currentMaxAngle = MAX_IN_MATCH_ANGLE;
-		else
-			currentMaxAngle = 10e6; // infinite
+//		if ((System.nanoTime() - lastPotentiometerRateRead)/10e9 > ARM_PROPS_READ_FREQUENCY)  
+//		{
+			lastPotentiometerRateRead = System.nanoTime();
+			pastPotentiometerAngle = getArmAngle();
+			
+			// set max angle based on match time
+			if (RobotMap.MATCH_LENGTH - Timer.getMatchTime() > 20)
+				currentMaxAngle = MAX_IN_MATCH_ANGLE;
+			else
+				currentMaxAngle = 10e6; // infinite
+//		}
 	}
 	
 	/**

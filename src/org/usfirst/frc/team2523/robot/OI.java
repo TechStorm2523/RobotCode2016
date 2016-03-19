@@ -1,6 +1,7 @@
 package org.usfirst.frc.team2523.robot;
 
 import org.usfirst.frc.team2523.robot.commands.*;
+import org.usfirst.frc.team2523.robot.subsystems.Winch;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
@@ -54,24 +55,28 @@ public class OI {
     	
    		driveButton3.whenPressed(new LauncherLower());
    		driveButton5.whenPressed(new LauncherRaise());
+   		
+   		driveButton4.whileHeld(new SetWinchByThrottle());
     	
     	// UTIL
    		utilButton1.whileHeld(new ManualLaunch());
-//   		utilButton1.whileHeld(new SetLauncherByThrottle());
     	utilButton2.whenPressed(new AutoLaunch());
     	
     	utilButton3.whileHeld(new FeederExpel());
     	utilButton5.whileHeld(new FeederFire());
 
     	// TODO: THIS COULD SCREW UP THE NORMAL WINCH-ARM FUNCTION!!! SET BASED ON HOW WELL THE LIFT COMMAND WORKS
-    	utilButton4.whenPressed(new SetWinch(-0.5)); // slower
+    	utilButton4.whenPressed(new SetWinch(-Winch.MAX_RPM)); // slower
     	utilButton4.whenReleased(new SetWinch(0));
-    	utilButton6.whenPressed(new SetWinch(1));
+    	utilButton6.whenPressed(new SetWinch(Winch.MAX_RPM));
     	utilButton6.whenReleased(new SetWinch(0));
     	
 		utilButton7.whenPressed(new SetWinchBrake(true));
 		utilButton8.whenPressed(new SetWinchBrake(false));
-    	
+		
+		utilButton12.whileHeld(new IdentifyBestTarget());
+   		utilButton11.whileHeld(new SetLauncherByThrottle());
+		
 //    	utilButton8.whenPressed(new LiftRobot());
 //	    utilButton12.whenPressed(new GateMacro());
     

@@ -404,9 +404,9 @@ public class RecordingJoystick extends GenericHID {
 	@Override
 	public double getThrottle() {
 		if (currentMode == MODE_PLAYBACK)
-			return currentState.twistVal;
+			return currentState.throttleVal;
 		else
-			return inputJoystick.getTwist();
+			return inputJoystick.getThrottle();
 	}
 
 	/* (non-Javadoc)

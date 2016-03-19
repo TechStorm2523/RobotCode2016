@@ -27,17 +27,17 @@ public class SetWinchByThrottle extends Command {
 
     // ake this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {   	
-        return true;
+        return false;
     }
 
     // Called once after isFinished returns true
     protected void end() {
-    	
+    	Robot.winch.set(0);
     }
 
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
-    	Robot.winch.set(0);
+    	end();
     }
 }

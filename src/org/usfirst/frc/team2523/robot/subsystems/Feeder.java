@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  */
 public class Feeder extends Subsystem {
 	private static final double FEED_SPEED = 1;
-	public static final double AUTOCOLLECT_EXPEL_TIME = 0.2;
+	public static final double AUTOCOLLECT_EXPEL_TIME = 0.15;
 	
 	Victor feed = new Victor(RobotMap.feeder);
     

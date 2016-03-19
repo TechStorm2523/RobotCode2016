@@ -30,8 +30,8 @@ public class SetLauncherRPM extends Command {
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
     	// stop once BOTH target RPMs are reached (in certain range)
-        return Robot.launcherWheels.getCurrentRPMError()[0] < LauncherWheels.TARGET_RPM_TOLERANCE && 
-        	   Robot.launcherWheels.getCurrentRPMError()[1] < LauncherWheels.TARGET_RPM_TOLERANCE;
+        return Robot.launcherWheels.getCurrentRPMError()[0] < LauncherWheels.TARGET_SPEED_TOLERANCE && 
+        	   Robot.launcherWheels.getCurrentRPMError()[1] < LauncherWheels.TARGET_SPEED_TOLERANCE;
     }
 
     // Called once after isFinished returns true

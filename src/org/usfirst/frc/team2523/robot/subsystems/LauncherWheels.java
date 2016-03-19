@@ -16,16 +16,16 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  */
 public class LauncherWheels extends Subsystem {
 	// constants
-	public static final double MAX_RPM = 8000;
+	public static final double MAX_RPM = 14000;
 	//						feed forward: max pow  |rev per sec  | time conversion |  native units per rot
 	private static final double RPM_PID_KF = 1023 / (MAX_RPM/60 * 0.1 * 4096); 
-	private static final double RPM_PID_KP = 0.1 * 1023 / 900.0; // set to 10% of max throttle (1023) when going 900 ticks/0.1s
+	private static final double RPM_PID_KP = 0.01 * 1023 / 900.0; // set to 10% of max throttle (1023) when going 900 ticks/0.1s
 	private static final double RPM_PID_KI = 0;//0.001;
-	private static final double RPM_PID_KD = 0.05;
+	private static final double RPM_PID_KD = 0;
 //	public static final double GEARBOX_CONVERSION_FACTOR = 1; // 1:1 gearbox
 	private static final double RPM_PER_VELOCITY = 1 / (Math.PI*2.875/60); // inch/sec - by formula x/v = 1/(pi*d)
-	public static final double TARGET_RPM_TOLERANCE = 100;
-	public static final double RANGE_DIFFERENCE_THRESHOLD = 1; // feet (changes in range when auto launching that constitute readjustment)
+	public static final double TARGET_SPEED_TOLERANCE = 100; // actually in native units
+	public static final double RANGE_DIFFERENCE_DEADZONE = 1; // feet (changes in range when auto launching that constitute readjustment)
 	private static final double LAUNCH_ANGLE = 64;
 	public static final double LAUNCH_HEIGHT = 29.0 / 12.0; // feet (height of launch from center of ball)
 	private static final double TARGET_HEIGHT = 7*12+1 + 24; // feet (target base + to target center) (SHOOT HIGH FOR AIR RESISTANCE)
@@ -63,8 +63,13 @@ public class LauncherWheels extends Subsystem {
     	launchBack.enableBrakeMode(false);
     	launchFront.enableBrakeMode(false);
     	
-    	// reverse ONE
+    	// reverse where needed
+//    	launchFront.reverseSensor(true);
     	launchBack.reverseOutput(true);
+    	
+    	// reset sensors
+    	launchBack.setPosition(0);
+    	launchFront.setPosition(0);
     }
     
 	public void setByThrottle() {
@@ -83,6 +88,11 @@ public class LauncherWheels extends Subsystem {
 	{
 		launchBack.set(rpm);
     	launchFront.set(rpm);
+    	
+//    	System.out.print("RPM:			" + (int) rpm);
+//    	System.out.println(" Front: 		" + (int) launchFront.getSpeed() + 
+//    					   " Back: 			" + (int) launchBack.getSpeed());
+    	System.out.println("Current RPM Errors: F: 	" + getCurrentRPMError()[0] + " B: 	" + getCurrentRPMError()[1]);
 	}
 	
 	/**
@@ -91,8 +101,8 @@ public class LauncherWheels extends Subsystem {
 	public double[] getCurrentRPMs()
 	{
 		double[] rpms = new double[2];
-		rpms[0] = launchBack.getSpeed(); //getEncVelocity(); // look at the 'Talon SRX Software Manual' for explanation
-		rpms[1] = launchFront.getSpeed();
+		rpms[0] = launchFront.getSpeed();//getEncVelocity(); // look at the 'Talon SRX Software Manual' for explanation
+		rpms[1] = launchBack.getSpeed(); 
 		return rpms; 
 	}
 	

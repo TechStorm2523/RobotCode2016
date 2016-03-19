@@ -16,15 +16,16 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  *
  */
 public class DriveTrain extends Subsystem {
-	static final double TURN_KP = 0.5;
-	static final double TURN_KI = 0.01;
-	static final double DRIVE_KP = 0.5;
-	static final double DRIVE_KI = 0.005;
-	static final double ENCODER_DISTANCE_PER_PULSE = 0; // feet
-	static final double ENCODER_RESET_TIME = 0.5; // s
+	private static final double TURN_KP = 0.5;
+	private static final double TURN_KI = 0.01;
+	private static final double DRIVE_KP = 0.5;
+	private static final double DRIVE_KI = 0.005;
+	private static final double ENCODER_DISTANCE_PER_PULSE = 0; // feet
+	private static final double ENCODER_RESET_TIME = 0.5; // s
 	public static final double TARGET_DISTANCE_TOLERANCE = 0.2; // feet, or same as ENCODER_DISTANCE_PER_PULSE
 	public static final double RAMP_UP_DURATION = 0.75; // s
-	static final double EXPONENETIAL_FACTOR = 2; // changes arm too
+	private static final double EXPONENETIAL_FACTOR = 2; // changes arm too
+	private static final double TURN_SPEED_MULTIPLIER = 0.6;
 	
 	// CONSTANTS (for AUTO)
 	public static final double VISION_TARGET_OFFSET_TOLERANCE = 0.04; // normalized units, used in TurnToTarget
@@ -35,10 +36,10 @@ public class DriveTrain extends Subsystem {
 	public static final double TIME_INTO_COURTYARD_FROM_DEFENSE = 3; // at OBSTACLE_CLEAR_SPEED
 	
 	RobotDrive drive = new RobotDrive(RobotMap.Lfront, RobotMap.Lback, RobotMap.Rfront, RobotMap.Rback);
-	Talon lfront = new Talon(RobotMap.Lfront);
-	Talon lback = new Talon(RobotMap.Lback);
-	Talon rfront = new Talon(RobotMap.Rfront);
-	Talon rback = new Talon(RobotMap.Rback);
+//	Talon lfront = new Talon(RobotMap.Lfront);
+//	Talon lback = new Talon(RobotMap.Lback);
+//	Talon rfront = new Talon(RobotMap.Rfront);
+//	Talon rback = new Talon(RobotMap.Rback);
 
 	Encoder driveEncoder = new Encoder(RobotMap.driveEncoder1, RobotMap.driveEncoder2, 
 									false, Encoder.EncodingType.k4X);
@@ -51,8 +52,7 @@ public class DriveTrain extends Subsystem {
 		drive.setInvertedMotor(MotorType.kFrontLeft, true);
 		drive.setInvertedMotor(MotorType.kFrontRight, true);
 		drive.setInvertedMotor(MotorType.kRearLeft, true);
-		drive.setInvertedMotor(MotorType.kRearRight, true);
-		
+		drive.setInvertedMotor(MotorType.kRearRight, true);	
 		
 		// ensure robot will stop motors if they do not receive commands for 0.25 seconds
 		drive.setSafetyEnabled(true);
@@ -75,17 +75,19 @@ public class DriveTrain extends Subsystem {
 		
 		// scale the speeds so they are exponential
 		forwardSpeed = getExpodentialValue(forwardSpeed);
-		turnSpeed = getExpodentialValue(turnSpeed);
+		turnSpeed = TURN_SPEED_MULTIPLIER*getExpodentialValue(turnSpeed);
 		
-		// convert to arcadedrive power
-		double rightSpeed = forwardSpeed + turnSpeed;
-		double leftSpeed = forwardSpeed - turnSpeed;
-			
-		// set correct motors
-		lfront.set(leftSpeed);
-		lback.set(leftSpeed);
-		rfront.set(rightSpeed);
-		rback.set(rightSpeed);		
+		drive.arcadeDrive(forwardSpeed, turnSpeed);
+		
+//		// convert to arcadedrive power
+//		double rightSpeed = forwardSpeed + turnSpeed;
+//		double leftSpeed = forwardSpeed - turnSpeed;
+//			
+//		// set correct motors
+//		lfront.set(leftSpeed);
+//		lback.set(leftSpeed);
+//		rfront.set(rightSpeed);
+//		rback.set(rightSpeed);		
 	}
 	/**
 	 * @param driveRate Rate of drive from -1 to 1
@@ -152,7 +154,7 @@ public class DriveTrain extends Subsystem {
 		}
 		else 
 		{
-			return -1.0 * Math.pow(input, EXPONENETIAL_FACTOR);
+			return -Math.pow(input, EXPONENETIAL_FACTOR);
 		}
 	}
 	

@@ -1,28 +1,16 @@
 
 package org.usfirst.frc.team2523.robot;
-
-import java.io.IOException;
-
 import org.usfirst.frc.team2523.robot.subsystems.*;
 import org.usfirst.frc.team2523.robot.commands.*;
 
-import com.ni.vision.NIVision;
-import com.ni.vision.NIVision.DrawMode;
-import com.ni.vision.NIVision.Image;
-import com.ni.vision.NIVision.ImageType;
-import com.ni.vision.NIVision.ShapeMode;
-
-import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the IterativeRobot
@@ -41,17 +29,17 @@ public class Robot extends IterativeRobot {
 	public static final LauncherPneumatics launcherPneumatics = new LauncherPneumatics();
 	public static final Dashboard dashboard = new Dashboard();
 	public static final LauncherStatus launcherstatus = new LauncherStatus();
-	public static OI oi;
 	
-	// nettables (reduntant with internal one in TargetTracker?
-//	public static NetworkTable netTable;
+	// MUST be after subsystems
+	public static OI oi = new OI();
 	
     Command autonomousCommand;
     SendableChooser autoChooser;
+    SendableChooser playbackChooser;
+    SendableChooser recordingChooser;
 
     public Robot()
     {
-//    	netTable = NetworkTable.getTable(RobotMap.CONTOUR_NET_TABLE);
     }
     
     /**
@@ -59,22 +47,40 @@ public class Robot extends IterativeRobot {
      * used for any initialization code.
      */
     public void robotInit() {  
-    	// MUST be after subsystems
-    	oi = new OI();
-    	
     	// auto chooser
         autoChooser = new SendableChooser();
         autoChooser.addDefault("Drive to Defense", new AutoCommandBasic());
         autoChooser.addObject("Do Nothing", new AutoCommandNOTHING());
         autoChooser.addObject("Basic (Drive-Over) Defense", new AutoCommandBasicDefense());
-        autoChooser.addObject("Cheval de Frise (Tippy) Defense", new AutoCommandChevaldeFrise());
-        autoChooser.addObject("Drawbridge Defense", new AutoCommandDrawbridge());
-        autoChooser.addObject("Portcullis (Gate) Defense", new AutoCommandPortcullis());
+//        autoChooser.addObject("Cheval de Frise (Tippy) Defense", new AutoCommandChevaldeFrise());
+//        autoChooser.addObject("Drawbridge Defense", new AutoCommandDrawbridge());
+//        autoChooser.addObject("Portcullis (Gate) Defense", new AutoCommandPortcullis());
 //      autoChooser.addObject("My Auto", new MyAutoCommand());
-        SmartDashboard.putData("Auto mode", autoChooser);
+        SmartDashboard.putData("Auto Program", autoChooser);
         
-        // provide a list of joystick recordings to choose from
-        SmartDashboard.putString("Available JOYSTICK Recordings: ", " ... ");
+        // to playback auto chooser
+        playbackChooser = new SendableChooser();
+        
+        // to record auto chooser
+        recordingChooser = new SendableChooser();
+        
+        playbackChooser.addDefault("Don't Play Back", null);
+        recordingChooser.addDefault("Don't Record", null);
+        
+        playbackChooser.addObject("Cheval de Frise (Tippy) Defense", "Cheval_Defense");
+        recordingChooser.addObject("Cheval de Frise (Tippy) Defense", "Cheval_Defense");
+        
+        playbackChooser.addObject("Drawbridge Defense", "Drawbridge_Defense");
+        recordingChooser.addObject("Drawbridge Defense", "Drawbridge_Defense");
+        
+        playbackChooser.addObject("Portcullis (Gate) Defense", "Portcullis_Defense");
+        recordingChooser.addObject("Portcullis (Gate) Defense", "Portcullis_Defense");
+        
+        playbackChooser.addObject("Swing Door Defense", "Swing_Door_Defense");
+        recordingChooser.addObject("Swing Door Defense", "Swing_Door_Defense");
+        
+        SmartDashboard.putData("Joystick Playback Program", playbackChooser);
+        SmartDashboard.putData("Joystick Recording Program", recordingChooser);
         
     	targetTracker.init();
     }
@@ -103,12 +109,11 @@ public class Robot extends IterativeRobot {
 	 * or additional comparisons to the switch structure below with additional strings & commands.
 	 */
     public void autonomousInit() {    	      
-		String joystickRecording = SmartDashboard.getString("Joystick Recording to Play Back: ", "None");
-		
+		String joystickRecording = (String) playbackChooser.getSelected();
 		autonomousCommand = (Command) autoChooser.getSelected();
 		
-		// The null auto command indicates we should try tos use a joystick recording
-		if (autonomousCommand == null && !joystickRecording.equalsIgnoreCase("none"))
+		// The null auto command indicates we should try to use a joystick recording
+		if (autonomousCommand == null && joystickRecording != null)
 		{
 			oi.DriveStick.startPlayback(RobotMap.JOYSTICK_RECORDINGS_SAVE_LOCATION + joystickRecording + "_drive");
 			oi.UtilStick.startPlayback(RobotMap.JOYSTICK_RECORDINGS_SAVE_LOCATION + joystickRecording + "_util");
@@ -119,16 +124,9 @@ public class Robot extends IterativeRobot {
 	        if (autonomousCommand != null) autonomousCommand.start();
 		}
         
-		
 //		TargetTracker.startTracking();
-		
-		
 		// POSSIBLE BUG POINT (AND BElOW)
 //        NIVision.IMAQdxStartAcquisition(Robot.targetTracker.session);
-		
-		
-		
-		
     }
 
     /**
@@ -144,7 +142,9 @@ public class Robot extends IterativeRobot {
     	winch.releaseBrake();
     	
     	// ensure that arm extends
-//    	winch.setDistance(winch.MAX_ARM_EXTENSION);
+    	winch.setDistance(Winch.MAX_ARM_EXTENSION);
+    	
+    	armpivot.currentTargetAngle = 0;
     	
 		// This makes sure that the autonomous stops running when
         // teleop starts running. If you want the autonomous to 
@@ -153,25 +153,22 @@ public class Robot extends IterativeRobot {
     	oi.DriveStick.stopPlayback();
     	oi.UtilStick.stopPlayback();
         if (autonomousCommand != null) autonomousCommand.cancel();
-
         
 //		TargetTracker.startTracking(); // TODO: What happens when commands are run twice?
-        
 		// POSSIBLE BUG POINT
 //        NIVision.IMAQdxStartAcquisition(Robot.targetTracker.session);
-        
-        
-        
+//        String recordNew = SmartDashboard.getData("Record New Joystick Auto?");
         
         // check if we should start recording joysticks
-        if (SmartDashboard.getBoolean("Record New Joystick Auto?", false))
+		String joystickRecording = (String) recordingChooser.getSelected();
+        if (joystickRecording != null)
         {
-        	String filename = SmartDashboard.getString("New Recorded Auto Name: ", "RecordedAuto...");
-//        	double recordLen = SmartDashboard.getNumber("New Recorded Auto Length", 0);
+//        	String filename = SmartDashboard.getString("New Recorded Auto Name: ", "RecordedAuto...");
+////        	double recordLen = SmartDashboard.getNumber("New Recorded Auto Length", 0);
         	
         	// record for length of auto
-        	oi.DriveStick.startRecording(RobotMap.JOYSTICK_RECORDINGS_SAVE_LOCATION + filename + "_drive", 15); // recordLen
-        	oi.UtilStick.startRecording(RobotMap.JOYSTICK_RECORDINGS_SAVE_LOCATION + filename + "_util", 15);
+        	oi.DriveStick.startRecording(RobotMap.JOYSTICK_RECORDINGS_SAVE_LOCATION + joystickRecording + "_drive", 15); // recordLen
+        	oi.UtilStick.startRecording(RobotMap.JOYSTICK_RECORDINGS_SAVE_LOCATION + joystickRecording + "_util", 15);
         }
     }
 
@@ -181,7 +178,6 @@ public class Robot extends IterativeRobot {
     public void teleopPeriodic() {    
         Scheduler.getInstance().run();
         allPeriodic();
-        
     }
     
     /**
