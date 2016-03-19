@@ -47,9 +47,9 @@ public class TargetTracker extends Subsystem {
 	NIVision.ParticleFilterOptions2 filterOptions = new NIVision.ParticleFilterOptions2(0,0,1,1);
 	
 	// target crosshair display constants
-	final int TARGET_CROSSHAIR_SIZE = 20; // length from center
-	final int TARGET_CROSSHAIR_WIDTH = 5;
-	final int TARGET_CROSSHAIR_SPREAD = 5; // spread from center
+	static final int TARGET_CROSSHAIR_SIZE = 20; // length from center
+	static final int TARGET_CROSSHAIR_WIDTH = 5;
+	static final int TARGET_CROSSHAIR_SPREAD = 5; // spread from center
 	
 	// Various cache variables
 	private ParticleReport currentBestTarget = null;

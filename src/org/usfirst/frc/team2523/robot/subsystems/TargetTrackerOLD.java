@@ -1,5 +1,7 @@
 //package org.usfirst.frc.team2523.robot.subsystems;
 //
+//import java.io.IOException;
+//
 //import org.usfirst.frc.team2523.robot.Robot;
 //import org.usfirst.frc.team2523.robot.commands.IdentifyBestTarget;
 //
@@ -14,22 +16,19 @@
 //public class TargetTracker extends Subsystem {	
 //	// CONSTANTS
 //	private static final String CONTOUR_NET_TABLE = "GRIP/ContoursReport";
+//	private static final String RASPBERRY_PI_LOCATION = "raspberrypi.local";
 //	// target geometry
 //	private static final double IDEAL_ASPECT_RATIO = 20.0 / 14.0;
 //	private static final double IDEAL_AREA_RATIO =  88.0 / 280.0;
 //	private static final double TARGET_WIDTH = 20 / 12.0;
 //	private static final double TARGET_HEIGHT = 14 / 12.0;
-//	// camera/image properties
-//	private static final double IMAGE_WIDTH = 640;
-//	private static final double IMAGE_HEIGHT = 480;
-//	private static final double CAMERA_FOV = 68.5; // TODO: NEEDS ADJUSTING // VERTICAL FOV
-//	private static final double CAMERA_ELEVATION = 68; // degrees
-//	
+//
 //	// Objects Used
 //	NetworkTable netTable;
 //	
 //	// Variables
-//	private TargetReport currentBestTarget = null;
+//	public TargetReport currentBestTarget = null;
+//	public TargetReport[] allTargets = null;
 //	public double currentRangeToBestTarget = 0;
 //	
 //	public TargetTracker()
@@ -50,8 +49,8 @@
 //		if (currentBestTarget != null)
 //		{
 //			// x increases to right, but y increased downwards, so invert y
-//			distance[0] =  (currentBestTarget.centerX - IMAGE_WIDTH/2.0 ) / (IMAGE_WIDTH/2);
-//			distance[1] = -(currentBestTarget.centerY - IMAGE_HEIGHT/2.0) / (IMAGE_HEIGHT/2);
+//			distance[0] =  (currentBestTarget.centerX - Camera.IMAGE_WIDTH/2.0 ) / (Camera.IMAGE_WIDTH/2);
+//			distance[1] = -(currentBestTarget.centerY - Camera.IMAGE_HEIGHT/2.0) / (Camera.IMAGE_HEIGHT/2);
 //		}
 //		return distance;
 //	}
@@ -59,6 +58,8 @@
 //	/**
 //	 * Finds the target's horizontal distance to the target in feet (or whatever measure TARGET_WIDTH is in)
 //	 * @return The distance, or 0 if no target is found. Most accurate if head on to target
+//	 * Based on https://wpilib.screenstepslive.com/s/3120/m/8731/l/90361-identifying-and-processing-the-targets
+//	 * and example code in 2015 Vision Retro Sample (they do it slightly differently with variables, but its the same)
 //	 */
 //	public double getRangeToBestTarget()
 //	{
@@ -66,8 +67,8 @@
 //		{
 //			// chose to use height because most consistent across view angles
 //			// d = TargetHeightFeet*FOVHeightPixel / (2*TargetHeightPixel*tan(FOV/2) ) (HYPOTENUSE)
-//			return TARGET_HEIGHT*IMAGE_HEIGHT / (2*currentBestTarget.height*Math.tan(CAMERA_FOV/2))
-//					*Math.cos(Math.toDegrees(CAMERA_ELEVATION)); // convert to horizontal
+//			return TARGET_HEIGHT*Camera.IMAGE_HEIGHT / (2*currentBestTarget.height*Math.tan(Math.toRadians(Camera.CAMERA_FOV/2)))
+//					*Math.cos(Math.toRadians(Camera.CAMERA_ELEVATION)); // convert to horizontal
 //		}
 //		else
 //			return 0;
@@ -82,7 +83,7 @@
 //	public TargetReport retrieveBestTarget()
 //	{
 //		// get targets...
-//		TargetReport[] allTargets = getTargetReports();
+//		allTargets = getTargetReports();
 //		
 //		// and find the best one
 //		TargetReport bestTarget = null;
@@ -101,7 +102,7 @@
 //		if (Robot.launcherWheels.inRange(currentRangeToBestTarget))
 //			Robot.launcherstatus.setInRange();
 //		else
-//			Robot.launcherstatus.setInRange();
+//			Robot.launcherstatus.setOutOfRange();
 //		
 //		// if we've found one, cache and return it
 //		// otherwise, return null (it will just default to the first value of bestTarget)
@@ -124,6 +125,7 @@
 //		double[] areas = netTable.getNumberArray("area", defaultValue);
 //		double[] widths = netTable.getNumberArray("width", defaultValue);
 //		double[] heights = netTable.getNumberArray("height", defaultValue);
+//		double[] solidities = netTable.getNumberArray("height", defaultValue);
 //		
 //		// for each given, create a new object
 //		TargetReport[] reports = new TargetReport[centerXs.length];
@@ -135,15 +137,56 @@
 //										  areas[i], 
 //										  widths[i],
 //										  heights[i],
+//										  solidities[i],
 //										  IDEAL_ASPECT_RATIO,
 //										  IDEAL_AREA_RATIO);
-//			
-//			Robot.camera.drawTargetIndicator((int) reports[i].centerX, (int) reports[i].centerY);
 //		}
 //		
 //		return reports;
 //	}
 //
+//	/**
+//	 * Starts vision tracking on Pi via SSH network command
+//	 */
+//	public void startTracking()
+//	{	
+//		ProcessBuilder starterProcess = new ProcessBuilder("ssh", 
+//										"pi@" + RASPBERRY_PI_LOCATION,
+//										" -c \"/home/pi/vision/start_vision.sh " + 
+//										Camera.FPS + " " + 
+//										Camera.IMAGE_WIDTH + 'x' + Camera.IMAGE_HEIGHT + "\"");
+//		
+//		try 
+//		{
+//			starterProcess.start();
+//		} 
+//		catch (IOException e) 
+//		{
+//			System.out.println("Could not start process to commence Raspberry Pi GRIP program: ");
+//			e.printStackTrace();
+//		}
+//	}
+//	
+//	/**
+//	 * Stops vision tracking on Pi via SSH network command
+//	 */
+//	public void stopTracking()
+//	{
+//		ProcessBuilder enderProcess = new ProcessBuilder("ssh", 
+//									  "pi@" + RASPBERRY_PI_LOCATION,
+//									  " -c \"/home/pi/vision/stop_vision.sh\"");
+//		
+//		try 
+//		{
+//			enderProcess.start();
+//		} 
+//		catch (IOException e) 
+//		{
+//			System.out.println("Could not start process to termintate Raspberry Pi GRIP program: ");
+//			e.printStackTrace();
+//		}
+//	}
+//	
 //    public void initDefaultCommand() {
 //        // Set the default command for a subsystem here.
 //        setDefaultCommand(new IdentifyBestTarget());

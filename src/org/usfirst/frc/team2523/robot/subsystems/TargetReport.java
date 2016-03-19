@@ -15,6 +15,7 @@ public class TargetReport {
 	public double area;
 	public double width;
 	public double height;
+	public double solidity;
 	
 	// possible additional target scoring values
 	public double aspectRatioScore;
@@ -28,14 +29,15 @@ public class TargetReport {
 	 * @param width
 	 * @param height
 	 */
-	TargetReport(double centerX, double centerY, double area, double width, double height, 
-				double idealAspectRatio, double idealAreaRatio)
+	TargetReport(double centerX, double centerY, double area, double width, double height,
+				double solidity, double idealAspectRatio, double idealAreaRatio)
 	{
 		this.centerX = centerX;
 		this.centerY = centerY;
 		this.area = area;
 		this.width = width;
 		this.height = height;
+		this.solidity = solidity;
 		this.IDEAL_ASPECT_RATIO = idealAspectRatio;
 		this.IDEAL_AREA_RATIO = idealAreaRatio;
 		
@@ -92,7 +94,7 @@ public class TargetReport {
 	 */
 	private double scoreFromDistance(double realValue, double idealValue)
 	{
-		// Create a "pyramid function", inverting an absoulute value function and 
+		// Create a "pyramid function", inverting an absolute value function and 
 		// shifting so a 0 in the difference between one and the ratio of the values
 		// results in a 1 on the score
 		if (idealValue != 0)

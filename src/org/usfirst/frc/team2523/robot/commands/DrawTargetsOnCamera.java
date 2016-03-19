@@ -8,7 +8,7 @@
 //import com.ni.vision.NIVision;
 //
 ///**
-// *
+// * @deprecated
 // */
 //public class DrawTargetsOnCamera extends Command 
 //{

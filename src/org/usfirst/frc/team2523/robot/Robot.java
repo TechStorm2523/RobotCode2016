@@ -37,6 +37,7 @@ public class Robot extends IterativeRobot {
 	public static final Feeder feeder = new Feeder();
 	public static final LauncherWheels launcherWheels = new LauncherWheels();
 	public static TargetTracker targetTracker = new TargetTracker();
+//	public static Camera camera = new Camera();
 	public static final LauncherPneumatics launcherPneumatics = new LauncherPneumatics();
 	public static final Dashboard dashboard = new Dashboard();
 	public static final LauncherStatus launcherstatus = new LauncherStatus();
@@ -84,6 +85,7 @@ public class Robot extends IterativeRobot {
 	 * the robot is disabled.
      */
     public void disabledInit(){
+//		TargetTracker.stopTracking();
     }
 	
 	public void disabledPeriodic() {
@@ -118,7 +120,7 @@ public class Robot extends IterativeRobot {
 		}
         
 		
-		
+//		TargetTracker.startTracking();
 		
 		
 		// POSSIBLE BUG POINT (AND BElOW)
@@ -153,7 +155,7 @@ public class Robot extends IterativeRobot {
         if (autonomousCommand != null) autonomousCommand.cancel();
 
         
-        
+//		TargetTracker.startTracking(); // TODO: What happens when commands are run twice?
         
 		// POSSIBLE BUG POINT
 //        NIVision.IMAQdxStartAcquisition(Robot.targetTracker.session);
