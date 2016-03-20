@@ -87,7 +87,7 @@ public class ArmPivot extends Subsystem {
 
 	public void set(double speed)
 	{
-		if (speed > 0 && getArmAngle() > currentMaxAngle)
+		if ((speed < 0 && getArmAngle < 0) (speed > 0 && getArmAngle() > currentMaxAngle))
 		{
 			arm1.set(0);
 			arm2.set(0);
@@ -141,7 +141,7 @@ public class ArmPivot extends Subsystem {
 			if (RobotMap.MATCH_LENGTH - Timer.getMatchTime() > 20)
 				currentMaxAngle = MAX_IN_MATCH_ANGLE;
 			else
-				currentMaxAngle = 10e6; // infinite
+				currentMaxAngle = POTENTIOMETER_MAX_ANGLE;
 				
 			currentArmRate = (getArmAngle() - pastPotentiometerAngle) / // currentSpeed * DEGREE_PER_SEC_PER_POWER
 		   			 ((System.nanoTime() - lastPotentiometerRateRead)/10e9);
