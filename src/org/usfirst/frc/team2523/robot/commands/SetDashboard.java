@@ -40,6 +40,7 @@ public class SetDashboard extends Command
 					Math.abs(Robot.targetTracker.getTargetDistanceFromCenter()[0]) < DriveTrain.VISION_TARGET_OFFSET_TOLERANCE);
 		SmartDashboard.putBoolean(" Spooled Up ", Robot.launcherstatus.spooledUp);
 		SmartDashboard.putNumber(" Range to Best Target ", Robot.targetTracker.currentRangeToBestTarget);
+		SmartDashboard.putNumber(" Launcher Wheels Target RPM ", Robot.launcherWheels.currentTargetRPM);
 		SmartDashboard.putNumber(" Launcher Mot RPM (Front) ", Robot.launcherWheels.getCurrentRPMs()[0]);
 		SmartDashboard.putNumber(" Launcher Mot RPM (Back) ", Robot.launcherWheels.getCurrentRPMs()[1]);
 		SmartDashboard.putNumber(" Launcher Mot PID Error (Front) ", Robot.launcherWheels.getCurrentError()[0]);
@@ -53,10 +54,7 @@ public class SetDashboard extends Command
 		SmartDashboard.putString(" Status of Launcher ",Robot.launcherstatus.Status );
 		SmartDashboard.putNumber(" Winch Speed ", Robot.winch.winchMotor.get());
 		
-		// SETTINGS from THE DASHBOARD
-		Robot.launcherWheels.rpmPerVelocityCoefficent = SmartDashboard.getNumber(" Launcher RPM to Velocity Coefficent: ", Robot.launcherWheels.rpmPerVelocityCoefficent);
-		Robot.winch.revPerInchPerSecCoefficent = SmartDashboard.getNumber(" Arm by Winch Coefficent: ", Robot.winch.revPerInchPerSecCoefficent);
-		
+		// SETTINGS from THE DASHBOARD?
 		// COMMANDS
 		//SmartDashboard.putData("Set Launch Properties", new SetLauncherVelocityAndAngle());
 		
