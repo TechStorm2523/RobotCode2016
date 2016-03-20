@@ -17,14 +17,17 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class Winch extends Subsystem {
 	// constants
 	public static final double MAX_RPM = 60;
-	private static final double RPM_PID_KF = 0.02713; 
+	private static final double GEARBOX_CONVERSION_FACTOR = 100; // 100:1 gearbox
+	//			  feed forward: max pow  |rev per sec  | time conversion |  native units per rot
+	private static final double RPM_PID_KF = 1023 / (MAX_RPM/60 * 0.1 * 4096) /
+						 GEARBOX_CONVERSION_FACTOR; // TODO: IS THIS BETTER THAN BELOW?
+	// private static final double RPM_PID_KF = 0.02713; 
 	private static final double RPM_PID_KP = 0;//0.01 * 1023 / 900.0; // set to 50% of max throttle (1023) when going 900 ticks/0.1s
 	private static final double RPM_PID_KI = 0; // NO NEED
 	private static final double RPM_PID_KD = 0; // NO NEED
 	private static final double POS_PID_KP = 0.001; // TODO: MAY BE TOO HIGH, causing winch to move out too far
 	private static final double POS_PID_KI = 0.01;
 	private static final double POS_PID_KD = 0; // NO NEED
-	private static final double GEARBOX_CONVERSION_FACTOR = 100; // 100:1 gearbox
 	private static final double REV_PER_INCH = 1/(2*Math.PI*0.75); // circumference inches in one revolution
 	
 	public static final double MAX_ARM_EXTENSION = 14; // inches
