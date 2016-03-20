@@ -31,6 +31,7 @@ public class Winch extends Subsystem {
 	private static final double REV_PER_INCH = 1/(2*Math.PI*0.75); // circumference inches in one revolution
 	
 	public static final double MAX_ARM_EXTENSION = 14; // inches
+	public static final double MIN_ARM_EXTENSION = 0.5; // inches, off of initial reset point
 	private static final double ARM_PIVOT_TO_15IN = 39.5; // inches
 	private static final double RPM_PER_INCH_PER_SECOND = 1 * REV_PER_INCH*60; // to convert rev/sec to rpm //5000.0/39.27; // assuming w/v = 1/r where w(rpm) = w / 2*pi
 //	public static final int MAX_WINCH_BY_ARM_ANGLE = 60; // using getCurrentDistance() we think
@@ -67,13 +68,17 @@ public class Winch extends Subsystem {
      */
 	public void set(double rpm) {
     	
-    	// the winch can do whatever the heck it wants as long as it is:
-    	// not too far out while trying to go out,
-    	// not too far in while trying to go in,
-    	// or is in the last 20 seconds of the match
+    	// the winch must be stopped when it is:
+    	// too far out while trying to go out,
+    	// too far in while trying to go in,
+    	// BUT, in the last 20 seconds of the match, these constraints are overriden
     	double distance = getCurrentDistance();
-    	if ((distance < MAX_ARM_EXTENSION && rpm < 0) || (distance >= 0 && rpm > 0) ||
-    		RobotMap.MATCH_LENGTH - Timer.getMatchTime() <= 20)
+    	if ( ((distance >= MAX_ARM_EXTENSION && rpm > 0) || (distance <= MIN_ARM_EXTENSION && rpm < 0)) &&
+    		RobotMap.MATCH_LENGTH - Timer.getMatchTime() > 20)
+    	{
+    		winchMotor.set(0);
+    	}
+    	else
     	{
     		// ensure operating by RPM mode and corresponding PID
         	winchMotor.changeControlMode(TalonControlMode.Speed);
@@ -87,8 +92,6 @@ public class Winch extends Subsystem {
 		if (rpm != 0)
 			releaseBrake();
     	}
-    	else
-    		winchMotor.set(0);
     	
     	// System.out.println(distance);
 	}
@@ -132,25 +135,21 @@ public class Winch extends Subsystem {
 	/**
 	 * @param currentAngle Current arm angle, measured from ARM_STARTING_ANGLE
 	 * @param angleDelta Rate of angle change, in degrees per second
-	 * @return The correctly scaled winch speed (in RPMs, or whatever value RPM_PER_INCH_PER_SECOND has in it)
+	 * @return The correctly scaled winch speed (in RPMs, or whatever unit RPM_PER_INCH_PER_SECOND is in)
 	 */
 	private double getWinchSpeed(double currentAngle, double angleDelta) 
 	{
-		// disable if above max angle to avoid infinite speed issues and cable slack
-		// !!! TODO: Maybe juse use getCurrentDistance and stop whenever the winch has extended to full arm length
-		if (getCurrentDistance() > MAX_ARM_EXTENSION) // (currentAngle > MAX_WINCH_BY_ARM_ANGLE)
-			return 0;
-		else
-		{
-			// derived from derivative of arm radius ( d/cos(theta) ) with respect to angle multiplied by
-			// the derivative of angle with respect to time.
-			// (dr/dTheta (i.e. ARM... GLE)) * dtheta/dt (i.e. angleDelta) = dr/dt)
-			return revPerInchPerSecCoefficent * RPM_PER_INCH_PER_SECOND *
-				   ARM_PIVOT_TO_15IN * 
-				   Math.tan(Math.toRadians(currentAngle - ArmPivot.ARM_STARTING_ANGLE)) / 
-				   Math.cos(Math.toRadians(currentAngle - ArmPivot.ARM_STARTING_ANGLE)) *
-				   angleDelta; // TODO: Should this be in RADIANS????? (And below too)
-		}
+		// only control winch by arm speed when the arm still has travel, to avoid spool out
+		// or hook disconnection (THIS IS DONE IN SET)
+
+		// derived from derivative of arm radius ( d/cos(theta) ) with respect to angle multiplied by
+		// the derivative of angle with respect to time.
+		// (dr/dTheta (i.e. ARM... GLE)) * dtheta/dt (i.e. angleDelta) = dr/dt)
+		return revPerInchPerSecCoefficent * RPM_PER_INCH_PER_SECOND *
+			   ARM_PIVOT_TO_15IN * 
+			   Math.tan(Math.toRadians(currentAngle - ArmPivot.ARM_STARTING_ANGLE)) / 
+			   Math.cos(Math.toRadians(currentAngle - ArmPivot.ARM_STARTING_ANGLE)) *
+			   angleDelta; // TODO: Should this be in RADIANS????? (And below too)
 	}
 
 	/**
