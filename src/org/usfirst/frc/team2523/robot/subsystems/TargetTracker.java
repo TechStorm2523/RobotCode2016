@@ -115,6 +115,11 @@ public class TargetTracker extends Subsystem {
 	public void transferImagetoDS()
 	{
 		NIVision.IMAQdxGrab(session, frame, 1);
+		
+		// draw a centered vertical line
+		NIVision.Rect vertLine = new NIVision.Rect(0, 640/2 - 3/2, 480, 3);
+		NIVision.imaqDrawShapeOnImage(frame, frame, vertLine, DrawMode.DRAW_VALUE, ShapeMode.SHAPE_RECT, 128.0f);
+		
 		CameraServer.getInstance().setImage(frame);
 	}
 	
