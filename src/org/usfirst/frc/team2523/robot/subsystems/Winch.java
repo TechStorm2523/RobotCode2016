@@ -17,12 +17,11 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class Winch extends Subsystem {
 	// constants
 	public static final double MAX_RPM = 60;
-	//						feed forward: max pow  |rev per sec  | time conversion |  native units per rot
 	private static final double RPM_PID_KF = 0.02713; 
 	private static final double RPM_PID_KP = 0;//0.01 * 1023 / 900.0; // set to 50% of max throttle (1023) when going 900 ticks/0.1s
 	private static final double RPM_PID_KI = 0; // NO NEED
 	private static final double RPM_PID_KD = 0; // NO NEED
-	private static final double POS_PID_KP = 0.001; // TODO: MAY BE TOO HIGH, causing winch to move out too fast
+	private static final double POS_PID_KP = 0.001; // TODO: MAY BE TOO HIGH, causing winch to move out too far
 	private static final double POS_PID_KI = 0.01;
 	private static final double POS_PID_KD = 0; // NO NEED
 	private static final double GEARBOX_CONVERSION_FACTOR = 100; // 100:1 gearbox
@@ -45,7 +44,6 @@ public class Winch extends Subsystem {
     {
     	// tell Talon SRX to use encoder (Quadrature Encoder)
     	winchMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
-    	winchMotor.reverseSensor(false);
     	
     	// configure PID control for BOTH modes (we ASSUME ramp rate zero means infinite ramp rate)
     	winchMotor.setPID(RPM_PID_KP, RPM_PID_KI, RPM_PID_KD, RPM_PID_KF, 1, 0, 0); // ramp rate is zero, but create 2 profiles
@@ -84,10 +82,12 @@ public class Winch extends Subsystem {
     	else
     		winchMotor.set(0);
     	
-    	System.out.println(distance);
+    	// System.out.println(distance);
 	}
 	
 	/**
+	 * NOTE: THIS MUST NOT BE CALLED WHILE SET() IS BEING CALLED...
+	 * BE SURE TO PUT IN AN INTERUPPTING COMMAND!!!!!
 	 * @param distance Distance of extension to go to, in inches
 	 */
 	public void setDistance(double distance)
@@ -108,7 +108,7 @@ public class Winch extends Subsystem {
 	 */
 	public double getCurrentDistance()
 	{
-		System.out.println(winchMotor.getPosition());
+		// System.out.println(winchMotor.getPosition());
 		return winchMotor.getPosition() / (GEARBOX_CONVERSION_FACTOR * REV_PER_INCH);
 	}
 	
@@ -141,7 +141,7 @@ public class Winch extends Subsystem {
 				   ARM_PIVOT_TO_15IN * 
 				   Math.tan(Math.toRadians(currentAngle - ArmPivot.ARM_STARTING_ANGLE)) / 
 				   Math.cos(Math.toRadians(currentAngle - ArmPivot.ARM_STARTING_ANGLE)) *
-				   angleDelta;
+				   angleDelta; // TODO: Should this be in RADIANS????? (And below too)
 		}
 	}
 
