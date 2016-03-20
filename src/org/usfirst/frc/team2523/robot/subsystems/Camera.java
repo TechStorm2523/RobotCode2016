@@ -51,6 +51,10 @@
 //	{
 //		NIVision.IMAQdxGrab(session, frame, 1);
 //		
+  		// // draw a centered vertical line
+  		// NIVision.Rect vertLine = new NIVision.Rect(0, IMAGE_WIDTH/2 - 3/2, IMAGE_HEIGHT, 3);
+  		// NIVision.imaqDrawShapeOnImage(frame, frame, vertLine, DrawMode.DRAW_VALUE, ShapeMode.SHAPE_RECT, 128.0f);
+		
 //		// draw on any target indicators where needed
 //		if (Robot.targetTracker.currentBestTarget != null || 
 //				Robot.targetTracker.allTargets.length > 0)
