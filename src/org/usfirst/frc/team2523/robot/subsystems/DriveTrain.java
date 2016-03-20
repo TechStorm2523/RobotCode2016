@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  *
  */
 public class DriveTrain extends Subsystem {
-	private static final double TURN_KP = 0.5;
+	private static final double TURN_KP = 0.5; // when normalized offset is at one, go half speed
 	private static final double TURN_KI = 0.01;
 	private static final double DRIVE_KP = 0.5;
 	private static final double DRIVE_KI = 0.005;
