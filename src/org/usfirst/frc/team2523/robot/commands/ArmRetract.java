@@ -21,12 +21,12 @@ public class ArmRetract extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.winch.setDistance(0);
+    	Robot.winch.setDistance(Winch.MIN_ARM_EXTENSION);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return Robot.winch.getCurrentDistance() < Winch.ARM_EXTENSION_STOP_TOLERANCE;
+        return Math.abs(Robot.winch.getCurrentDistance() - Winch.MIN_ARM_EXTENSION) < Winch.ARM_EXTENSION_STOP_TOLERANCE;
     }
 
     // Called once after isFinished returns true
