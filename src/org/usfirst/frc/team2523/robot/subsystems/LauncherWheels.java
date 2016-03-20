@@ -41,6 +41,9 @@ public class LauncherWheels extends Subsystem {
 	// variables for adjusting constants
 	public double rpmPerVelocityCoefficent = 1;
 	
+	// variables
+	public double currentTargetRPM = 0;
+	
     	public CANTalon launchBack = new CANTalon(RobotMap.launcherMotBack);
     	public CANTalon launchFront = new CANTalon(RobotMap.launcherMotFront);
 //    Encoder rpmEncoder = new Encoder(RobotMap.launcherEncoder1, RobotMap.launcherEncoder2, 
@@ -93,7 +96,8 @@ public class LauncherWheels extends Subsystem {
 	{
 		launchBack.set(rpm);
     		launchFront.set(rpm);
-    	
+    		
+    		currentTargetRPM = rpm;
 //    	System.out.print("RPM:			" + (int) rpm);
 //    	System.out.println(" Front: 		" + (int) launchFront.getSpeed() + 
 //    					   " Back: 			" + (int) launchBack.getSpeed());
