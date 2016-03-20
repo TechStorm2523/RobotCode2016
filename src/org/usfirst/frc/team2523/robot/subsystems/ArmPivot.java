@@ -23,12 +23,12 @@ public class ArmPivot extends Subsystem {
 	private static final double PID_KI = 0.001; 
 	private static final double PID_KD = 0;
 	private static final double DEG_PER_SEC_PER_POWER = 336/1;
-	public static final double ARM_STARTING_ANGLE = 61; //TODO!!!!!!!!!!!!!!!! // degrees, positive for down off horizontal
+	public static final double ARM_STARTING_ANGLE = -61; //TODO: NEGATIVE??????????????????????????? // degrees, positive for down off horizontal
 	private static final double POTENTIOMETER_MAX_ANGLE = 315;
-	private static final double POTENTIOMETER_ANGLE_PER_VOLTS = -2.307*2*70.4106; // TODO!!!!!!!
+	private static final double POTENTIOMETER_ANGLE_PER_VOLTS = -2.307*2*70.4106;
 	private static final double POTENTIOMETER_START_DEGREE = -322.2; // raw potentiometer reading at start angle
 	private static final double POTENTIOMETER_READ_DEADZONE = 0.25; // degrees
-	public static final double MAX_IN_MATCH_ANGLE = 300; //87;
+	public static final double MAX_IN_MATCH_ANGLE = 87;
 	public static final double ARM_STOP_TOLERANCE = 2; // degrees, roughly leads to arm PID positioning precision
 	public static final double MAX_JOYSTICK_SPEED = 0.7;
 	public static final double MAX_PID_SPEED = 0.25;
@@ -40,6 +40,7 @@ public class ArmPivot extends Subsystem {
 	public double lastOfficalAngle = 0;
 	public double currentTargetAngle;
 	public double currentMaxAngle = MAX_IN_MATCH_ANGLE;
+	public double currentArmRate = 0;
 	public double pastPotentiometerAngle = 0;
 	public double lastPotentiometerRateRead = 0;
 
@@ -54,9 +55,6 @@ public class ArmPivot extends Subsystem {
 	{
 		setBrake(true);
 		armPID.setMaxMin(-MAX_PID_SPEED, MAX_PID_SPEED);
-		
-		arm1.enableBrakeMode(true);
-		arm2.enableBrakeMode(true);
 		
 		currentTargetAngle = getArmAngle();
 	}
@@ -111,10 +109,11 @@ public class ArmPivot extends Subsystem {
 	
 	public double getArmAngle()
 	{
+		// change if has exceeded change threshold
 		if (Math.abs(lastOfficalAngle - armPotentiometer.get()) >= POTENTIOMETER_READ_DEADZONE)
-			return armPotentiometer.get() - POTENTIOMETER_START_DEGREE;
-		else
-			return lastOfficalAngle;
+			lastOfficalAngle = armPotentiometer.get() - POTENTIOMETER_START_DEGREE;
+		
+		return lastOfficalAngle;
 		
 		// OR  POTENTIOMETER_MAX_ANGLE - (armPotentiometer.get() + POTENTIOMETER_START_DEGREE);
 	}
@@ -127,8 +126,7 @@ public class ArmPivot extends Subsystem {
 //		System.out.println(( getArmAngle() - pastPotentiometerAngle ) / 
 //			   ((System.nanoTime() - lastPotentiometerRateRead)/10e9));
 		
-		return (getArmAngle() - pastPotentiometerAngle) / // currentSpeed * DEGREE_PER_SEC_PER_POWER
-			   ((System.nanoTime() - lastPotentiometerRateRead)/10e9);
+		return currentArmRate;
 	}
 	
 	/**
@@ -139,14 +137,17 @@ public class ArmPivot extends Subsystem {
 	{
 //		if ((System.nanoTime() - lastPotentiometerRateRead)/10e9 > ARM_PROPS_READ_FREQUENCY)  
 //		{
-			lastPotentiometerRateRead = System.nanoTime();
-			pastPotentiometerAngle = getArmAngle();
-			
 			// set max angle based on match time
 			if (RobotMap.MATCH_LENGTH - Timer.getMatchTime() > 20)
 				currentMaxAngle = MAX_IN_MATCH_ANGLE;
 			else
 				currentMaxAngle = 10e6; // infinite
+				
+			currentArmRate = (getArmAngle() - pastPotentiometerAngle) / // currentSpeed * DEGREE_PER_SEC_PER_POWER
+		   			 ((System.nanoTime() - lastPotentiometerRateRead)/10e9);
+				
+			pastPotentiometerAngle = getArmAngle();
+			lastPotentiometerRateRead = System.nanoTime();
 //		}
 	}
 	
