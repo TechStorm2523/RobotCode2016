@@ -42,12 +42,15 @@ public class SetDashboard extends Command
 		SmartDashboard.putNumber(" Range to Best Target ", Robot.targetTracker.currentRangeToBestTarget);
 		SmartDashboard.putNumber(" Launcher Mot RPM (Front) ", Robot.launcherWheels.getCurrentRPMs()[0]);
 		SmartDashboard.putNumber(" Launcher Mot RPM (Back) ", Robot.launcherWheels.getCurrentRPMs()[1]);
-		SmartDashboard.putNumber(" Potentiometer Reading", Robot.armpivot.armPotentiometer.get());
+		SmartDashboard.putNumber(" Launcher Mot PID Error (Front) ", Robot.launcherWheels.getCurrentError()[0]);
+		SmartDashboard.putNumber(" Launcher Mot PID Error (Back) ", Robot.launcherWheels.getCurrentError()[1]);
+		SmartDashboard.putNumber(" Potentiometer Reading ", Robot.armpivot.armPotentiometer.get());
 		SmartDashboard.putNumber(" Current Thottle RPM Target ", LauncherWheels.MAX_RPM*0.5*(-Robot.oi.UtilStick.getThrottle() + 1)); // from 0 to 100
+		SmartDashboard.putNumber(" Winch (Arm) Extension Distance ", Robot.winch.getCurrentDistance());
+		SmartDashboard.putNumber(" Winch Extension Encoder Reading ", Robot.winch.winchMotor.getPosition());
 		
 		// DIAGNOSTICS
 		SmartDashboard.putString(" Status of Launcher ",Robot.launcherstatus.Status );
-		SmartDashboard.putNumber(" Winch (Arm) Extension ", Robot.winch.getCurrentDistance());
 		SmartDashboard.putNumber(" Winch Speed ", Robot.winch.winchMotor.get());
 		
 		// SETTINGS from THE DASHBOARD
