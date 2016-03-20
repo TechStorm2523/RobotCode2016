@@ -18,10 +18,14 @@ public class LauncherWheels extends Subsystem {
 	// constants
 	public static final double MAX_RPM = 14000;
 	//						feed forward: max pow  |rev per sec  | time conversion |  native units per rot
-	private static final double RPM_PID_KF = 1023 / (MAX_RPM/60 * 0.1 * 4096); 
+	private static final double RPM_PID_KF = 1023 / (MAX_RPM/60 * 0.1 * 4096); // TODO: IS THIS GOOD???????????????
 	private static final double RPM_PID_KP = 0.01 * 1023 / 900.0; // set to 10% of max throttle (1023) when going 900 ticks/0.1s
 	private static final double RPM_PID_KI = 0;//0.001;
 	private static final double RPM_PID_KD = 0;
+	private static final double RPM_PID_BACK_KF = RPM_PID_KF; // TODO: IS THIS GOOD???????????????
+	private static final double RPM_PID_BACK_KP = RPM_PID_KP; // set to 10% of max throttle (1023) when going 900 ticks/0.1s
+	private static final double RPM_PID_BACK_KI = RPM_PID_KI;//0.001;
+	private static final double RPM_PID_BACK_KD = RPM_PID_KD;
 //	public static final double GEARBOX_CONVERSION_FACTOR = 1; // 1:1 gearbox
 	private static final double RPM_PER_VELOCITY = 1 / (Math.PI*2.875/60); // inch/sec - by formula x/v = 1/(pi*d)
 	public static final double TARGET_SPEED_TOLERANCE = 100; // actually in native units
@@ -37,8 +41,8 @@ public class LauncherWheels extends Subsystem {
 	// variables for adjusting constants
 	public double rpmPerVelocityCoefficent = 1;
 	
-    CANTalon launchBack = new CANTalon(RobotMap.launcherMotBack);
-    CANTalon launchFront = new CANTalon(RobotMap.launcherMotFront);
+    	public CANTalon launchBack = new CANTalon(RobotMap.launcherMotBack);
+    	public CANTalon launchFront = new CANTalon(RobotMap.launcherMotFront);
 //    Encoder rpmEncoder = new Encoder(RobotMap.launcherEncoder1, RobotMap.launcherEncoder2, 
 //									false, Encoder.EncodingType.k4X);
 //    PIDControl rpmPID = new PIDControl(RPM_PID_KP, 0, 0); // we're only going to need proportional control
@@ -53,9 +57,10 @@ public class LauncherWheels extends Subsystem {
     	launchBack.changeControlMode(TalonControlMode.Speed);
     	launchFront.changeControlMode(TalonControlMode.Speed);
     	
-    	// configure PID control
+    	// configure PID control (we ASSUME ramp rate zero means infinite ramp rate)
     	launchBack.setPID(RPM_PID_KP, RPM_PID_KI, RPM_PID_KD, RPM_PID_KF, 1, 0, 0);
-    	launchFront.setPID(RPM_PID_KP, RPM_PID_KI, RPM_PID_KD, RPM_PID_KF, 1, 0, 0); // we ASSUME ramp rate zero means infinite ramp rate
+    	// launchBack.setPID(RPM_PID_BACK_KP, RPM_PID_BACK_KI, RPM_PID_BACK_KD, RPM_PID_BACK_KF, 1, 0, 0);
+    	launchFront.setPID(RPM_PID_KP, RPM_PID_KI, RPM_PID_KD, RPM_PID_KF, 1, 0, 0);
 //    	launchBack.configEncoderCodesPerRev( (int) ENCODER_PULSE_PER_REV); // NO NEED with CtreMagEncoder
 //    	launchFront.configEncoderCodesPerRev( (int) ENCODER_PULSE_PER_REV);
     	
@@ -75,7 +80,7 @@ public class LauncherWheels extends Subsystem {
 	public void setByThrottle() {
 		// shift so goes from 0 at base to 1 at max (and, because setting RPM, scale to max)
 //		if (!Robot.feeder.ballstate()) {
-        set(MAX_RPM*0.5*(-Robot.oi.UtilStick.getThrottle() + 1));
+        	set(MAX_RPM*0.5*(-Robot.oi.UtilStick.getThrottle() + 1));
 //	    } else {
 //	        System.out.println("No Ball!");
 //	    }
@@ -87,12 +92,12 @@ public class LauncherWheels extends Subsystem {
 	public void set(double rpm)
 	{
 		launchBack.set(rpm);
-    	launchFront.set(rpm);
+    		launchFront.set(rpm);
     	
 //    	System.out.print("RPM:			" + (int) rpm);
 //    	System.out.println(" Front: 		" + (int) launchFront.getSpeed() + 
 //    					   " Back: 			" + (int) launchBack.getSpeed());
-    	System.out.println("Current RPM Errors: F: 	" + getCurrentRPMError()[0] + " B: 	" + getCurrentRPMError()[1]);
+    	// System.out.println("Current RPM Errors: F: 	" + getCurrentRPMError()[0] + " B: 	" + getCurrentRPMError()[1]);
 	}
 	
 	/**
@@ -112,8 +117,8 @@ public class LauncherWheels extends Subsystem {
 	public double[] getCurrentRPMError()
 	{
 		double[] errors = new double[2];
-		errors[0] = launchBack.getClosedLoopError();
-		errors[1] = launchFront.getClosedLoopError();
+		errors[0] = launchFront.getClosedLoopError();
+		errors[1] = launchBack.getClosedLoopError();
 		return errors; 
 	}
 	
