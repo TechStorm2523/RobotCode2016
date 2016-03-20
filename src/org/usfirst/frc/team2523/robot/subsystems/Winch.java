@@ -139,6 +139,9 @@ public class Winch extends Subsystem {
 	 */
 	private double getWinchSpeed(double currentAngle, double angleDelta) 
 	{
+		// BE SURE TO REMOVE ONCE SET
+		revPerInchPerSecCoefficent = SmartDashboard.getNumber(" Arm by Winch Coefficent: ", revPerInchPerSecCoefficent);
+		
 		// only control winch by arm speed when the arm still has travel, to avoid spool out
 		// or hook disconnection (THIS IS DONE IN SET)
 
