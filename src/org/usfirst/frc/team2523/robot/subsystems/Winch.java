@@ -64,20 +64,25 @@ public class Winch extends Subsystem {
      */
 	public void set(double rpm) {
     	
+    	// the winch can do whatever the heck it wants as long as it is:
+    	// not too far out while trying to go out,
+    	// not too far in while trying to go in,
+    	// or is in the last 20 seconds of the match
     	double distance = getCurrentDistance();
-    	if ((distance < MAX_ARM_EXTENSION && rpm < 0) || (distance >= 0 && rpm > 0))
+    	if ((distance < MAX_ARM_EXTENSION && rpm < 0) || (distance >= 0 && rpm > 0) ||
+    		RobotMap.MATCH_LENGTH - Timer.getMatchTime() <= 20)
     	{
     		// ensure operating by RPM mode and corresponding PID
         	winchMotor.changeControlMode(TalonControlMode.Speed);
         	winchMotor.setProfile(0);
   
-			winchMotor.set(rpm*GEARBOX_CONVERSION_FACTOR);
+		winchMotor.set(rpm*GEARBOX_CONVERSION_FACTOR);
 
-//			System.out.println("RPM: " + rpm*GEARBOX_CONVERSION_FACTOR + "		Current RPM: " + winchMotor.getSpeed() + "		Enc Velocity: " + winchMotor.getEncVelocity());
-			
-			// make sure brake released (only if not zero)
-			if (rpm != 0)
-				releaseBrake();
+//		System.out.println("RPM: " + rpm*GEARBOX_CONVERSION_FACTOR + "		Current RPM: " + winchMotor.getSpeed() + "		Enc Velocity: " + winchMotor.getEncVelocity());
+		
+		// make sure brake released (only if not zero)
+		if (rpm != 0)
+			releaseBrake();
     	}
     	else
     		winchMotor.set(0);
