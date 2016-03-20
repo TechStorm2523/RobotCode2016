@@ -132,6 +132,9 @@ public class LauncherWheels extends Subsystem {
 	 */
 	public double getRPMbyRange(double range)
 	{
+		// BE SURE TO REMOVE ONCE SET
+		rpmPerVelocityCoefficent = SmartDashboard.getNumber(" Launcher RPM to Velocity Coefficent: ", rpmPerVelocityCoefficent);
+
 		return getVelocityByRange(range) * rpmPerVelocityCoefficent * RPM_PER_VELOCITY;
 	}
 	
