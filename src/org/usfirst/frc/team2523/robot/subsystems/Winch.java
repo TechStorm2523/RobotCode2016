@@ -25,8 +25,8 @@ public class Winch extends Subsystem {
 	private static final double RPM_PID_KP = 0;//0.01 * 1023 / 900.0; // set to 50% of max throttle (1023) when going 900 ticks/0.1s
 	private static final double RPM_PID_KI = 0; // NO NEED
 	private static final double RPM_PID_KD = 0; // NO NEED
-	private static final double POS_PID_KP = 0.001; // TODO: MAY BE TOO HIGH, causing winch to move out too far
-	private static final double POS_PID_KI = 0.01;
+	private static final double POS_PID_KP = 0.6; // TODO: MAY BE TOO HIGH (it will still be high because the winch is so slow and is so geared up)
+	private static final double POS_PID_KI = 0.005;
 	private static final double POS_PID_KD = 0; // NO NEED
 	private static final double REV_PER_INCH = 1/(2*Math.PI*0.75); // circumference inches in one revolution
 	
@@ -128,14 +128,21 @@ public class Winch extends Subsystem {
 	 */
 	public void setWinchByArmSpeed()
 	{
+		// get distance we need to get to based on current angle
+		// (this is just trig: we want to find the arm distance at theta to stay at 15in out)
+		// (but theta must be off horiztonal (the axis the distance to 15in is on))
+		setDistance(ARM_PIVOT_TO_15IN / 
+			    cos(Math.toRadians(Robot.armpivot.getArmAngle() - ArmPivot.ARM_STARTING_ANGLE));
+		
 		// get speed based on current angle
-		set(getWinchSpeed(Robot.armpivot.getArmAngle(), Robot.armpivot.getArmRate()));
+		// set(getWinchSpeed(Robot.armpivot.getArmAngle(), Robot.armpivot.getArmRate()));
 	}
 	
 	/**
 	 * @param currentAngle Current arm angle, measured from ARM_STARTING_ANGLE
 	 * @param angleDelta Rate of angle change, in degrees per second
 	 * @return The correctly scaled winch speed (in RPMs, or whatever unit RPM_PER_INCH_PER_SECOND is in)
+	 * @deprecated
 	 */
 	private double getWinchSpeed(double currentAngle, double angleDelta) 
 	{
@@ -161,6 +168,9 @@ public class Winch extends Subsystem {
 	 */
 	public double getLimitedArmSpeed(double commandedSpeed) 
 	{
+		// BE SURE TO REMOVE ONCE SET
+		revPerInchPerSecCoefficent = SmartDashboard.getNumber(" Arm by Winch Coefficent: ", revPerInchPerSecCoefficent);
+		
 		// max winch speed = 1.0, and winch=k*arm, so (max) arm=1.0/k,
 		// where k is the conversion factor in above function
 		// (this will be in degrees per second - we're getting angleDelta above)
