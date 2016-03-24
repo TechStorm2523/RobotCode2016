@@ -9,7 +9,9 @@ import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
 import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -17,7 +19,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class Winch extends Subsystem {
 	// constants
 	public static final double MAX_RPM = 60;
-	private static final double GEARBOX_CONVERSION_FACTOR = 100; // 100:1 gearbox
+	private static final double GEARBOX_CONVERSION_FACTOR = 100; // 100:1 gearboxq
 	//			  feed forward: max pow  |rev per sec  | time conversion |  native units per rot
 	private static final double RPM_PID_KF = 1023 / (MAX_RPM/60 * 0.1 * 4096) /
 						 GEARBOX_CONVERSION_FACTOR; // TODO: IS THIS BETTER THAN BELOW?
@@ -71,10 +73,10 @@ public class Winch extends Subsystem {
     	// the winch must be stopped when it is:
     	// too far out while trying to go out,
     	// too far in while trying to go in,
-    	// BUT, in the last 20 seconds of the match, these constraints are overriden
+    	// BUT, in the last 20 seconds of the match, these constraints are overridden
     	double distance = getCurrentDistance();
     	if ( ((distance >= MAX_ARM_EXTENSION && rpm > 0) || (distance <= MIN_ARM_EXTENSION && rpm < 0)) &&
-    		RobotMap.MATCH_LENGTH - Timer.getMatchTime() > 20)
+    		RobotMap.MATCH_LENGTH - Timer.getMatchTime() > RobotMap.MATCH_END_PERIOD_LEN)
     	{
     		winchMotor.set(0);
     	}
@@ -107,8 +109,20 @@ public class Winch extends Subsystem {
     	winchMotor.changeControlMode(TalonControlMode.Position);
     	winchMotor.setProfile(1);
     	
-    	// set in revolutions
-    	winchMotor.set(distance * GEARBOX_CONVERSION_FACTOR * REV_PER_INCH);
+		// set in revolutions
+		winchMotor.set(distance * GEARBOX_CONVERSION_FACTOR * REV_PER_INCH);
+		
+    	// BUT the winch must be stopped when it is:
+    	// too far out while trying to go out,
+    	// too far in while trying to go in,
+    	// BUT, in the last 20 seconds of the match, these constraints are overridden
+    	double curDistance = getCurrentDistance();
+    	double curError = winchMotor.getClosedLoopError(); // ASSUMING + means going out, - means going in
+    	if ( ((curDistance >= MAX_ARM_EXTENSION && curError > 0) || (curDistance <= MIN_ARM_EXTENSION && curError < 0)) &&
+    		RobotMap.MATCH_LENGTH - Timer.getMatchTime() > RobotMap.MATCH_END_PERIOD_LEN)
+    	{
+    		winchMotor.set(0);
+    	}
     	
 		// make sure brake released
     	releaseBrake();
@@ -130,9 +144,9 @@ public class Winch extends Subsystem {
 	{
 		// get distance we need to get to based on current angle
 		// (this is just trig: we want to find the arm distance at theta to stay at 15in out)
-		// (but theta must be off horiztonal (the axis the distance to 15in is on))
+		// (but theta must be off horizontal (the axis the distance to 15in is on))
 		setDistance(ARM_PIVOT_TO_15IN / 
-			    cos(Math.toRadians(Robot.armpivot.getArmAngle() - ArmPivot.ARM_STARTING_ANGLE));
+			    Math.cos(Math.toRadians(Robot.armpivot.getArmAngle() - ArmPivot.ARM_STARTING_ANGLE)));
 		
 		// get speed based on current angle
 		// set(getWinchSpeed(Robot.armpivot.getArmAngle(), Robot.armpivot.getArmRate()));

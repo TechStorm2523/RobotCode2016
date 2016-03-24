@@ -29,9 +29,9 @@ public class ArmPivot extends Subsystem {
 	private static final double POTENTIOMETER_START_DEGREE = -322.2; // raw potentiometer reading at start angle
 	private static final double POTENTIOMETER_READ_DEADZONE = 0.25; // degrees
 	public static final double MAX_IN_MATCH_ANGLE = 87;
-	public static final double ARM_STOP_TOLERANCE = 2; // degrees, roughly leads to arm PID positioning precision
+	public static final double ARM_STOP_TOLERANCE = 1; // degrees, roughly leads to arm PID positioning precision
 	public static final double MAX_JOYSTICK_SPEED = 0.7;
-	public static final double MAX_PID_SPEED = 0.25;
+	public static final double MAX_PID_SPEED = 0.5;
 	public static final double JOYSTICK_DEADZONE = 0.01; // normalized units
 //	public static final double ARM_PROPS_READ_FREQUENCY = 0.05;
 	
@@ -68,7 +68,15 @@ public class ArmPivot extends Subsystem {
 		// apply deadzone, and if in it, use PID
 		if (Math.abs(commandedSpeed) < JOYSTICK_DEADZONE)
 		{
-			setTargetAngle(currentTargetAngle);	
+			// only use PID when off limits (and not trying to get out of limits) to avoid odd behavior there
+			double angle = getArmAngle();															// STOP when:
+			if ((currentTargetAngle - angle < 0 && angle < ARM_STOP_TOLERANCE) || 					// target angle below current and at bottom
+				(currentTargetAngle - angle > 0 && angle > currentMaxAngle - ARM_STOP_TOLERANCE)) 	// target angle above current and at top
+			{
+				set(0);	
+			}
+			else
+				setTargetAngle(currentTargetAngle);
 		}
 		else
 		{
@@ -77,8 +85,10 @@ public class ArmPivot extends Subsystem {
 			
 			set(commandedSpeed);
 			
-			// log current position to hold
+			// log current position to hold (and limit it)
 			currentTargetAngle = getArmAngle();
+			if (currentTargetAngle > currentMaxAngle) currentTargetAngle = currentMaxAngle;
+			else if (currentTargetAngle < 0) currentTargetAngle = 0;
 			
 			// reset PID integral so old error is ignored
 			armPID.resetIntegral();
@@ -87,7 +97,7 @@ public class ArmPivot extends Subsystem {
 
 	public void set(double speed)
 	{
-		if ((speed < 0 && getArmAngle < 0) (speed > 0 && getArmAngle() > currentMaxAngle))
+		if ((speed < 0 && getArmAngle() < 0) || (speed > 0 && getArmAngle() > currentMaxAngle))
 		{
 			arm1.set(0);
 			arm2.set(0);
@@ -103,7 +113,7 @@ public class ArmPivot extends Subsystem {
 	}
 	
 	public void setTargetAngle(double angle)
-	{
+	{		
 		set(-armPID.getPIDoutput(angle, getArmAngle()));
 	}
 	
@@ -138,7 +148,7 @@ public class ArmPivot extends Subsystem {
 //		if ((System.nanoTime() - lastPotentiometerRateRead)/10e9 > ARM_PROPS_READ_FREQUENCY)  
 //		{
 			// set max angle based on match time
-			if (RobotMap.MATCH_LENGTH - Timer.getMatchTime() > 20)
+			if (RobotMap.MATCH_LENGTH - Timer.getMatchTime() > RobotMap.MATCH_END_PERIOD_LEN)
 				currentMaxAngle = MAX_IN_MATCH_ANGLE;
 			else
 				currentMaxAngle = POTENTIOMETER_MAX_ANGLE;

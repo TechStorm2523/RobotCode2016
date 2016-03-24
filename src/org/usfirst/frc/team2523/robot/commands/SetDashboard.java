@@ -43,8 +43,8 @@ public class SetDashboard extends Command
 		SmartDashboard.putNumber(" Launcher Wheels Target RPM ", Robot.launcherWheels.currentTargetRPM);
 		SmartDashboard.putNumber(" Launcher Mot RPM (Front) ", Robot.launcherWheels.getCurrentRPMs()[0]);
 		SmartDashboard.putNumber(" Launcher Mot RPM (Back) ", Robot.launcherWheels.getCurrentRPMs()[1]);
-		SmartDashboard.putNumber(" Launcher Mot PID Error (Front) ", Robot.launcherWheels.getCurrentError()[0]);
-		SmartDashboard.putNumber(" Launcher Mot PID Error (Back) ", Robot.launcherWheels.getCurrentError()[1]);
+		SmartDashboard.putNumber(" Launcher Mot PID Error (Front) ", Robot.launcherWheels.getCurrentRPMError()[0]);
+		SmartDashboard.putNumber(" Launcher Mot PID Error (Back) ", Robot.launcherWheels.getCurrentRPMError()[1]);
 		SmartDashboard.putNumber(" Potentiometer Reading ", Robot.armpivot.armPotentiometer.get());
 		SmartDashboard.putNumber(" Current Thottle RPM Target ", LauncherWheels.MAX_RPM*0.5*(-Robot.oi.UtilStick.getThrottle() + 1)); // from 0 to 100
 		SmartDashboard.putNumber(" Winch (Arm) Extension Distance ", Robot.winch.getCurrentDistance());

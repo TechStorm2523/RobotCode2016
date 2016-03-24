@@ -20,7 +20,7 @@ public class DriveTrain extends Subsystem {
 	private static final double TURN_KI = 0.01;
 	private static final double DRIVE_KP = 0.5;
 	private static final double DRIVE_KI = 0.005;
-	private static final double ENCODER_DISTANCE_PER_PULSE = 0; // feet
+	private static final double ENCODER_DISTANCE_PER_PULSE = 0.15289 / 1440.0; // feet/pulse
 	private static final double ENCODER_RESET_TIME = 0.5; // s
 	public static final double TARGET_DISTANCE_TOLERANCE = 0.2; // feet, or same as ENCODER_DISTANCE_PER_PULSE
 	public static final double RAMP_UP_DURATION = 0.75; // s
