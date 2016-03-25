@@ -20,7 +20,7 @@ public class ArmPivot extends Subsystem {
 	
 	// constants
 	private static final double PID_KP = 0.009;
-	private static final double PID_KI = 0.003; 
+	private static final double PID_KI = 0; 
 	private static final double PID_KD = 0;
 	private static final double DEG_PER_SEC_PER_POWER = 336/1;
 	public static final double ARM_STARTING_ANGLE = -61; //TODO: NEGATIVE??????????????????????????? // degrees, positive for down off horizontal

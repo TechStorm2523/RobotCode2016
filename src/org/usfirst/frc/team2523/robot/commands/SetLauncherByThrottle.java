@@ -28,21 +28,22 @@ public class SetLauncherByThrottle extends Command {
     protected void execute() {
     	Robot.launcherWheels.setByThrottle();
     	
-    	if (Robot.launcherWheels.getCurrentRPMError()[0] < LauncherWheels.TARGET_SPEED_TOLERANCE && 
-        	Robot.launcherWheels.getCurrentRPMError()[1] < LauncherWheels.TARGET_SPEED_TOLERANCE)
-    	{
-    		elapsedSinceAtTarget += (System.nanoTime() - lastExecutionTime) / 10e9;
-    	}
-    	
-    	lastExecutionTime = System.nanoTime();
+//    	if (Robot.launcherWheels.getCurrentRPMError()[0] < LauncherWheels.TARGET_SPEED_TOLERANCE && 
+//        	Robot.launcherWheels.getCurrentRPMError()[1] < LauncherWheels.TARGET_SPEED_TOLERANCE)
+//    	{
+//    		elapsedSinceAtTarget += (System.nanoTime() - lastExecutionTime) / 10e9;
+//    	}
+//    	
+//    	lastExecutionTime = System.nanoTime();
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {   	
     	// stop once BOTH target RPMs are reached (in certain range) AND we have waited enough
-        return elapsedSinceAtTarget >= LauncherWheels.POST_SPOOL_UP_WAIT_TIME && 
-        	   Robot.launcherWheels.getCurrentRPMError()[0] < LauncherWheels.TARGET_SPEED_TOLERANCE && 
-        	   Robot.launcherWheels.getCurrentRPMError()[1] < LauncherWheels.TARGET_SPEED_TOLERANCE;
+        return true;
+//        		elapsedSinceAtTarget >= LauncherWheels.POST_SPOOL_UP_WAIT_TIME && 
+//        	   Robot.launcherWheels.getCurrentRPMError()[0] < LauncherWheels.TARGET_SPEED_TOLERANCE && 
+//        	   Robot.launcherWheels.getCurrentRPMError()[1] < LauncherWheels.TARGET_SPEED_TOLERANCE;
     }
 
     // Called once after isFinished returns true

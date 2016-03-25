@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Winch extends Subsystem {
 	// constants
 //	public static final double MAX_RPM = 600;
-	public static final double MAX_MANUAL_SPEED = 0.4;
+	public static final double MAX_MANUAL_SPEED = 0.5;
 	private static final double POWER_REDUCTION_FACTOR = 0.5;
 	private static final double GEARBOX_CONVERSION_FACTOR = 10; // 100:1 gearboxq
 	//			  feed forward: max pow  |rev per sec  | time conversion |  native units per rot
@@ -34,9 +34,10 @@ public class Winch extends Subsystem {
 	private static final double POS_PID_KD = 0; // NO NEED
 	private static final double REV_PER_INCH = 1/(2*Math.PI*0.75); // circumference inches in one revolution
 	
-	public static final double MAX_ARM_EXTENSION = 14; // inches
-	public static final double MIN_ARM_EXTENSION = 0.5; // inches, off of initial reset point
+	public static final double MAX_ARM_EXTENSION = 13; // inches
+	public static final double MIN_ARM_EXTENSION = 0; // inches, off of initial reset point
 	private static final double ARM_PIVOT_TO_15IN = 39.5; // inches
+	private static final double ARM_LENGTH = 33; // inches
 	private static final double RPM_PER_INCH_PER_SECOND = 1 * REV_PER_INCH*60; // to convert rev/sec to rpm //5000.0/39.27; // assuming w/v = 1/r where w(rpm) = w / 2*pi
 //	public static final int MAX_WINCH_BY_ARM_ANGLE = 60; // using getCurrentDistance() we think
 	public static final double ARM_EXTENSION_STOP_TOLERANCE = 0.05; // inches, distance off target winch position to stop at
@@ -62,12 +63,12 @@ public class Winch extends Subsystem {
     	// ensure braked (Motor brake, not pneumatic brake)
     	winchMotor.enableBrakeMode(true);
     	
-//    	winchMotor.configPeakOutputVoltage(POWER_REDUCTION_FACTOR*-12.0, POWER_REDUCTION_FACTOR*12);
+    	winchMotor.configPeakOutputVoltage(POWER_REDUCTION_FACTOR*-12.0, POWER_REDUCTION_FACTOR*12);
     	
     	// set base position to here and reset
-//    	winchMotor.setPosition(0);
+    	resetWinchPosition();
 //    	winchMotor.reset();
-    	winchMotor.reverseSensor(false); // TODO: do we need to??
+    	winchMotor.reverseSensor(true); // TODO: do we need to??
     }
     
     /**
@@ -79,15 +80,15 @@ public class Winch extends Subsystem {
     	// too far out while trying to go out,
     	// too far in while trying to go in,
     	// BUT, in the last 20 seconds of the match, these constraints are overridden
-//    	double distance = getCurrentDistance();
-//    	if (!winchLimitOverride &&
-//    	   ((distance >= MAX_ARM_EXTENSION && rpm > 0) || (distance <= MIN_ARM_EXTENSION && rpm < 0)) &&
-//    		RobotMap.MATCH_LENGTH - Timer.getMatchTime() > RobotMap.MATCH_END_PERIOD_LEN)
-//    	{
-//    		winchMotor.set(0);
-//    	}
-//    	else
-//    	{
+    	double distance = getCurrentDistance();
+    	if (!winchLimitOverride &&
+    	   ((distance >= MAX_ARM_EXTENSION && -speed > 0) || (distance <= MIN_ARM_EXTENSION && -speed < 0)) &&
+    		RobotMap.MATCH_LENGTH - Timer.getMatchTime() > RobotMap.MATCH_END_PERIOD_LEN)
+    	{
+    		winchMotor.set(0);
+    	}
+    	else
+    	{
     		// ensure operating by RPM mode and corresponding PID
         	winchMotor.changeControlMode(TalonControlMode.PercentVbus); // SPeed
         	winchMotor.setProfile(0);
@@ -100,7 +101,7 @@ public class Winch extends Subsystem {
 			// make sure brake released (only if not zero)
 			if (speed != 0)
 				releaseBrake();
-//    	}
+    	}
     	
     	// System.out.println(distance);
 	}
@@ -117,7 +118,7 @@ public class Winch extends Subsystem {
     	winchMotor.setProfile(1);
     	
 		// set in revolutions
-		winchMotor.set(distance * GEARBOX_CONVERSION_FACTOR * REV_PER_INCH);
+		winchMotor.set(-distance * GEARBOX_CONVERSION_FACTOR * REV_PER_INCH);
 		
     	// BUT the winch must be stopped when it is:
     	// too far out while trying to go out,
@@ -126,7 +127,7 @@ public class Winch extends Subsystem {
 //    	double curDistance = getCurrentDistance();
 //    	double curError = curDistance - distance; // ASSUMING + means going out, - means going in
 //    	if (!winchLimitOverride &&
-//    		((curDistance >= MAX_ARM_EXTENSION && curError > 0) || (curDistance <= MIN_ARM_EXTENSION && curError < 0)) &&
+//    		((curDistance >= MAX_ARM_EXTENSION && curError < 0) || (curDistance <= MIN_ARM_EXTENSION && curError > 0)) &&
 //    		RobotMap.MATCH_LENGTH - Timer.getMatchTime() > RobotMap.MATCH_END_PERIOD_LEN)
 //    	{
 //    		winchMotor.set(curDistance);
@@ -145,7 +146,7 @@ public class Winch extends Subsystem {
 	public double getCurrentDistance()
 	{
 		// System.out.println(winchMotor.getPosition());
-		return winchMotor.getPosition() / (GEARBOX_CONVERSION_FACTOR * REV_PER_INCH);
+		return Math.abs(winchMotor.getPosition() / (GEARBOX_CONVERSION_FACTOR * REV_PER_INCH));
 	}
 	
 	/**
@@ -153,11 +154,20 @@ public class Winch extends Subsystem {
 	 */
 	public void setWinchByArmSpeed()
 	{
+		double angle = Robot.armpivot.getArmAngle();
+		if (angle < 30)
+			setDistance(MAX_ARM_EXTENSION);
+		else if (angle> 30 && angle < 70)
+			setDistance(0);
+		else if (angle > 70)
+			setDistance(MAX_ARM_EXTENSION);
+		
 		// get distance we need to get to based on current angle
 		// (this is just trig: we want to find the arm distance at theta to stay at 15in out)
 		// (but theta must be off horizontal (the axis the distance to 15in is on))
-		setDistance(ARM_PIVOT_TO_15IN / 
-			    Math.cos(Math.toRadians(Robot.armpivot.getArmAngle() - ArmPivot.ARM_STARTING_ANGLE)));
+//		setDistance(ARM_PIVOT_TO_15IN / 
+//			    Math.cos(Math.toRadians(Robot.armpivot.getArmAngle() - ArmPivot.ARM_STARTING_ANGLE))
+//			    - ARM_LENGTH);
 		
 		// get speed based on current angle
 		// set(getWinchSpeed(Robot.armpivot.getArmAngle(), Robot.armpivot.getArmRate()));
@@ -216,6 +226,14 @@ public class Winch extends Subsystem {
 //		else
 //			return commandedSpeed;
 //	}
+	
+	/**
+	 * 
+	 */
+	public void resetWinchPosition()
+	{
+		winchMotor.setPosition(0);
+	}
 	
 	public void fullextend(){
     	set(1);
