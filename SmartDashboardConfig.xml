@@ -1,7 +1,44 @@
 <xml version="1.0">
 <dashboard>
+	<widget field=" Winch (Arm) Extension Distance " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
+		<location x="843" y="306"/>
+		<width>317</width>
+		<height>38</height>
+		<property name="Maximum" value="18.0"/>
+	</widget>
+	<widget field=" Launcher Mot RPM (Back) " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.SimpleDial">
+		<location x="1178" y="38"/>
+		<width>192</width>
+		<height>123</height>
+		<property name="Upper Limit" value="8000.0"/>
+		<property name="Tick Interval" value="500.0"/>
+	</widget>
+	<widget field=" Launcher Mot RPM (Front) " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.SimpleDial">
+		<location x="1019" y="41"/>
+		<width>183</width>
+		<height>120</height>
+		<property name="Upper Limit" value="8000.0"/>
+		<property name="Tick Interval" value="500.0"/>
+	</widget>
+	<widget field=" Launcher Mot PID Error (Back) " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.LinePlot">
+		<location x="97" y="247"/>
+		<height>225</height>
+	</widget>
+	<widget field=" Launcher Mot PID Error (Front) " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.LinePlot">
+		<location x="96" y="12"/>
+		<height>230</height>
+	</widget>
+	<widget field=" Winch Extension Encoder Reading " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="656"/>
+	</widget>
+	<widget field=" Launcher Wheels Target RPM " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="518"/>
+	</widget>
+	<widget field="Auto Program" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
+		<location x="-2" y="30"/>
+	</widget>
 	<widget field=" Arm Speed " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="309"/>
+		<location x="356" y="569"/>
 	</widget>
 	<widget field=" Current Thottle RPM Target " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="844" y="257"/>
@@ -54,13 +91,6 @@
 		<width>148</width>
 		<height>58</height>
 	</widget>
-	<widget field=" Launcher Mot RPM (Back) " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.SimpleDial">
-		<location x="1160" y="28"/>
-		<width>234</width>
-	</widget>
-	<widget field=" Winch (Arm) Extension " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="804" y="515"/>
-	</widget>
 	<widget field=" Ball? " type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
 		<location x="842" y="347"/>
 		<width>99</width>
@@ -96,7 +126,7 @@
 		<property name="Font Size" value="22"/>
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.WebcamViewerExtension">
-		<location x="194" y="3"/>
+		<location x="182" y="5"/>
 		<width>645</width>
 		<height>477</height>
 	</static-widget>
@@ -140,11 +170,6 @@
 	<widget field="Tote hue min" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="445" y="639"/>
 	</widget>
-	<widget field=" Launcher Mot RPM (Front) " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.SimpleDial">
-		<location x="976" y="27"/>
-		<width>228</width>
-		<height>152</height>
-	</widget>
 	<widget field=" Arm Angle " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.SimpleDial">
 		<location x="1135" y="320"/>
 		<height>161</height>
@@ -153,7 +178,6 @@
 </dashboard>
 <live-window>
 </live-window>
-	<hidden field="Auto Program"/>
-	<hidden field="Available JOYSTICK Recordings: "/>
-	<hidden field=" Launcher Mot Encoder "/>
+	<hidden field=" Potentiometer Reading "/>
+	<hidden field=" Winch (Arm) Extension "/>
 </xml>

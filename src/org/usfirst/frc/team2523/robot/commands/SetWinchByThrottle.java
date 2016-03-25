@@ -22,7 +22,7 @@ public class SetWinchByThrottle extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.winch.set(Winch.MAX_RPM*0.5*(-Robot.oi.DriveStick.getThrottle() + 1));
+    	Robot.winch.set(0.5*(-Robot.oi.DriveStick.getThrottle() + 1));
     }
 
     // ake this return true when this Command no longer needs to run execute()

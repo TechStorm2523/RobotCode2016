@@ -18,8 +18,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Winch extends Subsystem {
 	// constants
-	public static final double MAX_RPM = 600;
-	public static final double MAX_MANUAL_RPM = MAX_RPM/5;
+//	public static final double MAX_RPM = 600;
+	public static final double MAX_MANUAL_SPEED = 0.4;
 	private static final double POWER_REDUCTION_FACTOR = 0.5;
 	private static final double GEARBOX_CONVERSION_FACTOR = 10; // 100:1 gearboxq
 	//			  feed forward: max pow  |rev per sec  | time conversion |  native units per rot
@@ -73,7 +73,7 @@ public class Winch extends Subsystem {
     /**
      * @param rpm The rpm to set the motor at
      */
-	public void set(double rpm) {
+	public void set(double speed) {
     	
     	// the winch must be stopped when it is:
     	// too far out while trying to go out,
@@ -92,12 +92,13 @@ public class Winch extends Subsystem {
         	winchMotor.changeControlMode(TalonControlMode.PercentVbus); // SPeed
         	winchMotor.setProfile(0);
   
-			winchMotor.set(MAX_RPM / rpm);
+			winchMotor.set(speed);
 	
+//			System.out.println("Speed: " + speed);
 //			System.out.println("RPM: " + rpm*GEARBOX_CONVERSION_FACTOR + "		Current RPM: " + winchMotor.getSpeed());
 			
 			// make sure brake released (only if not zero)
-			if (rpm != 0)
+			if (speed != 0)
 				releaseBrake();
 //    	}
     	
@@ -134,7 +135,7 @@ public class Winch extends Subsystem {
 		// make sure brake released
     	releaseBrake();
     	
-//		System.out.println("Desired D:		" + distance + "		Current D: " + getCurrentDistance());
+		System.out.println("Desired D:		" + distance + "		Current D: " + getCurrentDistance());
 		
 	}
 	
@@ -189,31 +190,32 @@ public class Winch extends Subsystem {
 	/**
 	 * Check if given arm speed must be limited to meet winch speed requirements,
 	 * then return the new value if necessary (otherwise just return old one)
-	 */
-	public double getLimitedArmSpeed(double commandedSpeed) 
-	{
-		// BE SURE TO REMOVE ONCE SET
-		revPerInchPerSecCoefficent = SmartDashboard.getNumber(" Arm by Winch Coefficent: ", revPerInchPerSecCoefficent);
-		
-		// max winch speed = 1.0, and winch=k*arm, so (max) arm=1.0/k,
-		// where k is the conversion factor in above function
-		// (this will be in degrees per second - we're getting angleDelta above)
-		double currentMaxArmSpeed = 1.0 / 
-							   (revPerInchPerSecCoefficent * RPM_PER_INCH_PER_SECOND *
-							    ARM_PIVOT_TO_15IN * 
-							    Math.tan(Math.toRadians(Robot.armpivot.getArmAngle() - ArmPivot.ARM_STARTING_ANGLE)) / 
-							    Math.cos(Math.toRadians(Robot.armpivot.getArmAngle() - ArmPivot.ARM_STARTING_ANGLE)));
-		
-		double winchSpeed = getWinchSpeed(Robot.armpivot.getArmAngle(),
-				  						  Robot.armpivot.getArmRate());				
-		
-		if (winchSpeed > MAX_RPM)
-			return currentMaxArmSpeed / 6.0; // 1 rev/min = 6 degrees/sec
-		else if (winchSpeed < -MAX_RPM)
-			return -currentMaxArmSpeed / 6.0;
-		else
-			return commandedSpeed;
-	}
+	 * @deprecated
+//	 */
+//	public double getLimitedArmSpeed(double commandedSpeed) 
+//	{
+//		// BE SURE TO REMOVE ONCE SET
+//		revPerInchPerSecCoefficent = SmartDashboard.getNumber(" Arm by Winch Coefficent: ", revPerInchPerSecCoefficent);
+//		
+//		// max winch speed = 1.0, and winch=k*arm, so (max) arm=1.0/k,
+//		// where k is the conversion factor in above function
+//		// (this will be in degrees per second - we're getting angleDelta above)
+//		double currentMaxArmSpeed = 1.0 / 
+//							   (revPerInchPerSecCoefficent * RPM_PER_INCH_PER_SECOND *
+//							    ARM_PIVOT_TO_15IN * 
+//							    Math.tan(Math.toRadians(Robot.armpivot.getArmAngle() - ArmPivot.ARM_STARTING_ANGLE)) / 
+//							    Math.cos(Math.toRadians(Robot.armpivot.getArmAngle() - ArmPivot.ARM_STARTING_ANGLE)));
+//		
+//		double winchSpeed = getWinchSpeed(Robot.armpivot.getArmAngle(),
+//				  						  Robot.armpivot.getArmRate());				
+//		
+//		if (winchSpeed > 1.0)
+//			return currentMaxArmSpeed / 6.0; // 1 rev/min = 6 degrees/sec
+//		else if (winchSpeed < -1.0)
+//			return -currentMaxArmSpeed / 6.0;
+//		else
+//			return commandedSpeed;
+//	}
 	
 	public void fullextend(){
     	set(1);
