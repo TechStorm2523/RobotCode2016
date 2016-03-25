@@ -23,12 +23,12 @@ public class ArmPivot extends Subsystem {
 	private static final double PID_KI = 0; 
 	private static final double PID_KD = 0;
 	private static final double DEG_PER_SEC_PER_POWER = 336/1;
-	public static final double ARM_STARTING_ANGLE = -61; //TODO: NEGATIVE??????????????????????????? // degrees, positive for down off horizontal
+	public static final double ARM_STARTING_ANGLE = 61; // degrees, positive for down off horizontal
 	private static final double POTENTIOMETER_MAX_ANGLE = 315;
 	private static final double POTENTIOMETER_ANGLE_PER_VOLTS = -2.307*2*70.4106;
 	private static final double POTENTIOMETER_START_DEGREE = -322.2; // raw potentiometer reading at start angle
 	private static final double POTENTIOMETER_READ_DEADZONE = 0.25; // degrees
-	public static final double MAX_IN_MATCH_ANGLE = 87;
+	public static final double MAX_IN_MATCH_ANGLE = 190; //87;
 	public static final double ARM_STOP_TOLERANCE = 1; // degrees, roughly leads to arm PID positioning precision
 	public static final double MAX_JOYSTICK_SPEED = 0.7;
 	public static final double MAX_PID_SPEED = 0.5;
@@ -70,14 +70,14 @@ public class ArmPivot extends Subsystem {
 		if (Math.abs(commandedSpeed) < JOYSTICK_DEADZONE)
 		{
 			// only use PID when off limits (and not trying to get out of limits) to avoid odd behavior there
-			double angle = getArmAngle();															// STOP when:
+			double angle = getArmAngle();														// STOP when:
 			if ((currentTargetAngle - angle < 0 && angle < ARM_STOP_TOLERANCE) || 					// target angle below current and at bottom
 				(currentTargetAngle - angle > 0 && angle > currentMaxAngle - ARM_STOP_TOLERANCE)) 	// target angle above current and at top
 			{
 				set(0);	
 			}
-//			else
-//				setTargetAngle(currentTargetAngle);
+			else
+				setTargetAngle(currentTargetAngle);
 		}
 		else
 		{

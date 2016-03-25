@@ -50,6 +50,7 @@ public class TargetTracker extends Subsystem {
 	static final int TARGET_CROSSHAIR_SIZE = 20; // length from center
 	static final int TARGET_CROSSHAIR_WIDTH = 5;
 	static final int TARGET_CROSSHAIR_SPREAD = 5; // spread from center
+	public static final double TARGET_ACQUIRE_TIME = 0.5;
 	
 	// Various cache variables
 	private ParticleReport currentBestTarget = null;

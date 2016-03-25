@@ -45,9 +45,9 @@ public class LauncherWheels extends Subsystem {
 	
 	// variables
 	public double currentTargetRPM = 0;
-	
-    	public CANTalon launchBack = new CANTalon(RobotMap.launcherMotBack);
-    	public CANTalon launchFront = new CANTalon(RobotMap.launcherMotFront);
+
+	public CANTalon launchBack = new CANTalon(RobotMap.launcherMotBack);
+	public CANTalon launchFront = new CANTalon(RobotMap.launcherMotFront);
 //    Encoder rpmEncoder = new Encoder(RobotMap.launcherEncoder1, RobotMap.launcherEncoder2, 
 //									false, Encoder.EncodingType.k4X);
 //    PIDControl rpmPID = new PIDControl(RPM_PID_KP, 0, 0); // we're only going to need proportional control

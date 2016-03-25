@@ -25,14 +25,14 @@ public class DriveTrain extends Subsystem {
 	public static final double TARGET_DISTANCE_TOLERANCE = 0.2; // feet, or same as ENCODER_DISTANCE_PER_PULSE
 	public static final double RAMP_UP_DURATION = 0.75; // s
 	private static final double EXPONENETIAL_FACTOR = 2; // changes arm too
-	private static final double TURN_SPEED_MULTIPLIER = 0.6;
+	private static final double TURN_SPEED_MULTIPLIER = 0.7;
 	
 	// CONSTANTS (for AUTO)
 	public static final double VISION_TARGET_OFFSET_TOLERANCE = 0.04; // normalized units, used in TurnToTarget
 	public static final double DISTANCE_TO_DEFENSE_EDGE = 7.5; // feet
 	public static final double DISTANCE_TO_DEFENSE_MIDDLE = 8.16;
-	public static final double OBSTACLE_CLEAR_SPEED = 0.75; // power
-	public static final double OBSTACLE_CLEAR_TIME = 6; // s // at OBSTACLE_CLEAR_SPEED
+	public static final double OBSTACLE_CLEAR_SPEED = 1; // power
+	public static final double OBSTACLE_CLEAR_TIME = 3.5; // s // at OBSTACLE_CLEAR_SPEED
 	public static final double TIME_INTO_COURTYARD_FROM_DEFENSE = 3; // at OBSTACLE_CLEAR_SPEED
 	
 	RobotDrive drive = new RobotDrive(RobotMap.Lfront, RobotMap.Lback, RobotMap.Rfront, RobotMap.Rback);

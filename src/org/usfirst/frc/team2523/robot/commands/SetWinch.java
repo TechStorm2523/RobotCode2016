@@ -24,6 +24,7 @@ public class SetWinch extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
     	Robot.winch.set(rpm);
+    	Robot.winch.canSetWinchByArm = false;
     }
 
     // Make this return true when this Command no longer needs to run execute()
@@ -33,10 +34,13 @@ public class SetWinch extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
+    	Robot.winch.canSetWinchByArm = true;
+    	Robot.winch.set(0);
     }
 
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
+    	end();
     }
 }

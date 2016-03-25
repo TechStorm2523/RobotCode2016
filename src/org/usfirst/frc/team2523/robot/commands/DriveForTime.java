@@ -46,7 +46,7 @@ public class DriveForTime extends Command
     protected void execute() 
     {
     	// set the motors accordingly if we are still in the time limit
-    	Robot.drivetrain.set(this.driveRate, this.turnRate);
+    	Robot.drivetrain.set(-this.driveRate, this.turnRate);
     }
 
     // Make this return true when this Command no longer needs to run execute()

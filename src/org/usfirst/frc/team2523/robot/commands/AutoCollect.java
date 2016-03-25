@@ -12,7 +12,7 @@ public class AutoCollect extends CommandGroup {
     		addSequential(new FeederAutoCollect());
     		
     		// wait, then raise launcher
-    		addSequential(new Wait( 1 ));
+    		addSequential(new Wait( 0.5 ));
     		addSequential(new LauncherRaise());
     }
 }

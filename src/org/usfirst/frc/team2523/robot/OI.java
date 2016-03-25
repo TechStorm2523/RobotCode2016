@@ -57,32 +57,42 @@ public class OI {
    		driveButton5.whenPressed(new LauncherRaise());
    		
 //   		driveButton4.whileHeld(new SetWinchByThrottle());
-   		driveButton11.whenPressed(new ResetWinchPosition());
+   		driveButton9.whenPressed(new ResetWinchPosition());
+   		
+   		driveButton11.whenPressed(new SetWinch(Winch.MAX_MANUAL_SPEED*2));
+    	driveButton12.whenPressed(new SetWinch(-Winch.MAX_MANUAL_SPEED));
     	
     	// UTIL
    		utilButton1.whileHeld(new ManualLaunch());
-    	utilButton2.whenPressed(new AutoLaunch());
+    	utilButton2.whenPressed(new AutoRangingLaunch());
     	
-    	utilButton3.whileHeld(new FeederExpel());
-    	utilButton5.whileHeld(new FeederFire());
+    	utilButton12.whileHeld(new AutoExpel());
+    	utilButton11.whileHeld(new AutoFeed());
+    	
+    	driveButton5.whenPressed(new LauncherLower());
+   		driveButton3.whenPressed(new LauncherRaise());
 
     	// TODO: THIS COULD SCREW UP THE NORMAL WINCH-ARM FUNCTION!!! SET BASED ON HOW WELL THE LIFT COMMAND WORKS
-//    	utilButton4.whenPressed(new SetWinch(Winch.MAX_MANUAL_SPEED*2)); // slower
+//    	utilButton11.whenPressed(new ArmRetract());
+   		utilButton4.whileHeld(new SetWinch(Winch.MAX_MANUAL_SPEED*2));
+    	utilButton6.whileHeld(new SetWinch(-Winch.MAX_MANUAL_SPEED));
+//    	utilButton4.whileHeld(new SetWinch(Winch.MAX_MANUAL_SPEED*2)); // slower
 //    	utilButton4.whenReleased(new SetWinch(0));
-//    	utilButton6.whenPressed(new SetWinch(-Winch.MAX_MANUAL_SPEED));
+//    	utilButton6.whileHeld(new SetWinch(-Winch.MAX_MANUAL_SPEED));
 //    	utilButton6.whenReleased(new SetWinch(0));
     	
 		utilButton7.whenPressed(new SetWinchBrake(true));
 		utilButton8.whenPressed(new SetWinchBrake(false));
 		
-		utilButton9.whileHeld(new OverrideWinchLimits());
-		utilButton9.whileHeld(new OverrideArmLimits());
+		utilButton9.whileHeld(new OverrideLimits());
+		utilButton9.whenPressed(new ResetWinchPosition());
 		
 		// TODO: Remove
 //		utilButton10.whileHeld(new SetWinchDistance(8));
+//		utilButton10.whileHeld(new SetArmByJoystick());
 		
-		utilButton12.whileHeld(new IdentifyBestTarget());
-   		utilButton11.whileHeld(new SetLauncherByThrottle());
+//		utilButton12.whileHeld(new IdentifyBestTarget());
+//   		utilButton11.whileHeld(new SetLauncherByThrottle());
 		
 //    	utilButton8.whenPressed(new LiftRobot());
 //	    utilButton12.whenPressed(new GateMacro());

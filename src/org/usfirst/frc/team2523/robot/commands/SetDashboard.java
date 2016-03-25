@@ -40,13 +40,13 @@ public class SetDashboard extends Command
 					Math.abs(Robot.targetTracker.getTargetDistanceFromCenter()[0]) < DriveTrain.VISION_TARGET_OFFSET_TOLERANCE);
 		SmartDashboard.putBoolean(" Spooled Up ", Robot.launcherstatus.spooledUp);
 		SmartDashboard.putNumber(" Range to Best Target ", Robot.targetTracker.currentRangeToBestTarget);
-		SmartDashboard.putNumber(" Launcher Wheels Target RPM ", Robot.launcherWheels.currentTargetRPM);
+		SmartDashboard.putNumber(" Current Target  RPM ", Robot.launcherWheels.getRPMbyRange(Robot.targetTracker.currentRangeToBestTarget));
 		SmartDashboard.putNumber(" Launcher Mot RPM (Front) ", Robot.launcherWheels.getCurrentRPMs()[0]);
 		SmartDashboard.putNumber(" Launcher Mot RPM (Back) ", Robot.launcherWheels.getCurrentRPMs()[1]);
 		SmartDashboard.putNumber(" Launcher Mot PID Error (Front) ", Robot.launcherWheels.getCurrentRPMError()[0]);
 		SmartDashboard.putNumber(" Launcher Mot PID Error (Back) ", Robot.launcherWheels.getCurrentRPMError()[1]);
 		SmartDashboard.putNumber(" Potentiometer Reading ", Robot.armpivot.armPotentiometer.get());
-		SmartDashboard.putNumber(" Current Thottle RPM Target ", LauncherWheels.MAX_RPM*0.5*(-Robot.oi.UtilStick.getThrottle() + 1)); // from 0 to 100
+		SmartDashboard.putNumber(" Current Thottle RPM ", LauncherWheels.MAX_RPM*0.5*(-Robot.oi.UtilStick.getThrottle() + 1)); // from 0 to 100
 		SmartDashboard.putNumber(" Winch (Arm) Extension Distance ", Robot.winch.getCurrentDistance());
 		SmartDashboard.putNumber(" Winch Extension Encoder Reading ", Robot.winch.winchMotor.getPosition());
 		
