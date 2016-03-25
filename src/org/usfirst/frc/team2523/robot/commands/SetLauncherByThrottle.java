@@ -40,7 +40,7 @@ public class SetLauncherByThrottle extends Command {
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {   	
     	// stop once BOTH target RPMs are reached (in certain range) AND we have waited enough
-        return elapsedSinceAtTarget >= LauncherWheels.POST_LAUNCH_WAIT_TIME && 
+        return elapsedSinceAtTarget >= LauncherWheels.POST_SPOOL_UP_WAIT_TIME && 
         	   Robot.launcherWheels.getCurrentRPMError()[0] < LauncherWheels.TARGET_SPEED_TOLERANCE && 
         	   Robot.launcherWheels.getCurrentRPMError()[1] < LauncherWheels.TARGET_SPEED_TOLERANCE;
     }

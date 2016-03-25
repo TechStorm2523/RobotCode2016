@@ -66,13 +66,19 @@ public class OI {
     	utilButton5.whileHeld(new FeederFire());
 
     	// TODO: THIS COULD SCREW UP THE NORMAL WINCH-ARM FUNCTION!!! SET BASED ON HOW WELL THE LIFT COMMAND WORKS
-    	utilButton4.whenPressed(new SetWinch(-Winch.MAX_RPM)); // slower
+    	utilButton4.whenPressed(new SetWinch(-Winch.MAX_MANUAL_RPM)); // slower
     	utilButton4.whenReleased(new SetWinch(0));
-    	utilButton6.whenPressed(new SetWinch(Winch.MAX_RPM));
+    	utilButton6.whenPressed(new SetWinch(Winch.MAX_MANUAL_RPM));
     	utilButton6.whenReleased(new SetWinch(0));
     	
 		utilButton7.whenPressed(new SetWinchBrake(true));
 		utilButton8.whenPressed(new SetWinchBrake(false));
+		
+		utilButton9.whileHeld(new OverrideWinchLimits());
+		utilButton9.whileHeld(new OverrideArmLimits());
+		
+		// TODO: Remove
+		utilButton10.whenPressed(new SetWinchDistance(8));
 		
 		utilButton12.whileHeld(new IdentifyBestTarget());
    		utilButton11.whileHeld(new SetLauncherByThrottle());

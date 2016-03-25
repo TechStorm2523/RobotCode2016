@@ -20,7 +20,7 @@ public class ArmPivot extends Subsystem {
 	
 	// constants
 	private static final double PID_KP = 0.009;
-	private static final double PID_KI = 0.001; 
+	private static final double PID_KI = 0.003; 
 	private static final double PID_KD = 0;
 	private static final double DEG_PER_SEC_PER_POWER = 336/1;
 	public static final double ARM_STARTING_ANGLE = -61; //TODO: NEGATIVE??????????????????????????? // degrees, positive for down off horizontal
@@ -33,7 +33,7 @@ public class ArmPivot extends Subsystem {
 	public static final double MAX_JOYSTICK_SPEED = 0.7;
 	public static final double MAX_PID_SPEED = 0.5;
 	public static final double JOYSTICK_DEADZONE = 0.01; // normalized units
-//	public static final double ARM_PROPS_READ_FREQUENCY = 0.05;
+//	public static final double ARM_PROPS_READ_FREQUENCY = 0.05W;
 	
 	// variables
 	public double currentSpeed;
@@ -43,6 +43,7 @@ public class ArmPivot extends Subsystem {
 	public double currentArmRate = 0;
 	public double pastPotentiometerAngle = 0;
 	public double lastPotentiometerRateRead = 0;
+	public boolean armLimitOverride = false;
 
 	CANTalon arm1 = new CANTalon(RobotMap.lifter1);
 	CANTalon arm2 = new CANTalon(RobotMap.lifter2);
@@ -75,8 +76,8 @@ public class ArmPivot extends Subsystem {
 			{
 				set(0);	
 			}
-			else
-				setTargetAngle(currentTargetAngle);
+//			else
+//				setTargetAngle(currentTargetAngle);
 		}
 		else
 		{
@@ -87,8 +88,8 @@ public class ArmPivot extends Subsystem {
 			
 			// log current position to hold (and limit it)
 			currentTargetAngle = getArmAngle();
-			if (currentTargetAngle > currentMaxAngle) currentTargetAngle = currentMaxAngle;
-			else if (currentTargetAngle < 0) currentTargetAngle = 0;
+			if (!armLimitOverride && currentTargetAngle > currentMaxAngle) currentTargetAngle = currentMaxAngle;
+			else if (!armLimitOverride && currentTargetAngle < 0) currentTargetAngle = 0;
 			
 			// reset PID integral so old error is ignored
 			armPID.resetIntegral();
@@ -97,7 +98,7 @@ public class ArmPivot extends Subsystem {
 
 	public void set(double speed)
 	{
-		if ((speed < 0 && getArmAngle() < 0) || (speed > 0 && getArmAngle() > currentMaxAngle))
+		if (!armLimitOverride && (speed < 0 && getArmAngle() < 0) || (speed > 0 && getArmAngle() > currentMaxAngle))
 		{
 			arm1.set(0);
 			arm2.set(0);

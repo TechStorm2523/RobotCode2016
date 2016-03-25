@@ -36,7 +36,7 @@ public class RecordingJoystick extends GenericHID {
 	// Note: with the following maximums, 
 	// too low values will result in lost data from recordings, while
 	// too high values will result in excessive DS console logs.
-	static final int MAX_JOYSTICK_AXES = FRCNetworkCommunicationsLibrary.kMaxJoystickAxes;
+	static final int MAX_JOYSTICK_AXES = FRCNetworkCommunicationsLibrary.kMaxJoystickAxes - 1; // just to remove errors becasue we call all these
 	static final int MAX_JOYSTICK_POVS = FRCNetworkCommunicationsLibrary.kMaxJoystickPOVs;
 	static final int MAX_JOYSTICK_BUTTONS = 14;
 
@@ -70,6 +70,10 @@ public class RecordingJoystick extends GenericHID {
 	 * time.
 	 */
 	private static class JoystickState implements java.io.Serializable {
+		/**
+		 * Serial Version Identifier
+		 */
+		private static final long serialVersionUID = -3780915990102519962L;
 		// axes values
 		public double xVal;
 		public double yVal;
@@ -276,6 +280,7 @@ public class RecordingJoystick extends GenericHID {
 		{
 			if (currentMode == MODE_PLAYBACK)
 			{
+				System.out.println("Recording Joystick: PLAYING BACK, state index = " + currentStateIndex);
 				currentStateIndex++;
 				
 				// handle checks for finishing, in addition to setting new state
@@ -289,6 +294,8 @@ public class RecordingJoystick extends GenericHID {
 			}
 			else if (currentMode == MODE_RECORDING)
 			{
+				System.out.println("Recording Joystick: RECORDING, elapsed duration = " + elapsedDuration);
+				
 				// handle checks for finishing, in addition to logging new state
 				if (elapsedDuration >= desiredDuration)
 				{
@@ -305,8 +312,8 @@ public class RecordingJoystick extends GenericHID {
 		// (if check frequency is less than our desired update frequency)
 		if (System.nanoTime() - lastStateCheck > STATE_STORE_FREQ*10e6)
 		{
-			System.out.println("RecordingJoystick's state is not updated frequently enough (" + 
-						(System.nanoTime() - lastStateCheck) + "ns vs desired " + STATE_STORE_FREQ*10e6 + "ns)");
+//			System.out.println("RecordingJoystick's state is not updated frequently enough (" + 
+//						(System.nanoTime() - lastStateCheck) + "ns vs desired " + STATE_STORE_FREQ*10e6 + "ns)");
 		}
 		
 		elapsedDuration += (System.nanoTime() - lastStateCheck) / 10e6;

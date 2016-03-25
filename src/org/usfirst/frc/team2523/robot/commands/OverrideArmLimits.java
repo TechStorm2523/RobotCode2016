@@ -1,21 +1,17 @@
 package org.usfirst.frc.team2523.robot.commands;
 
 import org.usfirst.frc.team2523.robot.Robot;
-import org.usfirst.frc.team2523.robot.subsystems.LauncherWheels;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
- *@deprecated
+ *
  */
-public class ManualAim extends Command {
+public class OverrideArmLimits extends Command {
 
-    public ManualAim() {
+    public OverrideArmLimits() {
         // Use requires() here to declare subsystem dependencies
-        requires(Robot.launcherWheels);
-        requires(Robot.launcherPneumatics);
-        requires(Robot.feeder);
+    	// DONT require so no interrupt
     }
 
     // Called just before this Command runs the first time
@@ -24,27 +20,22 @@ public class ManualAim extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.launcherPneumatics.lower();
-    	Robot.launcherWheels.setByThrottle();
-    	Timer.delay(LauncherWheels.POST_SPOOL_UP_WAIT_TIME);
-    	Robot.feeder.feed();
-    	Timer.delay(LauncherWheels.POST_LAUNCH_WAIT_TIME);
-    	Robot.feeder.stop();
-    	Robot.launcherWheels.set(0);
-    	Robot.launcherPneumatics.raise();
+    	Robot.armpivot.armLimitOverride = true;
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return true;
+        return false;
     }
 
     // Called once after isFinished returns true
     protected void end() {
+    	Robot.armpivot.armLimitOverride = false;
     }
 
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
+    	end();
     }
 }

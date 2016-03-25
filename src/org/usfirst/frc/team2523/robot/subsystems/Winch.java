@@ -18,17 +18,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Winch extends Subsystem {
 	// constants
-	public static final double MAX_RPM = 60;
-	private static final double GEARBOX_CONVERSION_FACTOR = 100; // 100:1 gearboxq
+	public static final double MAX_RPM = 600;
+	public static final double MAX_MANUAL_RPM = MAX_RPM/5;
+	private static final double POWER_REDUCTION_FACTOR = 0.5;
+	private static final double GEARBOX_CONVERSION_FACTOR = 10; // 100:1 gearboxq
 	//			  feed forward: max pow  |rev per sec  | time conversion |  native units per rot
-	private static final double RPM_PID_KF = 1023 / (MAX_RPM/60 * 0.1 * 4096) /
-						 GEARBOX_CONVERSION_FACTOR; // TODO: IS THIS BETTER THAN BELOW?
+	private static final double RPM_PID_KF = 0.05; //10*1023 / (MAX_RPM/60 * 0.1 * 4096) /
+//						 GEARBOX_CONVERSION_FACTOR; // TODO: IS THIS BETTER THAN BELOW?
 	// private static final double RPM_PID_KF = 0.02713; 
 	private static final double RPM_PID_KP = 0;//0.01 * 1023 / 900.0; // set to 50% of max throttle (1023) when going 900 ticks/0.1s
 	private static final double RPM_PID_KI = 0; // NO NEED
 	private static final double RPM_PID_KD = 0; // NO NEED
 	private static final double POS_PID_KP = 0.6; // TODO: MAY BE TOO HIGH (it will still be high because the winch is so slow and is so geared up)
-	private static final double POS_PID_KI = 0.005;
+	private static final double POS_PID_KI = 0; //0.005;
 	private static final double POS_PID_KD = 0; // NO NEED
 	private static final double REV_PER_INCH = 1/(2*Math.PI*0.75); // circumference inches in one revolution
 	
@@ -39,8 +41,9 @@ public class Winch extends Subsystem {
 //	public static final int MAX_WINCH_BY_ARM_ANGLE = 60; // using getCurrentDistance() we think
 	public static final double ARM_EXTENSION_STOP_TOLERANCE = 0.05; // inches, distance off target winch position to stop at
     
-	// variables for adjusting constants
+	// variables
 	public double revPerInchPerSecCoefficent = 1;
+	public boolean winchLimitOverride = false;
 	
 	// definitions
 	public CANTalon winchMotor = new CANTalon(RobotMap.winch);
@@ -59,6 +62,8 @@ public class Winch extends Subsystem {
     	// ensure braked (Motor brake, not pneumatic brake)
     	winchMotor.enableBrakeMode(true);
     	
+//    	winchMotor.configPeakOutputVoltage(POWER_REDUCTION_FACTOR*-12.0, POWER_REDUCTION_FACTOR*12);
+    	
     	// set base position to here and reset
 //    	winchMotor.setPosition(0);
 //    	winchMotor.reset();
@@ -74,26 +79,27 @@ public class Winch extends Subsystem {
     	// too far out while trying to go out,
     	// too far in while trying to go in,
     	// BUT, in the last 20 seconds of the match, these constraints are overridden
-    	double distance = getCurrentDistance();
-    	if ( ((distance >= MAX_ARM_EXTENSION && rpm > 0) || (distance <= MIN_ARM_EXTENSION && rpm < 0)) &&
-    		RobotMap.MATCH_LENGTH - Timer.getMatchTime() > RobotMap.MATCH_END_PERIOD_LEN)
-    	{
-    		winchMotor.set(0);
-    	}
-    	else
-    	{
+//    	double distance = getCurrentDistance();
+//    	if (!winchLimitOverride &&
+//    	   ((distance >= MAX_ARM_EXTENSION && rpm > 0) || (distance <= MIN_ARM_EXTENSION && rpm < 0)) &&
+//    		RobotMap.MATCH_LENGTH - Timer.getMatchTime() > RobotMap.MATCH_END_PERIOD_LEN)
+//    	{
+//    		winchMotor.set(0);
+//    	}
+//    	else
+//    	{
     		// ensure operating by RPM mode and corresponding PID
-        	winchMotor.changeControlMode(TalonControlMode.Speed);
+        	winchMotor.changeControlMode(TalonControlMode.PercentVbus); // SPeed
         	winchMotor.setProfile(0);
   
-		winchMotor.set(rpm*GEARBOX_CONVERSION_FACTOR);
-
-//		System.out.println("RPM: " + rpm*GEARBOX_CONVERSION_FACTOR + "		Current RPM: " + winchMotor.getSpeed() + "		Enc Velocity: " + winchMotor.getEncVelocity());
-		
-		// make sure brake released (only if not zero)
-		if (rpm != 0)
-			releaseBrake();
-    	}
+			winchMotor.set(MAX_RPM / rpm);
+	
+//			System.out.println("RPM: " + rpm*GEARBOX_CONVERSION_FACTOR + "		Current RPM: " + winchMotor.getSpeed());
+			
+			// make sure brake released (only if not zero)
+			if (rpm != 0)
+				releaseBrake();
+//    	}
     	
     	// System.out.println(distance);
 	}
@@ -116,16 +122,20 @@ public class Winch extends Subsystem {
     	// too far out while trying to go out,
     	// too far in while trying to go in,
     	// BUT, in the last 20 seconds of the match, these constraints are overridden
-    	double curDistance = getCurrentDistance();
-    	double curError = winchMotor.getClosedLoopError(); // ASSUMING + means going out, - means going in
-    	if ( ((curDistance >= MAX_ARM_EXTENSION && curError > 0) || (curDistance <= MIN_ARM_EXTENSION && curError < 0)) &&
-    		RobotMap.MATCH_LENGTH - Timer.getMatchTime() > RobotMap.MATCH_END_PERIOD_LEN)
-    	{
-    		winchMotor.set(0);
-    	}
+//    	double curDistance = getCurrentDistance();
+//    	double curError = curDistance - distance; // ASSUMING + means going out, - means going in
+//    	if (!winchLimitOverride &&
+//    		((curDistance >= MAX_ARM_EXTENSION && curError > 0) || (curDistance <= MIN_ARM_EXTENSION && curError < 0)) &&
+//    		RobotMap.MATCH_LENGTH - Timer.getMatchTime() > RobotMap.MATCH_END_PERIOD_LEN)
+//    	{
+//    		winchMotor.set(curDistance);
+//    	}
     	
 		// make sure brake released
     	releaseBrake();
+    	
+//		System.out.println("Desired D:		" + distance + "		Current D: " + getCurrentDistance());
+		
 	}
 	
 	/**

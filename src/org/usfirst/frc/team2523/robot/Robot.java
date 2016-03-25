@@ -4,6 +4,7 @@ import org.usfirst.frc.team2523.robot.subsystems.*;
 import org.usfirst.frc.team2523.robot.commands.*;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -142,7 +143,7 @@ public class Robot extends IterativeRobot {
     	winch.releaseBrake();
     	
     	// ensure that arm extends
-    	winch.setDistance(Winch.MAX_ARM_EXTENSION);
+//    	winch.setDistance(Winch.MAX_ARM_EXTENSION);
     	
     	armpivot.currentTargetAngle = 0;
     	
@@ -198,5 +199,6 @@ public class Robot extends IterativeRobot {
         // update joystick recording
         oi.DriveStick.updateState();
         oi.UtilStick.updateState();
+//        System.out.println(Timer.getMatchTime());
     }
 }

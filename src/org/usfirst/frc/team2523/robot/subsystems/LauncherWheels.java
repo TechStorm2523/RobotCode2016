@@ -17,27 +17,28 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class LauncherWheels extends Subsystem {
 	// constants
-	public static final double MAX_RPM = 14000;
+	public static final double MAX_RPM = 8000;
 	//						feed forward: max pow  |rev per sec  | time conversion |  native units per rot
-	private static final double RPM_PID_KF = 1023 / (MAX_RPM/60 * 0.1 * 4096); // TODO: IS THIS GOOD???????????????
-	private static final double RPM_PID_KP = 0.01 * 1023 / 900.0; // set to 10% of max throttle (1023) when going 900 ticks/0.1s
-	private static final double RPM_PID_KI = 0;//0.001;
-	private static final double RPM_PID_KD = 0;
-	private static final double RPM_PID_BACK_KF = RPM_PID_KF; // TODO: IS THIS GOOD???????????????
-	private static final double RPM_PID_BACK_KP = RPM_PID_KP; // set to 10% of max throttle (1023) when going 900 ticks/0.1s
-	private static final double RPM_PID_BACK_KI = RPM_PID_KI;//0.001;
-	private static final double RPM_PID_BACK_KD = RPM_PID_KD;
+	private static final double RPM_PID_FRONT_KF = 1023 / (MAX_RPM/60 * 0.1 * 4096); 
+	private static final double RPM_PID_FRONT_KP = 0; //0.01 * 1023 / 900.0; // set to 10% of max throttle (1023) when going 900 ticks/0.1s
+	private static final double RPM_PID_FRONT_KI = 0;//0.001;
+	private static final double RPM_PID_FRONT_KD = 0;
+	private static final double RPM_PID_BACK_KF = 0.03;
+	private static final double RPM_PID_BACK_KP = RPM_PID_FRONT_KP; // set to 10% of max throttle (1023) when going 900 ticks/0.1s
+	private static final double RPM_PID_BACK_KI = RPM_PID_FRONT_KI;//0.001;
+	private static final double RPM_PID_BACK_KD = RPM_PID_FRONT_KD;
 //	public static final double GEARBOX_CONVERSION_FACTOR = 1; // 1:1 gearbox
 	private static final double RPM_PER_VELOCITY = 1 / (Math.PI*2.875/60); // inch/sec - by formula x/v = 1/(pi*d)
 	public static final double TARGET_SPEED_TOLERANCE = 100; // actually in native units
 	public static final double RANGE_DIFFERENCE_DEADZONE = 1; // feet (changes in range when auto launching that constitute readjustment)
-	private static final double LAUNCH_ANGLE = 64;
+	private static final double LAUNCH_ANGLE = 42.35;
 	public static final double LAUNCH_HEIGHT = 29.0 / 12.0; // feet (height of launch from center of ball)
 	private static final double TARGET_HEIGHT = 7*12+1 + 24; // feet (target base + to target center) (SHOOT HIGH FOR AIR RESISTANCE)
 	private static final double CAMERA_DISTANCE_OFF_LAUNCH = 7 / 12.0; // feet (horizontal distance)
 
 	// auto constants
-	public static final double POST_LAUNCH_WAIT_TIME = 0.8;
+	public static final double POST_SPOOL_UP_WAIT_TIME = 1;
+	public static final double POST_LAUNCH_WAIT_TIME = 1;
 	
 	// variables for adjusting constants
 	public double rpmPerVelocityCoefficent = 1;
@@ -62,9 +63,9 @@ public class LauncherWheels extends Subsystem {
     	launchFront.changeControlMode(TalonControlMode.Speed);
     	
     	// configure PID control (we ASSUME ramp rate zero means infinite ramp rate)
-    	launchBack.setPID(RPM_PID_KP, RPM_PID_KI, RPM_PID_KD, RPM_PID_KF, 1, 0, 0);
+    	launchBack.setPID(RPM_PID_BACK_KP, RPM_PID_BACK_KI, RPM_PID_BACK_KD, RPM_PID_BACK_KF, 1, 0, 0);
     	// launchBack.setPID(RPM_PID_BACK_KP, RPM_PID_BACK_KI, RPM_PID_BACK_KD, RPM_PID_BACK_KF, 1, 0, 0);
-    	launchFront.setPID(RPM_PID_KP, RPM_PID_KI, RPM_PID_KD, RPM_PID_KF, 1, 0, 0);
+    	launchFront.setPID(RPM_PID_FRONT_KP, RPM_PID_FRONT_KI, RPM_PID_FRONT_KD, RPM_PID_FRONT_KF, 1, 0, 0);
 //    	launchBack.configEncoderCodesPerRev( (int) ENCODER_PULSE_PER_REV); // NO NEED with CtreMagEncoder
 //    	launchFront.configEncoderCodesPerRev( (int) ENCODER_PULSE_PER_REV);
     	
@@ -96,13 +97,13 @@ public class LauncherWheels extends Subsystem {
 	public void set(double rpm)
 	{
 		launchBack.set(rpm);
-    		launchFront.set(rpm);
+    	launchFront.set(rpm);
     		
-    		currentTargetRPM = rpm;
-//    	System.out.print("RPM:			" + (int) rpm);
-//    	System.out.println(" Front: 		" + (int) launchFront.getSpeed() + 
-//    					   " Back: 			" + (int) launchBack.getSpeed());
-    	// System.out.println("Current RPM Errors: F: 	" + getCurrentRPMError()[0] + " B: 	" + getCurrentRPMError()[1]);
+    	currentTargetRPM = rpm;
+    	System.out.print("RPM:			" + (int) rpm);
+    	System.out.println(" Front: 		" + (int) launchFront.getSpeed() + 
+    					   " Back: 			" + (int) launchBack.getSpeed());
+//    	 System.out.println("Current RPM Errors: F: 	" + getCurrentRPMError()[0] + " B: 	" + getCurrentRPMError()[1]);
 	}
 	
 	/**
@@ -122,8 +123,8 @@ public class LauncherWheels extends Subsystem {
 	public double[] getCurrentRPMError()
 	{
 		double[] errors = new double[2];
-		errors[0] = launchFront.getClosedLoopError();
-		errors[1] = launchBack.getClosedLoopError();
+		errors[0] = currentTargetRPM - launchFront.getSpeed();
+		errors[1] = currentTargetRPM - launchBack.getSpeed();
 		return errors; 
 	}
 	

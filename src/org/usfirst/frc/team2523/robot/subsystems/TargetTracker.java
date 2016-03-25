@@ -34,7 +34,7 @@ public class TargetTracker extends Subsystem {
 	final static double TARGET_HEIGHT = 14 / 12.0;
 	// camera/image properties
 	final static double CAMERA_FOV = 39.935; // VERTICAL (By measuring distance from a known size object that spans vertical FOV and using tan OR solving the equation in getRangeToBestTarget for FOV using other measurements from debug)
-	final static double CAMERA_ELEVATION = 45; // degrees
+	final static double CAMERA_ELEVATION = 36; // degrees
 	// threshold values
 	NIVision.Range HUE_RANGE = new NIVision.Range(60, 150);	//Default hue range for target
 	NIVision.Range SAT_RANGE = new NIVision.Range(60, 255);	//Default saturation range for target
@@ -118,7 +118,7 @@ public class TargetTracker extends Subsystem {
 		
 		// draw a centered vertical line
 		NIVision.Rect vertLine = new NIVision.Rect(0, 640/2 - 3/2, 480, 3);
-		NIVision.imaqDrawShapeOnImage(frame, frame, vertLine, DrawMode.DRAW_VALUE, ShapeMode.SHAPE_RECT, 128.0f);
+		NIVision.imaqDrawShapeOnImage(frame, frame, vertLine, DrawMode.PAINT_VALUE, ShapeMode.SHAPE_RECT, 128.0f);
 		
 		CameraServer.getInstance().setImage(frame);
 	}
