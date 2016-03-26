@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.communication.FRCNetworkCommunicationsLibrary;
  * 
  * Output methods (i.e. rumble methods) are not supported as of yet.
  * 
- * @author Mckenna-2523
+ * @author Mckenna Cisler, Team 2523
  */
 public class RecordingJoystick extends GenericHID {
 	static final double STATE_STORE_FREQ = 20; // or n*20 to slow down... 20 is minimum // ms
@@ -212,7 +212,8 @@ public class RecordingJoystick extends GenericHID {
 	public void startRecording(String playbackFileName, double duration)
 	{
 		playbackFile = playbackFileName + PLAYBACK_FILE_EXTENSION;
-		desiredDuration = duration*10e3; // convert to milliseconds
+		joystickStates = new ArrayList<JoystickState>((int)(AUTO_PERIOD_LENGTH / STATE_STORE_FREQ));
+		desiredDuration = duration*1000; // convert to milliseconds
 		elapsedDuration = 0;
 		currentMode = MODE_RECORDING;
 	}
@@ -291,7 +292,7 @@ public class RecordingJoystick extends GenericHID {
 	public void updateState()
 	{
 		// convert to nano seconds to measure delta since last
-		if (System.nanoTime() - lastStateSave >= STATE_STORE_FREQ*10e5)
+		if (System.nanoTime() - lastStateSave >= STATE_STORE_FREQ*10e5) // apparently the correct conversion is 10e5
 		{
 			if (currentMode == MODE_PLAYBACK)
 			{
@@ -299,7 +300,7 @@ public class RecordingJoystick extends GenericHID {
 				currentStateIndex++;
 				
 				// handle checks for finishing, in addition to setting new state
-				if (currentStateIndex > joystickStates.size())
+				if (currentStateIndex >= joystickStates.size())
 				{
 					stopPlayback();
 					return;
@@ -309,7 +310,7 @@ public class RecordingJoystick extends GenericHID {
 			}
 			else if (currentMode == MODE_RECORDING)
 			{
-				System.out.println("Recording Joystick: RECORDING, elapsed duration = " + elapsedDuration);
+				System.out.println("Recording Joystick: RECORDING, progress = " + elapsedDuration + " / " + desiredDuration);
 				
 				// handle checks for finishing, in addition to logging new state
 				if (elapsedDuration >= desiredDuration)
@@ -325,13 +326,13 @@ public class RecordingJoystick extends GenericHID {
 		
 		// log bad update frequency 
 		// (if check frequency is less than our desired update frequency)
-		if (System.nanoTime() - lastStateCheck > STATE_STORE_FREQ*10e6)
+		if (System.nanoTime() - lastStateCheck > STATE_STORE_FREQ*10e5) // apparently the correct conversion is 10e5
 		{
 //			System.out.println("RecordingJoystick's state is not updated frequently enough (" + 
 //						(System.nanoTime() - lastStateCheck) + "ns vs desired " + STATE_STORE_FREQ*10e6 + "ns)");
 		}
 		
-		elapsedDuration += (System.nanoTime() - lastStateCheck) / 10e5;
+		elapsedDuration += (System.nanoTime() - lastStateCheck) / 10e5; // apparently the correct conversion is 10e5
 		lastStateCheck = System.nanoTime();
 	}
 	

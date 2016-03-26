@@ -51,7 +51,7 @@ public class Robot extends IterativeRobot {
     	// auto chooser
         autoChooser = new SendableChooser();
         autoChooser.addDefault("Drive to Defense", new AutoCommandBasic());
-        autoChooser.addObject("Do Nothing", new AutoCommandNOTHING());
+        autoChooser.addObject("Do Nothing", null);
         autoChooser.addObject("Basic (Drive-Over) Defense", new AutoCommandBasicDefense());
 //        autoChooser.addObject("Cheval de Frise (Tippy) Defense", new AutoCommandChevaldeFrise());
 //        autoChooser.addObject("Drawbridge Defense", new AutoCommandDrawbridge());
@@ -93,8 +93,6 @@ public class Robot extends IterativeRobot {
      */
     public void disabledInit(){
 //		TargetTracker.stopTracking();
-    	oi.DriveStick.stopRecording();
-    	oi.UtilStick.stopRecording();
     }
 	
 	public void disabledPeriodic() {
@@ -114,9 +112,7 @@ public class Robot extends IterativeRobot {
     public void autonomousInit() {    	      
 		String joystickRecording = (String) playbackChooser.getSelected();
 		autonomousCommand = (Command) autoChooser.getSelected();
-		
-		System.out.println("RECORDING CHOSEN: "  + joystickRecording);
-		
+			
 		// We prioritize a normal auto command
 		if (autonomousCommand != null)
 		{			
@@ -125,6 +121,7 @@ public class Robot extends IterativeRobot {
 		}
 		else if (joystickRecording != null)
 		{
+//			System.out.println("RECORDING CHOSEN: "  + joystickRecording);
 			oi.DriveStick.startPlayback(RobotMap.JOYSTICK_RECORDINGS_SAVE_LOCATION + joystickRecording + "_drive");
 			oi.UtilStick.startPlayback(RobotMap.JOYSTICK_RECORDINGS_SAVE_LOCATION + joystickRecording + "_util");
 		}
