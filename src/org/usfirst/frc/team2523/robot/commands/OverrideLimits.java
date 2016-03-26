@@ -8,8 +8,8 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class OverrideLimits extends CommandGroup {
     
     public  OverrideLimits() {
-    	addSequential(new OverrideArmLimits());
-    	addSequential(new OverrideWinchLimits());
+    	addParallel(new OverrideArmLimits());
+    	addParallel(new OverrideWinchLimits());
         // Add Commands here:
         // e.g. addSequential(new Command1());
         //      addSequential(new Command2());

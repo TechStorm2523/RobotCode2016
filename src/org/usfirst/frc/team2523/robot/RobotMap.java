@@ -23,10 +23,10 @@ public class RobotMap {
     // public static int rangefinderModule = 1;
 	
 	// GLOBAL CONSTANTS
-	public static final double GRAVITY = 32.2; // ft/sec^2
+	public static final double GRAVITY = -32.2; // ft/sec^2
 	public static final double MATCH_LENGTH = 150; //2min 30secs
 	public static final double MATCH_END_PERIOD_LEN = 20;
-	public static final String JOYSTICK_RECORDINGS_SAVE_LOCATION = "/home/admin/joystickRecordings/"; // on roboorio
+	public static final String JOYSTICK_RECORDINGS_SAVE_LOCATION = "/home/lvuser/joystickRecordings/"; // on roboorio
 	
 	// PWM Outputs (Motors)
 	public static int Rfront = 0;

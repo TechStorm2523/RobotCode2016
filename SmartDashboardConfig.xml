@@ -1,10 +1,39 @@
 <xml version="1.0">
 <dashboard>
-	<widget field=" Winch (Arm) Extension Distance " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
-		<location x="843" y="306"/>
-		<width>317</width>
-		<height>38</height>
-		<property name="Maximum" value="18.0"/>
+	<widget field=" Arm Overriden? " type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="1002" y="446"/>
+		<width>126</width>
+		<height>31</height>
+	</widget>
+	<widget field=" Winch Overriden? " type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="1001" y="409"/>
+		<width>137</width>
+		<height>30</height>
+	</widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.WebcamViewerExtension">
+		<location x="166" y="-21"/>
+		<width>668</width>
+		<height>503</height>
+	</static-widget>
+	<widget field=" Current Target  RPM " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="848" y="245"/>
+		<height>31</height>
+		<property name="Background" value="255.255.0.255"/>
+		<property name="Font Size" value="20"/>
+	</widget>
+	<widget field=" Current Thottle RPM " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="849" y="277"/>
+		<height>33</height>
+		<property name="Foreground" value="255.255.0.255"/>
+		<property name="Background" value="0.0.0.255"/>
+		<property name="Font Size" value="20"/>
+	</widget>
+	<widget field=" Winch (Arm) Extension Distance " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="864" y="316"/>
+		<width>265</width>
+		<height>31</height>
+		<property name="Foreground" value="255.0.51.255"/>
+		<property name="Font Size" value="20"/>
 	</widget>
 	<widget field=" Launcher Mot RPM (Back) " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.SimpleDial">
 		<location x="1178" y="38"/>
@@ -20,68 +49,24 @@
 		<property name="Upper Limit" value="8000.0"/>
 		<property name="Tick Interval" value="500.0"/>
 	</widget>
-	<widget field=" Launcher Mot PID Error (Back) " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.LinePlot">
-		<location x="97" y="247"/>
-		<height>225</height>
-	</widget>
-	<widget field=" Launcher Mot PID Error (Front) " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.LinePlot">
-		<location x="96" y="12"/>
-		<height>230</height>
-	</widget>
-	<widget field=" Winch Extension Encoder Reading " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="656"/>
-	</widget>
-	<widget field=" Launcher Wheels Target RPM " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="518"/>
-	</widget>
 	<widget field="Auto Program" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
-		<location x="-2" y="30"/>
+		<location x="-7" y="30"/>
 	</widget>
-	<widget field=" Arm Speed " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="356" y="569"/>
-	</widget>
-	<widget field=" Current Thottle RPM Target " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
-		<location x="844" y="257"/>
-		<width>511</width>
-		<height>40</height>
-		<property name="Maximum" value="14000.0"/>
-	</widget>
-	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
-		<location x="13" y="194"/>
-		<width>141</width>
-		<height>26</height>
-		<property name="Text" value="Joystick Playback Selector"/>
-	</static-widget>
 	<widget field="Joystick Playback Program" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
-		<location x="30" y="219"/>
+		<location x="-8" y="204"/>
 	</widget>
 	<widget field="Joystick Recording Program" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
-		<location x="28" y="382"/>
+		<location x="-6" y="366"/>
 	</widget>
-	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
-		<location x="13" y="348"/>
-		<width>144</width>
-		<height>39</height>
-		<property name="Text" value="Joystick Recording Selector"/>
-	</static-widget>
 	<widget field=" Arm Target Angle " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
-		<location x="1023" y="400"/>
+		<location x="1197" y="427"/>
 		<width>144</width>
-		<height>21</height>
-	</widget>
-	<widget field=" Arm Rate " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
-		<location x="1061" y="370"/>
-		<width>107</width>
 		<height>21</height>
 	</widget>
 	<widget field=" Launcher Lowered? " type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
 		<location x="843" y="160"/>
 		<width>183</width>
 		<height>48</height>
-	</widget>
-	<widget field=" Winch Speed " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="1033" y="450"/>
-		<width>121</width>
 	</widget>
 	<widget field=" Potentiometer Reading" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="1133" y="604"/>
@@ -92,7 +77,7 @@
 		<height>58</height>
 	</widget>
 	<widget field=" Ball? " type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="842" y="347"/>
+		<location x="842" y="350"/>
 		<width>99</width>
 		<height>65</height>
 	</widget>
@@ -103,7 +88,7 @@
 		<property name="Text" value="Auto Mode Select"/>
 	</static-widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
-		<location x="1119" y="318"/>
+		<location x="1123" y="258"/>
 		<width>108</width>
 		<height>21</height>
 		<property name="Text" value="Arm"/>
@@ -115,21 +100,16 @@
 		<property name="Text" value="Launcher Mot RPM"/>
 	</static-widget>
 	<widget field=" Range to Best Target " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
-		<location x="1026" y="217"/>
+		<location x="1026" y="207"/>
 		<height>35</height>
 		<property name="Font Size" value="24"/>
 	</widget>
 	<widget field=" Status of Launcher " type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
-		<location x="1038" y="180"/>
+		<location x="1038" y="172"/>
 		<width>303</width>
 		<height>33</height>
 		<property name="Font Size" value="22"/>
 	</widget>
-	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.WebcamViewerExtension">
-		<location x="182" y="5"/>
-		<width>645</width>
-		<height>477</height>
-	</static-widget>
 	<widget field=" Spooled Up " type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
 		<location x="842" y="107"/>
 		<width>145</width>
@@ -171,13 +151,50 @@
 		<location x="445" y="639"/>
 	</widget>
 	<widget field=" Arm Angle " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.SimpleDial">
-		<location x="1135" y="320"/>
+		<location x="1130" y="262"/>
 		<height>161</height>
 		<property name="Upper Limit" value="270.0"/>
 	</widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
+		<location x="11" y="189"/>
+		<width>141</width>
+		<height>26</height>
+		<property name="Text" value="Joystick Playback Selector"/>
+	</static-widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
+		<location x="7" y="341"/>
+		<width>144</width>
+		<height>39</height>
+		<property name="Text" value="Joystick Recording Selector"/>
+	</static-widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
+		<location x="38" y="2"/>
+		<width>118</width>
+		<height>40</height>
+		<property name="Text" value="Auto Mode Select"/>
+	</static-widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
+		<location x="1119" y="318"/>
+		<width>108</width>
+		<height>21</height>
+		<property name="Text" value="Arm"/>
+	</static-widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
+		<location x="1110" y="9"/>
+		<width>139</width>
+		<height>22</height>
+		<property name="Text" value="Launcher Mot RPM"/>
+	</static-widget>
 </dashboard>
 <live-window>
 </live-window>
+	<hidden field=" Launcher Mot PID Error (Back) "/>
+	<hidden field=" Launcher Wheels Target RPM "/>
 	<hidden field=" Potentiometer Reading "/>
-	<hidden field=" Winch (Arm) Extension "/>
+	<hidden field=" Current Thottle RPM Target "/>
+	<hidden field=" Arm Speed "/>
+	<hidden field=" Winch Extension Encoder Reading "/>
+	<hidden field=" Winch Speed "/>
+	<hidden field=" Arm Rate "/>
+	<hidden field=" Launcher Mot PID Error (Front) "/>
 </xml>

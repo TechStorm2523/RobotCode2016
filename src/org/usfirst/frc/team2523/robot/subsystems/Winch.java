@@ -38,7 +38,7 @@ public class Winch extends Subsystem {
 	public static final double MIN_ARM_EXTENSION = 0.5; // inches, off of initial reset point
 	private static final double ARM_PIVOT_TO_15IN = 37.5; // inches
 	private static final double ARM_LENGTH = 33; // inches
-	private static final double RETRACT_ANGLE = 25;
+//	private static final double RETRACT_ANGLE = 25;
 	private static final double RPM_PER_INCH_PER_SECOND = 1 * REV_PER_INCH*60; // to convert rev/sec to rpm //5000.0/39.27; // assuming w/v = 1/r where w(rpm) = w / 2*pi
 //	public static final int MAX_WINCH_BY_ARM_ANGLE = 60; // using getCurrentDistance() we think
 	public static final double ARM_EXTENSION_STOP_TOLERANCE = 0.05; // inches, distance off target winch position to stop at
@@ -65,7 +65,7 @@ public class Winch extends Subsystem {
 //    	winchMotor.configEncoderCodesPerRev( (int) ENCODER_PULSE_PER_REV);  // no need with ctreMagEncoder (would be 4096 in quadrature)
     	
     	// ensure braked (Motor brake, not pneumatic brake)
-    	winchMotor.enableBrakeMode(false);
+    	winchMotor.enableBrakeMode(true);
     	
 //    	winchMotor.configPeakOutputVoltage(POWER_REDUCTION_FACTOR*-12.0, POWER_REDUCTION_FACTOR*12);
     	
@@ -93,12 +93,15 @@ public class Winch extends Subsystem {
     	}
     	else if (!winchLimitOverride && distance >= getArmConstrainedDistance() && -speed > 0) // invert speed
     	{
-    		winchMotor.set(0);
+    		if (Robot.armpivot.getArmAngle() > 100)
+    			winchMotor.set(winchPID.getPIDoutput(MAX_ARM_EXTENSION, getCurrentDistance()));
+    		else
+    			winchMotor.set(winchPID.getPIDoutput(getArmConstrainedDistance(), getCurrentDistance()));
     	}
-    	else if (winchMotor.getOutputCurrent() > 40)
-    	{
-    		winchMotor.set(0);
-    	}
+//    	else if (winchMotor.getOutputCurrent() > 40)
+//    	{
+//    		winchMotor.set(0);
+//    	}
     	else
     	{
     		// ensure operating by RPM mode and corresponding PID

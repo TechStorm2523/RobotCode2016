@@ -1,6 +1,7 @@
 package org.usfirst.frc.team2523.robot.commands;
 
 import org.usfirst.frc.team2523.robot.subsystems.LauncherWheels;
+import org.usfirst.frc.team2523.robot.subsystems.TargetTracker;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
@@ -11,14 +12,15 @@ public class AutoLaunch extends CommandGroup {
     
     public  AutoLaunch() {
         // Lower launcher and align with target
-    	addSequential(new IdentifyBestTarget());
-    	addSequential(new Wait(.5));
-    	addSequential(new SeekTarget());
+    	addSequential(new LauncherLower());
+    	addSequential(new StartTargetTracking());
+    	addSequential(new Wait(TargetTracker.TARGET_ACQUIRE_TIME));
+//    	addSequential(new SeekTarget());
     	addParallel(new SetStatusAiming());
     	addParallel(new TurnToTarget());
         addParallel(new LauncherLower());
         addSequential(new SetLauncherRPMByTarget());
-        addSequential(new Wait( 0.25 )); // we'll probably be stalled a bit by turning to target
+        addSequential(new Wait(LauncherWheels.POST_SPOOL_UP_WAIT_TIME));
         
         // FIRE!
         addSequential(new FeederFire());
@@ -28,6 +30,7 @@ public class AutoLaunch extends CommandGroup {
         addSequential(new FeederOff());
         addSequential(new SetStatusIdle());
         addSequential(new SetLauncherRPM(0));
-        addSequential(new ShutUpCamera());
+        addSequential(new LauncherRaise());
+        addSequential(new StopTargetTracking());
     }
 }

@@ -30,8 +30,7 @@ public class SetDashboard extends Command
     	// ESSENTIALS
 		SmartDashboard.putNumber(" Arm Angle ", Robot.armpivot.getArmAngle());
 		SmartDashboard.putNumber(" Arm Target Angle ", Robot.armpivot.currentTargetAngle);
-		SmartDashboard.putNumber(" Arm Rate ", Robot.armpivot.getArmRate());
-		SmartDashboard.putNumber(" Arm Speed ", Robot.armpivot.currentSpeed);
+
 		SmartDashboard.putBoolean(" Ball? ", Robot.feeder.ballstate());
 		SmartDashboard.putBoolean(" Winch Braked? ", Robot.winch.isBraked());
 		SmartDashboard.putBoolean(" Launcher Lowered? ", Robot.launcherPneumatics.getState());
@@ -45,14 +44,19 @@ public class SetDashboard extends Command
 		SmartDashboard.putNumber(" Launcher Mot RPM (Back) ", Robot.launcherWheels.getCurrentRPMs()[1]);
 		SmartDashboard.putNumber(" Launcher Mot PID Error (Front) ", Robot.launcherWheels.getCurrentRPMError()[0]);
 		SmartDashboard.putNumber(" Launcher Mot PID Error (Back) ", Robot.launcherWheels.getCurrentRPMError()[1]);
-		SmartDashboard.putNumber(" Potentiometer Reading ", Robot.armpivot.armPotentiometer.get());
 		SmartDashboard.putNumber(" Current Thottle RPM ", LauncherWheels.MAX_RPM*0.5*(-Robot.oi.UtilStick.getThrottle() + 1)); // from 0 to 100
 		SmartDashboard.putNumber(" Winch (Arm) Extension Distance ", Robot.winch.getCurrentDistance());
-		SmartDashboard.putNumber(" Winch Extension Encoder Reading ", Robot.winch.winchMotor.getPosition());
+//		
+		SmartDashboard.putBoolean(" Winch Overriden? ", Robot.winch.winchLimitOverride);
+		SmartDashboard.putBoolean(" Arm Overriden? ", Robot.armpivot.armLimitOverride);
 		
 		// DIAGNOSTICS
 		SmartDashboard.putString(" Status of Launcher ",Robot.launcherstatus.Status );
-		SmartDashboard.putNumber(" Winch Speed ", Robot.winch.winchMotor.get());
+//		SmartDashboard.putNumber(" Potentiometer Reading ", Robot.armpivot.armPotentiometer.get());
+//		SmartDashboard.putNumber(" Winch Speed ", Robot.winch.winchMotor.get());
+//		SmartDashboard.putNumber(" Winch Extension Encoder Reading ", Robot.winch.winchMotor.getPosition());
+//		SmartDashboard.putNumber(" Arm Rate ", Robot.armpivot.getArmRate());
+//		SmartDashboard.putNumber(" Arm Speed ", Robot.armpivot.currentSpeed);
 		
 		// SETTINGS from THE DASHBOARD?
 		// COMMANDS

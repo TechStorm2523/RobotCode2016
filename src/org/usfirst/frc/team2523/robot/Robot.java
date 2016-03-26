@@ -93,6 +93,8 @@ public class Robot extends IterativeRobot {
      */
     public void disabledInit(){
 //		TargetTracker.stopTracking();
+    	oi.DriveStick.stopRecording();
+    	oi.UtilStick.stopRecording();
     }
 	
 	public void disabledPeriodic() {
@@ -113,21 +115,21 @@ public class Robot extends IterativeRobot {
 		String joystickRecording = (String) playbackChooser.getSelected();
 		autonomousCommand = (Command) autoChooser.getSelected();
 		
-//		// The null auto command indicates we should try to use a joystick recording
-//		if (autonomousCommand == null && joystickRecording != null)
-//		{
-//			oi.DriveStick.startPlayback(RobotMap.JOYSTICK_RECORDINGS_SAVE_LOCATION + joystickRecording + "_drive");
-//			oi.UtilStick.startPlayback(RobotMap.JOYSTICK_RECORDINGS_SAVE_LOCATION + joystickRecording + "_util");
-//		}
-//		else
-//		{			
+		System.out.println("RECORDING CHOSEN: "  + joystickRecording);
+		
+		// We prioritize a normal auto command
+		if (autonomousCommand != null)
+		{			
 	    	// schedule the chosen autonomous command otherwise
-	        if (autonomousCommand != null) autonomousCommand.start();
-//		}
-        
+	        autonomousCommand.start();
+		}
+		else if (joystickRecording != null)
+		{
+			oi.DriveStick.startPlayback(RobotMap.JOYSTICK_RECORDINGS_SAVE_LOCATION + joystickRecording + "_drive");
+			oi.UtilStick.startPlayback(RobotMap.JOYSTICK_RECORDINGS_SAVE_LOCATION + joystickRecording + "_util");
+		}
+		
 //		TargetTracker.startTracking();
-		// POSSIBLE BUG POINT (AND BElOW)
-//        NIVision.IMAQdxStartAcquisition(Robot.targetTracker.session);
     }
 
     /**
@@ -151,13 +153,11 @@ public class Robot extends IterativeRobot {
         // teleop starts running. If you want the autonomous to 
         // continue until interrupted by another command, remove
         // this line or comment it out.
-//    	oi.DriveStick.stopPlayback();
-//    	oi.UtilStick.stopPlayback();
+    	oi.DriveStick.stopPlayback();
+    	oi.UtilStick.stopPlayback();
         if (autonomousCommand != null) autonomousCommand.cancel();
         
 //		TargetTracker.startTracking(); // TODO: What happens when commands are run twice?
-		// POSSIBLE BUG POINT
-//        NIVision.IMAQdxStartAcquisition(Robot.targetTracker.session);
 //        String recordNew = SmartDashboard.getData("Record New Joystick Auto?");
         
         // check if we should start recording joysticks
@@ -197,8 +197,8 @@ public class Robot extends IterativeRobot {
 		armpivot.updateArmProperties();
 		
         // update joystick recording
-//        oi.DriveStick.updateState();
-//        oi.UtilStick.updateState();
+        oi.DriveStick.updateState();
+        oi.UtilStick.updateState();
 //        System.out.println(Timer.getMatchTime());
     }
 }

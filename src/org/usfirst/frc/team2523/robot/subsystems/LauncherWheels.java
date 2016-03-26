@@ -28,8 +28,8 @@ public class LauncherWheels extends Subsystem {
 	private static final double RPM_PID_BACK_KI = RPM_PID_FRONT_KI;//0.001;
 	private static final double RPM_PID_BACK_KD = RPM_PID_FRONT_KD;
 //	public static final double GEARBOX_CONVERSION_FACTOR = 1; // 1:1 gearbox
-	private static final double RPM_PER_VELOCITY = 1 / (Math.PI*2.875/60); // inch/sec - by formula x/v = 1/(pi*d)
-	public static final double TARGET_SPEED_TOLERANCE = 100; // actually in native units
+	private static final double RPM_PER_VELOCITY = 1126.7; // 67.61 // RPM / ft/sec - by formula x/v = 1/(2*pi*r)
+	public static final double TARGET_SPEED_TOLERANCE = 400; // rpms
 	public static final double RANGE_DIFFERENCE_DEADZONE = 1; // feet (changes in range when auto launching that constitute readjustment)
 	private static final double LAUNCH_ANGLE = 42.35;
 	public static final double LAUNCH_HEIGHT = 29.0 / 12.0; // feet (height of launch from center of ball)
@@ -37,7 +37,7 @@ public class LauncherWheels extends Subsystem {
 	private static final double CAMERA_DISTANCE_OFF_LAUNCH = 7 / 12.0; // feet (horizontal distance)
 
 	// auto constants
-	public static final double POST_SPOOL_UP_WAIT_TIME = 1;
+	public static final double POST_SPOOL_UP_WAIT_TIME = 0.5;
 	public static final double POST_LAUNCH_WAIT_TIME = 1;
 	
 	// variables for adjusting constants
@@ -74,7 +74,7 @@ public class LauncherWheels extends Subsystem {
     	launchFront.enableBrakeMode(false);
     	
     	// reverse where needed
-//    	launchFront.reverseSensor(true);
+    	launchFront.reverseSensor(true); // front sensor needs to be reversed because NOT output reversed
     	launchBack.reverseOutput(true);
     	
     	// reset sensors
@@ -123,8 +123,8 @@ public class LauncherWheels extends Subsystem {
 	public double[] getCurrentRPMError()
 	{
 		double[] errors = new double[2];
-		errors[0] = currentTargetRPM - launchFront.getSpeed();
-		errors[1] = currentTargetRPM - launchBack.getSpeed();
+		errors[0] = launchFront.getSpeed() - currentTargetRPM;
+		errors[1] = launchBack.getSpeed() - currentTargetRPM;
 		return errors; 
 	}
 	

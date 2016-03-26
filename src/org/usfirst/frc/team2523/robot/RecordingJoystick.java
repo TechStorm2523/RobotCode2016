@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -70,6 +71,9 @@ public class RecordingJoystick extends GenericHID {
 	 * time.
 	 */
 	private static class JoystickState implements java.io.Serializable {
+		/* (non-Javadoc)
+		 * @see java.lang.Object#toString()
+		 */
 		/**
 		 * Serial Version Identifier
 		 */
@@ -106,6 +110,17 @@ public class RecordingJoystick extends GenericHID {
 			this.rawButtons = rawButtons;
 			this.povVals = povVals;
 		}
+		
+		@Override
+		public String toString() {
+			return "JoystickState [xVal=" + xVal + ", yVal=" + yVal + ", zVal="
+					+ zVal + ", twistVal=" + twistVal + ", throttleVal="
+					+ throttleVal;// + ", rawAxes=" + Arrays.toString(rawAxes)
+//					+ ", triggerVal=" + triggerVal + ", topVal=" + topVal
+//					+ ", rawButtons=" + Arrays.toString(rawButtons)
+//					+ ", povVals=" + Arrays.toString(povVals) + "]";
+		}
+
 	}
 	
 	/**
@@ -276,7 +291,7 @@ public class RecordingJoystick extends GenericHID {
 	public void updateState()
 	{
 		// convert to nano seconds to measure delta since last
-		if (System.nanoTime() - lastStateSave >= STATE_STORE_FREQ*10e6)
+		if (System.nanoTime() - lastStateSave >= STATE_STORE_FREQ*10e5)
 		{
 			if (currentMode == MODE_PLAYBACK)
 			{
@@ -316,7 +331,7 @@ public class RecordingJoystick extends GenericHID {
 //						(System.nanoTime() - lastStateCheck) + "ns vs desired " + STATE_STORE_FREQ*10e6 + "ns)");
 		}
 		
-		elapsedDuration += (System.nanoTime() - lastStateCheck) / 10e6;
+		elapsedDuration += (System.nanoTime() - lastStateCheck) / 10e5;
 		lastStateCheck = System.nanoTime();
 	}
 	
@@ -491,17 +506,22 @@ public class RecordingJoystick extends GenericHID {
 	{
 		try 
 		{
-			FileOutputStream fileOut = new FileOutputStream(playbackFileName);
-			ObjectOutputStream out = new ObjectOutputStream(fileOut);
-			
-			// write the entire joystickStates array
-			out.writeObject(joystickStates);
-			
-			out.close();
-			fileOut.close();
-			
-			System.out.println("A RecordingJoystick playback file was saved at " + playbackFileName);
-			return true;
+			if (playbackFileName != null)
+			{
+				FileOutputStream fileOut = new FileOutputStream(playbackFileName);
+				ObjectOutputStream out = new ObjectOutputStream(fileOut);
+				
+				// write the entire joystickStates array
+				out.writeObject(joystickStates);
+				
+				out.close();
+				fileOut.close();
+				
+				System.out.println("A RecordingJoystick playback file was saved at " + playbackFileName);
+				return true;
+			}
+			else
+				return false;
 		} 
 		catch (IOException e) 
 		{
@@ -519,18 +539,26 @@ public class RecordingJoystick extends GenericHID {
 	 */
 	private boolean loadPlaybackFile(String playbackFileName)
 	{
-		try 
+		try
 		{
-			FileInputStream fileIn = new FileInputStream(playbackFileName);
-			ObjectInputStream in = new ObjectInputStream(fileIn);
-			
-			// read in the data and assign it to the joystickStates array
-			joystickStates = (ArrayList<JoystickState>) in.readObject();
-			
-			in.close();
-			fileIn.close();
-			
-			return true;
+			if (playbackFileName != null)
+			{
+				FileInputStream fileIn = new FileInputStream(playbackFileName);
+				ObjectInputStream in = new ObjectInputStream(fileIn);
+				
+				// read in the data and assign it to the joystickStates array
+				joystickStates = (ArrayList<JoystickState>) in.readObject();
+				
+				in.close();
+				fileIn.close();
+				
+				System.out.println("A RecordingJoystick playback file was loaded from " + playbackFileName);
+				System.out.println(joystickStates);
+				
+				return true;
+			}
+			else
+				return false;
 		} 
 		catch (IOException e) 
 		{

@@ -5,7 +5,7 @@ import java.util.Vector;
 
 import org.usfirst.frc.team2523.robot.Robot;
 import org.usfirst.frc.team2523.robot.commands.IdentifyBestTarget;
-import org.usfirst.frc.team2523.robot.commands.TransferImagetoDS;
+import org.usfirst.frc.team2523.robot.commands.RunAppropriateVisionTasks;
 import org.usfirst.frc.team2523.robot.commands.ShutUpCamera;
 
 import com.ni.vision.NIVision;
@@ -50,12 +50,13 @@ public class TargetTracker extends Subsystem {
 	static final int TARGET_CROSSHAIR_SIZE = 20; // length from center
 	static final int TARGET_CROSSHAIR_WIDTH = 5;
 	static final int TARGET_CROSSHAIR_SPREAD = 5; // spread from center
-	public static final double TARGET_ACQUIRE_TIME = 0.5;
+	public static final double TARGET_ACQUIRE_TIME = 1;
 	
 	// Various cache variables
 	private ParticleReport currentBestTarget = null;
 //	private ParticleReport[] allTargets = null;
 	public double currentRangeToBestTarget = 0;
+	public boolean trackRatherThanTransfer = false;
 	
 	// A structure to hold measurements of a particle
 	public class ParticleReport implements Comparator<ParticleReport>, Comparable<ParticleReport>{
@@ -110,10 +111,18 @@ public class TargetTracker extends Subsystem {
 //        System.out.println("INITING");
 	}
 	
+	public void runAppropriateVisionTasks()
+	{
+		if (trackRatherThanTransfer)
+			retrieveBestTarget();
+		else
+			transferImagetoDS();
+	}
+	
 	/**
 	 * Simply grabs the image from the camera and sends it to the DS without processing
 	 */
-	public void transferImagetoDS()
+	private void transferImagetoDS()
 	{
 		NIVision.IMAQdxGrab(session, frame, 1);
 		
@@ -233,6 +242,7 @@ public class TargetTracker extends Subsystem {
 		transferImagetoDS();
 		
 		currentBestTarget = null;
+		currentRangeToBestTarget = 0;
 		return null;
 	}
 
@@ -380,7 +390,7 @@ public class TargetTracker extends Subsystem {
 	
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
-    	setDefaultCommand(new TransferImagetoDS());
+    	setDefaultCommand(new RunAppropriateVisionTasks());
 //        setDefaultCommand(new IdentifyBestTarget());
     }
 }
