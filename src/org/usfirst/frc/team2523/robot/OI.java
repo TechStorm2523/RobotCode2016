@@ -59,8 +59,8 @@ public class OI {
 //   		driveButton4.whileHeld(new SetWinchByThrottle());
    		driveButton9.whenPressed(new ResetWinchPosition());
    		
-   		driveButton11.whenPressed(new SetWinch(Winch.MAX_MANUAL_SPEED*2));
-    	driveButton12.whenPressed(new SetWinch(-Winch.MAX_MANUAL_SPEED));
+   		driveButton11.whileHeld(new SetWinch(Winch.MAX_MANUAL_SPEED*2));
+    	driveButton12.whileHeld(new SetWinch(-Winch.MAX_MANUAL_SPEED));
     	
 		driveButton7.whenPressed(new SetWinchBrake(true));
 		driveButton8.whenPressed(new SetWinchBrake(false));

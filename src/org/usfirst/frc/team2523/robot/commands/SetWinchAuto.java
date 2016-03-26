@@ -7,14 +7,11 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class SetWinchBrake extends Command {
-	boolean braked;
+public class SetWinchAuto extends Command {
 
-    public SetWinchBrake(boolean braked) {
+    public SetWinchAuto() {
         // Use requires() here to declare subsystem dependencies
-//        requires(Robot.winch);
-        
-        this.braked = braked;
+        requires(Robot.winch);
     }
 
     // Called just before this Command runs the first time
@@ -23,15 +20,11 @@ public class SetWinchBrake extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	if (braked)    	
-    		Robot.winch.setBrake();
-    	else
-    		Robot.winch.releaseBrake();
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return true;
+        return false;
     }
 
     // Called once after isFinished returns true
@@ -41,5 +34,6 @@ public class SetWinchBrake extends Command {
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
+    	end();
     }
 }

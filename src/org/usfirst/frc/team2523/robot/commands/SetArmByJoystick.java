@@ -22,10 +22,10 @@ public class SetArmByJoystick extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
 		Robot.armpivot.setArmByJoystick();
-		if (Robot.winch.canSetWinchByArm)
-		{
-			Robot.winch.setWinchByArmSpeed();
-		}
+//		if (Robot.winch.canSetWinchByArm)
+//		{
+//			Robot.winch.setWinchByArmSpeed();
+//		}
 	}
 
 	// Make this return true when this Command no longer needs to run execute()

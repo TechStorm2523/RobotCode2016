@@ -25,7 +25,7 @@ public class DriveTrain extends Subsystem {
 	public static final double TARGET_DISTANCE_TOLERANCE = 0.2; // feet, or same as ENCODER_DISTANCE_PER_PULSE
 	public static final double RAMP_UP_DURATION = 0.75; // s
 	private static final double EXPONENETIAL_FACTOR = 2; // changes arm too
-	private static final double TURN_SPEED_MULTIPLIER = 0.7;
+	private static final double TURN_SPEED_MULTIPLIER = 0.8;
 	
 	// CONSTANTS (for AUTO)
 	public static final double VISION_TARGET_OFFSET_TOLERANCE = 0.04; // normalized units, used in TurnToTarget

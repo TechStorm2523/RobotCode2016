@@ -38,7 +38,7 @@ public class TargetTracker extends Subsystem {
 	// threshold values
 	NIVision.Range HUE_RANGE = new NIVision.Range(60, 150);	//Default hue range for target
 	NIVision.Range SAT_RANGE = new NIVision.Range(60, 255);	//Default saturation range for target
-	NIVision.Range VAL_RANGE = new NIVision.Range(100, 255);	//Default value range for target
+	NIVision.Range VAL_RANGE = new NIVision.Range(100, 200);	//Default value range for target
 	// general scoring
 	final static double AREA_MINIMUM = 1; // Default Area minimum for particle as percentage of total area (pixels are hard with NIVision)
 	final static double AREA_MAXIMUM = 100.0; // Max area by same measure
