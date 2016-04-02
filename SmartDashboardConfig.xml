@@ -1,5 +1,17 @@
 <xml version="1.0">
 <dashboard>
+	<widget field=" Launcher Mot PID Error (Back) " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="523"/>
+	</widget>
+	<widget field=" Launcher Mot PID Error (Front) " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="502"/>
+	</widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.WebcamViewerExtension">
+		<location x="190" y="4"/>
+		<width>648</width>
+		<height>486</height>
+		<property name="Size" value="320x240"/>
+	</static-widget>
 	<widget field=" Arm Overriden? " type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
 		<location x="1002" y="446"/>
 		<width>126</width>
@@ -10,11 +22,6 @@
 		<width>137</width>
 		<height>30</height>
 	</widget>
-	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.WebcamViewerExtension">
-		<location x="166" y="-21"/>
-		<width>668</width>
-		<height>503</height>
-	</static-widget>
 	<widget field=" Current Target  RPM " type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
 		<location x="848" y="245"/>
 		<height>31</height>
@@ -188,13 +195,4 @@
 </dashboard>
 <live-window>
 </live-window>
-	<hidden field=" Launcher Mot PID Error (Back) "/>
-	<hidden field=" Launcher Wheels Target RPM "/>
-	<hidden field=" Potentiometer Reading "/>
-	<hidden field=" Current Thottle RPM Target "/>
-	<hidden field=" Arm Speed "/>
-	<hidden field=" Winch Extension Encoder Reading "/>
-	<hidden field=" Winch Speed "/>
-	<hidden field=" Arm Rate "/>
-	<hidden field=" Launcher Mot PID Error (Front) "/>
 </xml>

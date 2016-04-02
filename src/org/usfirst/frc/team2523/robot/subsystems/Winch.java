@@ -3,6 +3,7 @@ package org.usfirst.frc.team2523.robot.subsystems;
 
 import org.usfirst.frc.team2523.robot.Robot;
 import org.usfirst.frc.team2523.robot.RobotMap;
+import org.usfirst.frc.team2523.robot.commands.SetWinchAuto;
 import org.usfirst.frc.team2523.robot.commands.SetWinchByThrottle;
 
 import edu.wpi.first.wpilibj.CANTalon;
@@ -29,12 +30,12 @@ public class Winch extends Subsystem {
 	private static final double RPM_PID_KP = 0;//0.01 * 1023 / 900.0; // set to 50% of max throttle (1023) when going 900 ticks/0.1s
 	private static final double RPM_PID_KI = 0; // NO NEED
 	private static final double RPM_PID_KD = 0; // NO NEED
-	private static final double POS_PID_KP = 0.3; // TODO: MAY BE TOO HIGH (it will still be high because the winch is so slow and is so geared up)
+	private static final double POS_PID_KP = 0.5; // TODO: MAY BE TOO HIGH (it will still be high because the winch is so slow and is so geared up)
 	private static final double POS_PID_KI = 0; //0.005;
 	private static final double POS_PID_KD = 0; // NO NEED
 	private static final double REV_PER_INCH = 1/(2*Math.PI*0.75); // circumference inches in one revolution
 	
-	public static final double MAX_ARM_EXTENSION = 12.5; // inches
+	public static final double MAX_ARM_EXTENSION = 14; // inches
 	public static final double MIN_ARM_EXTENSION = 0.5; // inches, off of initial reset point
 	private static final double ARM_PIVOT_TO_15IN = 37.5; // inches
 	private static final double ARM_LENGTH = 33; // inches
@@ -47,6 +48,7 @@ public class Winch extends Subsystem {
 	public double revPerInchPerSecCoefficent = 1;
 	public boolean winchLimitOverride = false;
 	public boolean canSetWinchByArm = true;
+	public double desiredWinchSpeed = 0;
 	
 	// definitions
 	public CANTalon winchMotor = new CANTalon(RobotMap.winch);
@@ -60,7 +62,7 @@ public class Winch extends Subsystem {
     	
     	// configure PID control for BOTH modes (we ASSUME ramp rate zero means infinite ramp rate)
 //    	winchMotor.setPID(RPM_PID_KP, RPM_PID_KI, RPM_PID_KD, RPM_PID_KF, 1, 0, 0); // ramp rate is zero, but create 2 profiles
-    	winchPID = new PIDControl(POS_PID_KP, POS_PID_KI, POS_PID_KD, -0.2, 0.2, 1);
+    	winchPID = new PIDControl(POS_PID_KP, POS_PID_KI, POS_PID_KD, -1.0, 1.0, 1);
 //    	winchMotor.setPID(POS_PID_KP, POS_PID_KI, POS_PID_KD, 0, 1, 0, 1); // limit integral accumulation too
 //    	winchMotor.configEncoderCodesPerRev( (int) ENCODER_PULSE_PER_REV);  // no need with ctreMagEncoder (would be 4096 in quadrature)
     	
@@ -73,30 +75,29 @@ public class Winch extends Subsystem {
     	resetWinchPosition();
 //    	winchMotor.reset();
     	winchMotor.reverseSensor(false); // TODO: do we need to??
+    	
+		// ensure operating by RPM mode and corresponding PID
+//    	winchMotor.setProfile(0);
+    	winchMotor.changeControlMode(TalonControlMode.PercentVbus); // SPeed
     }
     
     /**
      * @param rpm The rpm to set the motor at
      */
-	public void set(double speed) {
-    	
-    	// the winch must be stopped when it is:
-    	// too far out while trying to go out,
-    	// too far in while trying to go in,
-    	// BUT, in the last 20 seconds of the match, these constraints are overridden
+	public void set(double desiredSpeed) {
+
     	double distance = getCurrentDistance();
-    	if (!winchLimitOverride &&
-    	   ((distance >= MAX_ARM_EXTENSION && -speed > 0) || (distance <= MIN_ARM_EXTENSION && -speed < 0)) &&// invert speed
-    		RobotMap.MATCH_LENGTH - Timer.getMatchTime() > RobotMap.MATCH_END_PERIOD_LEN)
-    	{
-    		winchMotor.set(0);
-    	}
-    	else if (!winchLimitOverride && distance >= getArmConstrainedDistance() && -speed > 0) // invert speed
+    	double setSpeed;
+    	
+    	// IN is +
+    	if (!winchLimitOverride && distance >= getArmConstrainedDistance()) 
     	{
     		if (Robot.armpivot.getArmAngle() > 100)
-    			winchMotor.set(winchPID.getPIDoutput(MAX_ARM_EXTENSION, getCurrentDistance()));
+    			setSpeed = winchPID.getPIDoutput(MAX_ARM_EXTENSION, getCurrentDistance());
+    		else if (desiredSpeed > 0) // if going IN, let it go
+    			setSpeed = desiredSpeed;
     		else
-    			winchMotor.set(winchPID.getPIDoutput(getArmConstrainedDistance(), getCurrentDistance()));
+    			setSpeed = winchPID.getPIDoutput(getArmConstrainedDistance(), getCurrentDistance());
     	}
 //    	else if (winchMotor.getOutputCurrent() > 40)
 //    	{
@@ -104,20 +105,32 @@ public class Winch extends Subsystem {
 //    	}
     	else
     	{
-    		// ensure operating by RPM mode and corresponding PID
-        	winchMotor.changeControlMode(TalonControlMode.PercentVbus); // SPeed
-//        	winchMotor.setProfile(0);
-  
-			winchMotor.set(speed);
-	
-//			System.out.println("Speed: " + speed);
-//			System.out.println("RPM: " + rpm*GEARBOX_CONVERSION_FACTOR + "		Current RPM: " + winchMotor.getSpeed());
-			
-			// make sure brake released (only if not zero)
-			if (speed != 0)
-				releaseBrake();
+        	setSpeed = desiredSpeed;
     	}
-    	// System.out.println(distance);
+    	
+    	// the winch must be stopped when it is:
+    	// too far out while trying to go out,
+    	// too far in while trying to go in,
+    	// or NOT stopped if these constraints are overridden
+    	// IN is +
+    	if (!winchLimitOverride &&
+    		((distance >= MAX_ARM_EXTENSION && desiredSpeed < 0) || (distance <= MIN_ARM_EXTENSION && desiredSpeed > 0))) //&&// invert speed
+// 		RobotMap.MATCH_LENGTH - Timer.getMatchTime() > RobotMap.MATCH_END_PERIOD_LEN)
+	 	{
+	 		setSpeed = 0;
+	 	}
+    	
+//		System.out.println("Speed: " + setSpeed + "Current RPM: 	" + winchMotor.getSpeed());
+    	
+		// ensure operating by RPM mode and corresponding PID
+    	winchMotor.changeControlMode(TalonControlMode.PercentVbus); // SPeed
+    	
+    	// SET THE SPEED
+    	winchMotor.set(setSpeed);
+    	
+		 //make sure brake released (only if not zero)
+		if (setSpeed != 0)
+			releaseBrake();
 	}
 	
 	/**
@@ -128,26 +141,14 @@ public class Winch extends Subsystem {
 	public void setDistance(double distance)
 	{
 		double desiredSpeed = winchPID.getPIDoutput(distance, getCurrentDistance());
-		
-//		// ensure operating by Distance mode and corresponding PID
-//    	winchMotor.changeControlMode(TalonControlMode.Position);
-//    	winchMotor.setProfile(1);
-//    	
-//		// set in revolutions
-//		winchMotor.set(-distance * GEARBOX_CONVERSION_FACTOR * REV_PER_INCH);
-//		
-//    	// BUT the winch must be stopped when it is:
-//    	// too far out while trying to go out,
-//    	// too far in while trying to go in,
-//    	// BUT, in the last 20 seconds of the match, these constraints are overridden
+
     	set(desiredSpeed);
     	
 //    	System.out.println(desiredSpeed);
 		// make sure brake released
     	releaseBrake();
     	
-		System.out.println(" Desired D:		" + distance + "		Current D: " + getCurrentDistance());
-		
+//		System.out.println(" Desired D:		" + distance + "		Current D: " + getCurrentDistance());
 	}
 	
 	/**
@@ -159,8 +160,9 @@ public class Winch extends Subsystem {
 		return winchMotor.getPosition() / (GEARBOX_CONVERSION_FACTOR * REV_PER_INCH);
 	}
 	
-	/**
+	/** THIS IS DEPRECTED BECAUSE IT IS BETTER TO JUST PASSIVELY REGULATE THE ARM IN THE SET() METHOD
 	 * Based on the arm's speed, set the winch to the speed required to make the arm move vertically
+	 * @deprecated
 	 */
 	public void setWinchByArmSpeed()
 	{
@@ -209,36 +211,6 @@ public class Winch extends Subsystem {
 			   Math.cos(Math.toRadians(currentAngle - ArmPivot.ARM_STARTING_ANGLE)) *
 			   angleDelta; // TODO: Should this be in RADIANS????? (And below too)
 	}
-
-	/**
-	 * Check if given arm speed must be limited to meet winch speed requirements,
-	 * then return the new value if necessary (otherwise just return old one)
-	 * @deprecated
-//	 */
-//	public double getLimitedArmSpeed(double commandedSpeed) 
-//	{
-//		// BE SURE TO REMOVE ONCE SET
-//		revPerInchPerSecCoefficent = SmartDashboard.getNumber(" Arm by Winch Coefficent: ", revPerInchPerSecCoefficent);
-//		
-//		// max winch speed = 1.0, and winch=k*arm, so (max) arm=1.0/k,
-//		// where k is the conversion factor in above function
-//		// (this will be in degrees per second - we're getting angleDelta above)
-//		double currentMaxArmSpeed = 1.0 / 
-//							   (revPerInchPerSecCoefficent * RPM_PER_INCH_PER_SECOND *
-//							    ARM_PIVOT_TO_15IN * 
-//							    Math.tan(Math.toRadians(Robot.armpivot.getArmAngle() - ArmPivot.ARM_STARTING_ANGLE)) / 
-//							    Math.cos(Math.toRadians(Robot.armpivot.getArmAngle() - ArmPivot.ARM_STARTING_ANGLE)));
-//		
-//		double winchSpeed = getWinchSpeed(Robot.armpivot.getArmAngle(),
-//				  						  Robot.armpivot.getArmRate());				
-//		
-//		if (winchSpeed > 1.0)
-//			return currentMaxArmSpeed / 6.0; // 1 rev/min = 6 degrees/sec
-//		else if (winchSpeed < -1.0)
-//			return -currentMaxArmSpeed / 6.0;
-//		else
-//			return commandedSpeed;
-//	}
 	
 	/**
 	 * 
@@ -277,8 +249,79 @@ public class Winch extends Subsystem {
 	}
 	
     public void initDefaultCommand() {
-//    	setDefaultCommand(new SetWinchByThrottle());
+    	setDefaultCommand(new SetWinchAuto());
     }
 }
 
-    
+    /* ARCHIVE */
+
+/* SET() */
+//// IN is +
+//if (!winchLimitOverride &&
+//	((distance >= MAX_ARM_EXTENSION && desiredSpeed < 0) || (distance <= MIN_ARM_EXTENSION && desiredSpeed > 0))) //&&// invert speed
+////	RobotMap.MATCH_LENGTH - Timer.getMatchTime() > RobotMap.MATCH_END_PERIOD_LEN)
+//	{
+//		winchMotor.set(0);
+//	}
+//else
+//{
+//	// ensure operating by RPM mode and corresponding PID
+//	winchMotor.changeControlMode(TalonControlMode.PercentVbus); // SPeed
+////	winchMotor.setProfile(0);
+//
+//	winchMotor.set(desiredSpeed);
+//
+////	System.out.println("Speed: " + speed);
+////	System.out.println("RPM: " + rpm*GEARBOX_CONVERSION_FACTOR + "		Current RPM: " + winchMotor.getSpeed());
+//	
+//	// make sure brake released (only if not zero)
+//	if (desiredSpeed != 0)
+//		releaseBrake();
+//}
+
+
+///**
+// * Check if given arm speed must be limited to meet winch speed requirements,
+// * then return the new value if necessary (otherwise just return old one)
+// * @deprecated
+//// */
+//public double getLimitedArmSpeed(double commandedSpeed) 
+//{
+//	// BE SURE TO REMOVE ONCE SET
+//	revPerInchPerSecCoefficent = SmartDashboard.getNumber(" Arm by Winch Coefficent: ", revPerInchPerSecCoefficent);
+//	
+//	// max winch speed = 1.0, and winch=k*arm, so (max) arm=1.0/k,
+//	// where k is the conversion factor in above function
+//	// (this will be in degrees per second - we're getting angleDelta above)
+//	double currentMaxArmSpeed = 1.0 / 
+//						   (revPerInchPerSecCoefficent * RPM_PER_INCH_PER_SECOND *
+//						    ARM_PIVOT_TO_15IN * 
+//						    Math.tan(Math.toRadians(Robot.armpivot.getArmAngle() - ArmPivot.ARM_STARTING_ANGLE)) / 
+//						    Math.cos(Math.toRadians(Robot.armpivot.getArmAngle() - ArmPivot.ARM_STARTING_ANGLE)));
+//	
+//	double winchSpeed = getWinchSpeed(Robot.armpivot.getArmAngle(),
+//			  						  Robot.armpivot.getArmRate());				
+//	
+//	if (winchSpeed > 1.0)
+//		return currentMaxArmSpeed / 6.0; // 1 rev/min = 6 degrees/sec
+//	else if (winchSpeed < -1.0)
+//		return -currentMaxArmSpeed / 6.0;
+//	else
+//		return commandedSpeed;
+//}
+
+
+
+/* Set Distance */
+
+//// ensure operating by Distance mode and corresponding PID
+//winchMotor.changeControlMode(TalonControlMode.Position);
+//winchMotor.setProfile(1);
+//
+//// set in revolutions
+//winchMotor.set(-distance * GEARBOX_CONVERSION_FACTOR * REV_PER_INCH);
+//
+//// BUT the winch must be stopped when it is:
+//// too far out while trying to go out,
+//// too far in while trying to go in,
+//// BUT, in the last 20 seconds of the match, these constraints are overridden

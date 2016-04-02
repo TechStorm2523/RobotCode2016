@@ -9,16 +9,15 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class IdentifyBestTarget extends Command {
+public class IdentifyBestTargetOLD extends Command {
 
-    public IdentifyBestTarget() {
+    public IdentifyBestTargetOLD() {
         // Use requires() here to declare subsystem dependencies
         requires(Robot.targetTracker);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-		NIVision.IMAQdxStartAcquisition(Robot.targetTracker.session);
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -29,12 +28,11 @@ public class IdentifyBestTarget extends Command {
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
     	// run continuously
-        return false;//Robot.targetTracker.currentRangeToBestTarget != 0;
+        return false;
     }
 
     // Called once after isFinished returns true
     protected void end() {
-    	NIVision.IMAQdxStopAcquisition(Robot.targetTracker.session);
     }
 
     // Called when another command which requires one or more of the same

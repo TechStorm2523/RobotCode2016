@@ -66,7 +66,7 @@ public class TargetReport {
 		
 		// prevent error when there is zero area
 		if (boundingBoxArea != 0)
-			return scoreFromDistance(this.area / boundingBoxArea, IDEAL_AREA_RATIO);
+			return scoreFromDifference(this.area / boundingBoxArea, IDEAL_AREA_RATIO);
 		else
 			return 0;
 	}
@@ -79,7 +79,7 @@ public class TargetReport {
 		// ensure no error
 		if (this.height != 0)
 			//
-			return scoreFromDistance(this.width / this.height, IDEAL_ASPECT_RATIO);
+			return scoreFromDifference(this.width / this.height, IDEAL_ASPECT_RATIO);
 		else
 			return 0;
 	}
@@ -92,7 +92,7 @@ public class TargetReport {
 	 * @param idealValue The optimal value (would result in highest score)
 	 * @return A 0-1 value representing the "closeness" of the realValue to the idealValue
 	 */
-	private double scoreFromDistance(double realValue, double idealValue)
+	private double scoreFromDifference(double realValue, double idealValue)
 	{
 		// Create a "pyramid function", inverting an absolute value function and 
 		// shifting so a 0 in the difference between one and the ratio of the values

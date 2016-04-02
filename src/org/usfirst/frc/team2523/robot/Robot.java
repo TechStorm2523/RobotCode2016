@@ -127,6 +127,10 @@ public class Robot extends IterativeRobot {
 		}
 		
 //		TargetTracker.startTracking();
+		
+		// prep for driving and winching
+		launcherPneumatics.raise();
+    	winch.releaseBrake();
     }
 
     /**
@@ -138,8 +142,9 @@ public class Robot extends IterativeRobot {
     }
 
     public void teleopInit() {
-    	// release winch brake
+    	// release winch brake and raise launcher
     	winch.releaseBrake();
+//    	launcherPneumatics.raise();
     	
     	// ensure that arm extends
 //    	winch.setDistance(Winch.MAX_ARM_EXTENSION);
@@ -196,6 +201,6 @@ public class Robot extends IterativeRobot {
         // update joystick recording
         oi.DriveStick.updateState();
         oi.UtilStick.updateState();
-//        System.out.println(Timer.getMatchTime());
+        System.out.println(Timer.getMatchTime());
     }
 }
