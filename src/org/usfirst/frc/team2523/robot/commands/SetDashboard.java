@@ -50,10 +50,10 @@ public class SetDashboard extends Command
 		SmartDashboard.putBoolean(" Winch Overriden? ", Robot.winch.winchLimitOverride);
 		SmartDashboard.putBoolean(" Arm Overriden? ", Robot.armpivot.armLimitOverride);
 		
-		// To Assist in IDing current target in vision
-		SmartDashboard.putNumber(" Best Target X Position: ", Robot.targetTracker.currentBestTarget != null ? 
-																Robot.targetTracker.currentBestTarget.centerX :
-																0);
+//		// To Assist in IDing current target in vision
+//		SmartDashboard.putNumber(" Best Target X Position: ", Robot.targetTracker.currentBestTarget != null ? 
+//																Robot.targetTracker.currentBestTarget.centerX :
+//																0);
 		
 		// DIAGNOSTICS
 		SmartDashboard.putString(" Status of Launcher ",Robot.launcherstatus.Status );

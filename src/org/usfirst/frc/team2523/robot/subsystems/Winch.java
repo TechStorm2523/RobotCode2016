@@ -47,6 +47,7 @@ public class Winch extends Subsystem {
 	// variables
 	public double revPerInchPerSecCoefficent = 1;
 	public boolean winchLimitOverride = false;
+	public boolean lowerWinchLimitOverride = false; //For the EOM override
 	public boolean canSetWinchByArm = true;
 	public double desiredWinchSpeed = 0;
 	
@@ -114,7 +115,7 @@ public class Winch extends Subsystem {
     	// or NOT stopped if these constraints are overridden
     	// IN is +
     	if (!winchLimitOverride &&
-    		((distance >= MAX_ARM_EXTENSION && desiredSpeed < 0) || (distance <= MIN_ARM_EXTENSION && desiredSpeed > 0))) //&&// invert speed
+    		((distance >= MAX_ARM_EXTENSION && desiredSpeed < 0) || ((distance <= MIN_ARM_EXTENSION && desiredSpeed > 0) && (!lowerWinchLimitOverride)))) //&&// invert speed
 // 		RobotMap.MATCH_LENGTH - Timer.getMatchTime() > RobotMap.MATCH_END_PERIOD_LEN)
 	 	{
 	 		setSpeed = 0;
