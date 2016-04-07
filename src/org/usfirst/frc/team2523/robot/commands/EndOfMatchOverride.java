@@ -9,7 +9,8 @@ public class EndOfMatchOverride extends CommandGroup {
     
     public  EndOfMatchOverride() {
     	//THIS IS A ONE WAY SWITCH. Don't call this anywhere but the override switch activation unless you have a good reason.
-    	
+    	addSequential(new OverrideJustLowerWinchLimitsEOM());
+    	addParallel(new OverrideArmLimitsEOM());
     	
         // Add Commands here:
         // e.g. addSequential(new Command1());

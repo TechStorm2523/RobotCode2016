@@ -57,24 +57,26 @@ public class OI {
    		driveButton5.whenPressed(new LauncherRaise());
    		
 //   		driveButton4.whileHeld(new SetWinchByThrottle());
-   		driveButton9.whenPressed(new ResetWinchPosition());
+   		driveButton9.whileHeld(new OverrideLimits());
+   		driveButton10.whenPressed(new ResetWinchPosition());
    		
    		driveButton11.whileHeld(new SetWinch(Winch.MAX_MANUAL_SPEED*2));
     	driveButton12.whileHeld(new SetWinch(-Winch.MAX_MANUAL_SPEED));
     	
 		driveButton7.whenPressed(new SetWinchBrake(true));
 		driveButton8.whenPressed(new SetWinchBrake(false));
-		driveButton10.whileHeld(new IdentifyBestTarget());
+//		driveButton10.whileHeld(new IdentifyBestTarget());
     	
     	// UTIL
    		utilButton1.whileHeld(new ManualLaunch());
     	utilButton2.whenPressed(new AutoRangingLaunch());
     	
-    	utilButton12.whileHeld(new AutoExpel());
-    	utilButton11.whileHeld(new AutoFeed());
+    	utilButton5.whenPressed(new AutoExpel());
+//    	utilButton5.whileHeld(new FeederExpel());
+    	utilButton3.whileHeld(new AutoFeed()); 
     	
-    	utilButton5.whenPressed(new LauncherLower());
-   		utilButton3.whenPressed(new LauncherRaise());
+    	utilButton11.whenPressed(new LauncherLower());
+   		utilButton12.whenPressed(new LauncherRaise());
 
     	// TODO: THIS COULD SCREW UP THE NORMAL WINCH-ARM FUNCTION!!! SET BASED ON HOW WELL THE LIFT COMMAND WORKS
 //    	utilButton11.whenPressed(new ArmRetract());
@@ -88,7 +90,8 @@ public class OI {
 		utilButton7.whenPressed(new SetWinchBrake(true));
 		utilButton8.whenPressed(new SetWinchBrake(false));
 		
-		utilButton9.whileHeld(new OverrideLimits());
+	//	utilButton9.whileHeld(new OverrideLimits());
+		utilButton9.whenPressed(new EndOfMatchOverride());
 		utilButton10.whenPressed(new ResetWinchPosition());
 		
 		// TODO: Remove

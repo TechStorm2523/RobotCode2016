@@ -25,7 +25,7 @@ public class Robot extends IterativeRobot {
 	public static final ArmPivot armpivot = new ArmPivot();
 	public static final Feeder feeder = new Feeder();
 	public static final LauncherWheels launcherWheels = new LauncherWheels();
-	public static TargetTracker targetTracker = new TargetTracker();
+	public static final TargetTracker targetTracker = new TargetTracker();
 //	public static Camera camera = new Camera();
 	public static final LauncherPneumatics launcherPneumatics = new LauncherPneumatics();
 	public static final Dashboard dashboard = new Dashboard();
@@ -38,9 +38,14 @@ public class Robot extends IterativeRobot {
     SendableChooser autoChooser;
     SendableChooser playbackChooser;
     SendableChooser recordingChooser;
+    
+    public static NetworkTable targetRecievingTable;
+    public static NetworkTable targetSendingTable;
 
     public Robot()
     {
+    	targetRecievingTable = NetworkTable.getTable(TargetTracker.CONTOUR_NET_TABLE);
+    	targetSendingTable = NetworkTable.getTable(TargetTracker.OUTPUT_NET_TABLE);
     }
     
     /**
@@ -126,7 +131,7 @@ public class Robot extends IterativeRobot {
 			oi.UtilStick.startPlayback(RobotMap.JOYSTICK_RECORDINGS_SAVE_LOCATION + joystickRecording + "_util");
 		}
 		
-//		TargetTracker.startTracking();
+		targetTracker.startTracking();
 		
 		// prep for driving and winching
 		launcherPneumatics.raise();
@@ -159,7 +164,8 @@ public class Robot extends IterativeRobot {
     	oi.UtilStick.stopPlayback();
         if (autonomousCommand != null) autonomousCommand.cancel();
         
-//		TargetTracker.startTracking(); // TODO: What happens when commands are run twice?
+        if (!targetTracker.tracking)
+        	targetTracker.startTracking(); 
 //        String recordNew = SmartDashboard.getData("Record New Joystick Auto?");
         
         // check if we should start recording joysticks

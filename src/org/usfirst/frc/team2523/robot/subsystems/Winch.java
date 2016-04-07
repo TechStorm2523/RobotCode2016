@@ -21,15 +21,15 @@ public class Winch extends Subsystem {
 	// constants
 //	public static final double MAX_RPM = 600;
 	public static final double MAX_MANUAL_SPEED = 0.75;
-	private static final double POWER_REDUCTION_FACTOR = 0.5;
+	private static final double POWER_REDUCTION_FACTOR = 1.0; // no reduction
 	private static final double GEARBOX_CONVERSION_FACTOR = 50; // 100:1 gearboxq
 	//			  feed forward: max pow  |rev per sec  | time conversion |  native units per rot
-	private static final double RPM_PID_KF = 0.05; //10*1023 / (MAX_RPM/60 * 0.1 * 4096) /
+//	private static final double RPM_PID_KF = 0.05; //10*1023 / (MAX_RPM/60 * 0.1 * 4096) /
 //						 GEARBOX_CONVERSION_FACTOR; // TODO: IS THIS BETTER THAN BELOW?
 	// private static final double RPM_PID_KF = 0.02713; 
-	private static final double RPM_PID_KP = 0;//0.01 * 1023 / 900.0; // set to 50% of max throttle (1023) when going 900 ticks/0.1s
-	private static final double RPM_PID_KI = 0; // NO NEED
-	private static final double RPM_PID_KD = 0; // NO NEED
+//	private static final double RPM_PID_KP = 0;//0.01 * 1023 / 900.0; // set to 50% of max throttle (1023) when going 900 ticks/0.1s
+//	private static final double RPM_PID_KI = 0; // NO NEED
+//	private static final double RPM_PID_KD = 0; // NO NEED
 	private static final double POS_PID_KP = 0.5; // TODO: MAY BE TOO HIGH (it will still be high because the winch is so slow and is so geared up)
 	private static final double POS_PID_KI = 0; //0.005;
 	private static final double POS_PID_KD = 0; // NO NEED
@@ -63,7 +63,7 @@ public class Winch extends Subsystem {
     	
     	// configure PID control for BOTH modes (we ASSUME ramp rate zero means infinite ramp rate)
 //    	winchMotor.setPID(RPM_PID_KP, RPM_PID_KI, RPM_PID_KD, RPM_PID_KF, 1, 0, 0); // ramp rate is zero, but create 2 profiles
-    	winchPID = new PIDControl(POS_PID_KP, POS_PID_KI, POS_PID_KD, -1.0, 1.0, 1);
+    	winchPID = new PIDControl(POS_PID_KP, POS_PID_KI, POS_PID_KD, -POWER_REDUCTION_FACTOR, POWER_REDUCTION_FACTOR, 1);
 //    	winchMotor.setPID(POS_PID_KP, POS_PID_KI, POS_PID_KD, 0, 1, 0, 1); // limit integral accumulation too
 //    	winchMotor.configEncoderCodesPerRev( (int) ENCODER_PULSE_PER_REV);  // no need with ctreMagEncoder (would be 4096 in quadrature)
     	

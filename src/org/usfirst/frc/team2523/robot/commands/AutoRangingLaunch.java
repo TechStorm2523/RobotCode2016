@@ -13,9 +13,9 @@ public class AutoRangingLaunch extends CommandGroup {
     public  AutoRangingLaunch() {
 //    	addSequential(new IdentifyBestTarget());
     	addSequential(new LauncherLower());
-//    	addSequential(new SetTrackingToDriverAligned());
+    	addSequential(new SetTrackingToDriverAligned());
 //    	addSequential(new StartTargetTracking()); // OUT WITH NEW VISION
-    	addSequential(new Wait(TargetTracker.TARGET_ACQUIRE_TIME)); // OUT WITH NEW VISION
+//    	addSequential(new Wait(TargetTracker.TARGET_ACQUIRE_TIME)); // OUT WITH NEW VISION
     	addSequential(new SetLauncherRPMByTarget());
     	addSequential(new Wait(LauncherWheels.POST_SPOOL_UP_WAIT_TIME));
         addSequential(new FeederFire());
@@ -24,7 +24,7 @@ public class AutoRangingLaunch extends CommandGroup {
         addSequential(new FeederOff());
         addSequential(new SetLauncherRPM(0));
         addSequential(new LauncherRaise());
-//    	addSequential(new SetTrackingToAutoAligned());
+    	addSequential(new SetTrackingToAutoAligned());
 //        addSequential(new StopTargetTracking()); // OUT WITH NEW VISION
     }
 }

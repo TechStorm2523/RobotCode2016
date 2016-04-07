@@ -15,8 +15,8 @@ import edu.wpi.first.wpilibj.networktables.NetworkTable;
  */
 public class TargetTracker extends Subsystem {	
 	// CONSTANTS
-	private static final String CONTOUR_NET_TABLE = "GRIP/ContoursReport";
-  private static final String OUTPUT_NET_TABLE = "GRIP/BestTargetReport";
+	public static final String CONTOUR_NET_TABLE = "GRIP/ContoursReport";
+	public static final String OUTPUT_NET_TABLE = "GRIP/BestTargetReport";
 	private static final String RASPBERRY_PI_LOCATION = "visionpi2523.local";
 	public static final double TARGET_ACQUIRE_TIME = 1;
 	// target geometry
@@ -37,20 +37,21 @@ public class TargetTracker extends Subsystem {
 	private final static double CAMERA_ELEVATION = 45;
 
 	// Objects Used
-	NetworkTable netTable; // RENAME!!!
-  NetworkTable sendingTable;
+//	static? NetworkTable recievingTable;
+//	static? NetworkTable sendingTable;
 	
 	// Variables
 	public TargetReport currentBestTarget = null;
 	private TargetReport[] allTargets = null;
 	public double currentRangeToBestTarget = 0;
 	private boolean targetCloseToCenter = false;
+	public boolean tracking = false;
 
 	// POTENTIAL BUG ISSUE
 	public TargetTracker()
 	{
-		netTable = NetworkTable.getTable(CONTOUR_NET_TABLE);
-      sendingTable = NetworkTable.getTable(OUTPUT_NET_TABLE);
+//		recievingTable = NetworkTable.getTable(CONTOUR_NET_TABLE);
+//		sendingTable = NetworkTable.getTable(OUTPUT_NET_TABLE);
 	}
 	
 	/**
@@ -143,7 +144,7 @@ public class TargetTracker extends Subsystem {
 		// otherwise, return null (it will just default to the first value of bestTarget)
       // ALSO, report bestTarget to Driver station
 		currentBestTarget = bestTarget;
-      sendBestTargetReport();
+		sendBestTargetReport();
 		return bestTarget;
 	}
 	
@@ -157,12 +158,12 @@ public class TargetTracker extends Subsystem {
 		double[] defaultValue = new double[0];
 		
 		// get relevant values
-		double[] centerXs = netTable.getNumberArray("centerX", defaultValue);
-		double[] centerYs = netTable.getNumberArray("centerY", defaultValue);
-		double[] areas = netTable.getNumberArray("area", defaultValue);
-		double[] widths = netTable.getNumberArray("width", defaultValue);
-		double[] heights = netTable.getNumberArray("height", defaultValue);
-		double[] solidities = netTable.getNumberArray("solidity", defaultValue);
+		double[] centerXs = Robot.targetRecievingTable.getNumberArray("centerX", defaultValue);
+		double[] centerYs = Robot.targetRecievingTable.getNumberArray("centerY", defaultValue);
+		double[] areas = Robot.targetRecievingTable.getNumberArray("area", defaultValue);
+		double[] widths = Robot.targetRecievingTable.getNumberArray("width", defaultValue);
+		double[] heights = Robot.targetRecievingTable.getNumberArray("height", defaultValue);
+		double[] solidities = Robot.targetRecievingTable.getNumberArray("solidity", defaultValue);
 		
 		// for each given, create a new object
 		TargetReport[] reports = new TargetReport[centerXs.length];
@@ -209,11 +210,11 @@ public class TargetTracker extends Subsystem {
         heights[1] = IMAGE_HEIGHT;
         
         // send info
-        sendingTable.putNumberArray("centerX", centerXs);
-        sendingTable.putNumberArray("centerY", centerYs);
-        //sendingTable.putNumberArray("area", areas);
-        sendingTable.putNumberArray("width", widths);
-        sendingTable.putNumberArray("height", heights);
+        Robot.targetSendingTable.putNumberArray("centerX", centerXs);
+        Robot.targetSendingTable.putNumberArray("centerY", centerYs);
+        //Robot.targetSendingTable.putNumberArray("area", areas);
+        Robot.targetSendingTable.putNumberArray("width", widths);
+        Robot.targetSendingTable.putNumberArray("height", heights);
     }
 
 	/**
@@ -230,6 +231,7 @@ public class TargetTracker extends Subsystem {
 		try 
 		{
 			starterProcess.start();
+			tracking = true;
 		} 
 		catch (IOException e) 
 		{
@@ -250,6 +252,7 @@ public class TargetTracker extends Subsystem {
 		try 
 		{
 			enderProcess.start();
+			tracking = false;
 		} 
 		catch (IOException e) 
 		{

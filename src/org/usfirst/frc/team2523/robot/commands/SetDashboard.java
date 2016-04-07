@@ -47,7 +47,7 @@ public class SetDashboard extends Command
 		SmartDashboard.putNumber(" Current Thottle RPM ", LauncherWheels.MAX_RPM*0.5*(-Robot.oi.UtilStick.getThrottle() + 1)); // from 0 to 100
 		SmartDashboard.putNumber(" Winch (Arm) Extension Distance ", Robot.winch.getCurrentDistance());
 		
-		SmartDashboard.putBoolean(" Winch Overriden? ", Robot.winch.winchLimitOverride);
+		SmartDashboard.putBoolean(" Winch Overriden? ", Robot.winch.winchLimitOverride || Robot.winch.lowerWinchLimitOverride);
 		SmartDashboard.putBoolean(" Arm Overriden? ", Robot.armpivot.armLimitOverride);
 		
 //		// To Assist in IDing current target in vision

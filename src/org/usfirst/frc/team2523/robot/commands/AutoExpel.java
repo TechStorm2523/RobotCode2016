@@ -8,7 +8,8 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class AutoExpel extends CommandGroup {
     
     public  AutoExpel() {
-		addSequential(new LauncherLower());
-		addSequential(new FeederExpel());
+		addSequential(new LauncherLower()); // TODO: Do we want to actually lower, or will it still go in?
+		addSequential(new FeederAutoExpel());
+		addSequential(new LauncherRaise()); // TODO
     }
 }
