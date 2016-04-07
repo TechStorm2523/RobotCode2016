@@ -16,6 +16,7 @@
 //public class TargetTracker extends Subsystem {	
 //	// CONSTANTS
 //	private static final String CONTOUR_NET_TABLE = "GRIP/ContoursReport";
+//  private static final String OUTPUT_NET_TABLE = "GRIP/BestTargetReport";
 //	private static final String RASPBERRY_PI_LOCATION = "visionpi2523.local";
 //	public static final double TARGET_ACQUIRE_TIME = 1;
 //	// target geometry
@@ -36,7 +37,8 @@
 //	private final static double CAMERA_ELEVATION = 45;
 //
 //	// Objects Used
-//	NetworkTable netTable;
+//	NetworkTable netTable; // RENAME!!!
+//  NetworkTable sendingTable;
 //	
 //	// Variables
 //	public TargetReport currentBestTarget = null;
@@ -48,6 +50,7 @@
 //	public TargetTracker()
 //	{
 //		netTable = NetworkTable.getTable(CONTOUR_NET_TABLE);
+//      sendingTable = NetworkTable.getTable(OUTPUT_NET_TABLE);
 //	}
 //	
 //	/**
@@ -135,10 +138,12 @@
 //			Robot.launcherstatus.setInRange();
 //		else
 //			Robot.launcherstatus.setOutOfRange();
-//		
+//
 //		// if we've found one, cache and return it
 //		// otherwise, return null (it will just default to the first value of bestTarget)
+//      // ALSO, report bestTarget to Driver station
 //		currentBestTarget = bestTarget;
+//      sendBestTargetReport();
 //		return bestTarget;
 //	}
 //	
@@ -157,7 +162,7 @@
 //		double[] areas = netTable.getNumberArray("area", defaultValue);
 //		double[] widths = netTable.getNumberArray("width", defaultValue);
 //		double[] heights = netTable.getNumberArray("height", defaultValue);
-//		double[] solidities = netTable.getNumberArray("height", defaultValue);
+//		double[] solidities = netTable.getNumberArray("solidity", defaultValue);
 //		
 //		// for each given, create a new object
 //		TargetReport[] reports = new TargetReport[centerXs.length];
@@ -176,6 +181,40 @@
 //		
 //		return reports;
 //	}
+
+    /**
+     * Sends the currentBestTarget via NetworkTables in a format emulating
+     * GRIP's reports, so can be used with SmartDashboard extension.
+     */
+    private void sendBestTargetReport()
+    {
+        // define arrays (just of the bestTarget and a vertical bar)
+        double[] centerXs = new double[2];
+        double[] centerYs = new double[2];
+        //double[] areas = new double[2];
+        double[] widths =  new double[2];
+        double[] heights = new double[2];
+        
+        // set props of bestTarget
+        centerXs[0] = currentBestTarget.centerX;
+        centerYs[0] = currentBestTarget.centerY;
+        //areas[0]
+        widths[0] = currentBestTarget.width;
+        heights[0] = currentBestTarget.height;
+        
+        // create artificial target to display center bar
+        centerXs[1] = IMAGE_WIDTH/2;
+        centerYs[1] = IMAGE_HEIGHT/2;
+        widths[1] = 10;
+        heights[1] = IMAGE_HEIGHT;
+        
+        // send info
+        sendingTable.putNumberArray("centerX", centerXs);
+        sendingTable.putNumberArray("centerY", centerYs);
+        //sendingTable.putNumberArray("area", areas);
+        sendingTable.putNumberArray("width", widths);
+        sendingTable.putNumberArray("height", heights);
+    }
 //
 //	/**
 //	 * Starts vision tracking on Pi via SSH network command
