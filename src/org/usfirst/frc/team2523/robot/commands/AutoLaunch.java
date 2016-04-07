@@ -15,7 +15,7 @@ public class AutoLaunch extends CommandGroup {
     	addSequential(new LauncherLower());
 //    	addSequential(new SetTrackingToAutoAligned());
 
-    	addSequential(new StartTargetTracking()); // OUT WITH NEW VISION
+//    	addSequential(new StartTargetTracking()); // OUT WITH NEW VISION
     	addSequential(new Wait(TargetTracker.TARGET_ACQUIRE_TIME));
 //    	addSequential(new SeekTarget());
     	addParallel(new SetStatusAiming());
@@ -34,6 +34,6 @@ public class AutoLaunch extends CommandGroup {
         addSequential(new SetLauncherRPM(0));
         addSequential(new LauncherRaise());
 //    	addSequential(new SetTrackingToDriverAligned());
-        addSequential(new StopTargetTracking()); // OUT WITH NEW VISION
+//        addSequential(new StopTargetTracking()); // OUT WITH NEW VISION
     }
 }

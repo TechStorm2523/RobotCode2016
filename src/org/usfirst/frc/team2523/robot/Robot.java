@@ -83,7 +83,7 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putData("Joystick Playback Program", playbackChooser);
         SmartDashboard.putData("Joystick Recording Program", recordingChooser);
         
-    	targetTracker.init();
+//    	targetTracker.init(); OLD VISION
     }
 	
 	/**
