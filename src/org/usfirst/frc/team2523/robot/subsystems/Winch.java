@@ -32,17 +32,19 @@ public class Winch extends Subsystem {
 //	private static final double RPM_PID_KD = 0; // NO NEED
 	private static final double POS_PID_KP = 0.5; // TODO: MAY BE TOO HIGH (it will still be high because the winch is so slow and is so geared up)
 	private static final double POS_PID_KI = 0; //0.005;
-	private static final double POS_PID_KD = 0.2;
+	private static final double POS_PID_KD = 0.4;
 	private static final double REV_PER_INCH = 1/(2*Math.PI*0.75); // circumference inches in one revolution
 	
 	public static final double MAX_ARM_EXTENSION = 14; // inches
 	public static final double MIN_ARM_EXTENSION = 0.5; // inches, off of initial reset point
+	public static final double ABSOLUTE_MIN_ARM_EXTENSION = -19.5;
 	private static final double ARM_PIVOT_TO_15IN = 37.5; // inches
 	private static final double ARM_LENGTH = 33; // inches
 //	private static final double RETRACT_ANGLE = 25;
 	private static final double RPM_PER_INCH_PER_SECOND = 1 * REV_PER_INCH*60; // to convert rev/sec to rpm //5000.0/39.27; // assuming w/v = 1/r where w(rpm) = w / 2*pi
 //	public static final int MAX_WINCH_BY_ARM_ANGLE = 60; // using getCurrentDistance() we think
 	public static final double ARM_EXTENSION_STOP_TOLERANCE = 0.05; // inches, distance off target winch position to stop at
+	private static final double MAX_MOTOR_CURRENT = 14;
     
 	// variables
 	public double revPerInchPerSecCoefficent = 1;
@@ -98,14 +100,9 @@ public class Winch extends Subsystem {
     			setSpeed = desiredSpeed;
     		else
     			setSpeed = winchPID.getPIDoutput(getArmConstrainedDistance(), getCurrentDistance());
-    		
-    		/*
-    		 * if (Robot.armpivot.getArmAngle() > 100)
-    			setSpeed = 0; //winchPID.getPIDoutput(MAX_ARM_EXTENSION, getCurrentDistance());
-    		else 
-    		 */
     	}
-//    	else if (winchMotor.getOutputCurrent() > 40)
+    	// on over-rideable limits
+//    	else if (winchMotor.getOutputCurrent() > MAX_MOTOR_CURRENT) //|| distance < ABSOLUTE_MIN_ARM_EXTENSION)
 //    	{
 //    		winchMotor.set(0);
 //    	}
@@ -120,8 +117,6 @@ public class Winch extends Subsystem {
     	// or NOT stopped if these constraints are overridden
     	// IN is +
     	if (!winchLimitOverride &&
-    		((distance >= MAX_ARM_EXTENSION && desiredSpeed < 0) || ((distance <= MIN_ARM_EXTENSION && desiredSpeed > 0) && (!lowerWinchLimitOverride)))) //&&// invert speed
-// 		RobotMap.MATCH_LENGTH - Timer.getMatchTime() > RobotMap.MATCH_END_PERIOD_LEN)
 	 	{
 	 		setSpeed = 0;
 	 	}
@@ -197,7 +192,7 @@ public class Winch extends Subsystem {
 		if (0 <= mathValue && mathValue <= MAX_ARM_EXTENSION)
 			return mathValue;
 		else
-			return getCurrentDistance();
+			return MAX_ARM_EXTENSION;
 	}
 	
 	/**

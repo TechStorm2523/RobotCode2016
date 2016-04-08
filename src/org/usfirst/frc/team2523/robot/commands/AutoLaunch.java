@@ -16,7 +16,7 @@ public class AutoLaunch extends CommandGroup {
     	addSequential(new SetTrackingToAutoAligned());
 
 //    	addSequential(new StartTargetTracking()); // OUT WITH NEW VISION
-    	addSequential(new Wait(TargetTracker.TARGET_ACQUIRE_TIME));
+//    	addSequential(new Wait(TargetTracker.TARGET_ACQUIRE_TIME));
 //    	addSequential(new SeekTarget()); POSSIBLY....?
     	addParallel(new SetStatusAiming());
     	addParallel(new TurnToTarget());

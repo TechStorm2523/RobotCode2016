@@ -53,6 +53,7 @@ public class TargetTracker extends Subsystem {
 	{
 //		recievingTable = NetworkTable.getTable(CONTOUR_NET_TABLE);
 //		sendingTable = NetworkTable.getTable(OUTPUT_NET_TABLE);
+		allTargets = new ArrayList<TargetReport>();
 	}
 	
 	/**
@@ -111,7 +112,7 @@ public class TargetTracker extends Subsystem {
 	public TargetReport retrieveBestTarget()
 	{
 		// get targets...
-		allTargets = getTargetReports();
+		getTargetReports(allTargets);
 //		System.out.println("All Targets: " + allTargets);
 		
 		// and find the best one
@@ -132,8 +133,9 @@ public class TargetTracker extends Subsystem {
 			{
 				bestTarget = target;
 				bestScore = target.getCumulativeScore();
-			}	
+			}
 		}
+		allTargets.clear();
 		
 		// determine if in launcher range to target
 		currentRangeToBestTarget = getRangeToBestTarget();
@@ -155,7 +157,7 @@ public class TargetTracker extends Subsystem {
 	 * Retrieves the current TargetReports from GRIP via NetworkTables
 	 * @return A list of TargetReports containing all fields in the TargetReports class
 	 */
-	private ArrayList<TargetReport> getTargetReports()
+	private void getTargetReports(ArrayList<TargetReport> reports)
 	{
 		// initialize null default value to pass if no connection
 		double[] defaultValue = new double[0];
@@ -169,7 +171,7 @@ public class TargetTracker extends Subsystem {
 		double[] solidities = Robot.targetRecievingTable.getNumberArray("solidity", defaultValue);
 		
 		// for each given, create a new object
-		ArrayList<TargetReport> reports = new ArrayList<TargetReport>();
+		//ArrayList<TargetReport> reports = new ArrayList<TargetReport>();
 		int i = 0;
 		while (	i < centerXs.length && 
 				i < centerYs.length && 
@@ -189,8 +191,6 @@ public class TargetTracker extends Subsystem {
 									  IDEAL_AREA_RATIO));
 			i++;
 		}
-		
-		return reports;
 	}
 
     /**

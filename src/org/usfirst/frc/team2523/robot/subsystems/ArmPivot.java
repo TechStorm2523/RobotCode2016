@@ -151,7 +151,7 @@ public class ArmPivot extends Subsystem {
 //		if ((System.nanoTime() - lastPotentiometerRateRead)/10e9 > ARM_PROPS_READ_FREQUENCY)  
 //		{
 			// set max angle based on match time
-			if (!armLimitOverride && RobotMap.MATCH_LENGTH - Timer.getMatchTime() > RobotMap.MATCH_END_PERIOD_LEN)
+			if (!armLimitOverride && Timer.getMatchTime() > RobotMap.MATCH_END_PERIOD_LEN)
 				currentMaxAngle = MAX_IN_MATCH_ANGLE;
 			else
 				currentMaxAngle = POTENTIOMETER_MAX_ANGLE;

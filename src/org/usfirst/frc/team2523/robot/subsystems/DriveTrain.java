@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  *
  */
 public class DriveTrain extends Subsystem {
-	private static final double TURN_KP = 0.5; // when normalized offset is at one, go half speed
+	private static final double TURN_KP = 1; // when normalized offset is at one, go half speed
 	private static final double TURN_KI = 0.01;
 	private static final double DRIVE_KP = 0.5;
 	private static final double DRIVE_KI = 0.005;
@@ -25,7 +25,7 @@ public class DriveTrain extends Subsystem {
 	public static final double TARGET_DISTANCE_TOLERANCE = 0.2; // feet, or same as ENCODER_DISTANCE_PER_PULSE
 	public static final double RAMP_UP_DURATION = 0.75; // s
 	private static final double EXPONENETIAL_FACTOR = 2; // changes arm too
-	private static final double TURN_SPEED_MULTIPLIER = 0.8;
+	private static final double TURN_SPEED_MULTIPLIER = 0.9;
 	
 	// CONSTANTS (for AUTO)
 	public static final double VISION_TARGET_OFFSET_TOLERANCE = 0.04; // normalized units, used in TurnToTarget
@@ -91,7 +91,7 @@ public class DriveTrain extends Subsystem {
 	}
 	/**
 	 * @param driveRate Rate of drive from -1 to 1
-	 * @param turnRate Rate of turn from -1 to 1
+	 * @param turnRate Rate of turn from -1 to 1 (+ is RIGHT)
 	 */
 	public void set(double driveRate, double turnRate)
 	{
@@ -127,7 +127,7 @@ public class DriveTrain extends Subsystem {
 	 */
 	public void setTurnRateByNormalizedOffset(double normalizedOffset)
 	{
-		set(0, turnPID.getPIoutput(0.0, normalizedOffset));
+		set(0, turnPID.getPIDoutput(0.0, normalizedOffset));
 	}
 	
 	public double getCurrentDistance()

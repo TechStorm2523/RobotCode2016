@@ -58,7 +58,7 @@ public class OI {
    		
 //   		driveButton4.whileHeld(new SetWinchByThrottle());
    		driveButton9.whileHeld(new OverrideLimits());
-   		driveButton10.whenPressed(new ResetWinchPosition());
+//   		driveButton10.whenPressed(new ResetWinchPosition());
    		
    		driveButton11.whileHeld(new SetWinch(Winch.MAX_MANUAL_SPEED*2));
     	driveButton12.whileHeld(new SetWinch(-Winch.MAX_MANUAL_SPEED));
@@ -92,6 +92,7 @@ public class OI {
 		
 	//	utilButton9.whileHeld(new OverrideLimits());
 		utilButton9.whenPressed(new EndOfMatchOverride());
+		utilButton10.whenPressed(new AutoLaunch());
 //		utilButton10.whenPressed(new ResetWinchPosition());
 		
 		// TODO: Remove

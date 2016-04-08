@@ -101,6 +101,7 @@ public class Robot extends IterativeRobot {
     	armpivot.armLimitOverride = false;
     	winch.lowerWinchLimitOverride = false;
     	winch.winchLimitOverride = false;
+    	launcherPneumatics.lower();
     }
 	
 	public void disabledPeriodic() {
@@ -210,6 +211,6 @@ public class Robot extends IterativeRobot {
         // update joystick recording
         oi.DriveStick.updateState();
         oi.UtilStick.updateState();
-        System.out.println(Timer.getMatchTime());
+//        System.out.println(Timer.getMatchTime());
     }
 }

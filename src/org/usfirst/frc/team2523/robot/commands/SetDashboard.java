@@ -21,7 +21,10 @@ public class SetDashboard extends Command
     }
 
     // Called just before this Command runs the first time
-    protected void initialize() {}
+    protected void initialize() {
+		SmartDashboard.putData(" Start Recording? ", new StartJoystickRecording());
+		SmartDashboard.putData(" Reset Winch Position? ", new ResetWinchPosition());
+    }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() 
@@ -46,7 +49,6 @@ public class SetDashboard extends Command
 		SmartDashboard.putNumber(" Launcher Mot PID Error (Back) ", Robot.launcherWheels.getCurrentRPMError()[1]);
 		SmartDashboard.putNumber(" Current Thottle RPM ", LauncherWheels.MAX_RPM*0.5*(-Robot.oi.UtilStick.getThrottle() + 1)); // from 0 to 100
 		SmartDashboard.putNumber(" Winch (Arm) Extension Distance ", Robot.winch.getCurrentDistance());
-		SmartDashboard.putData(" Start Recording? ", new StartJoystickRecording());
 		
 		SmartDashboard.putBoolean(" Winch Overriden? ", Robot.winch.winchLimitOverride || Robot.winch.lowerWinchLimitOverride);
 		SmartDashboard.putBoolean(" Arm Overriden? ", Robot.armpivot.armLimitOverride);
