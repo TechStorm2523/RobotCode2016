@@ -39,7 +39,7 @@ public class FeederAutoCollect extends Command {
 
     // Called once after isFinished returns true
     protected void end(){
-    	Robot.feeder.expel();
+    	Robot.feeder.expelWithLauncher();
     	Timer.delay(Feeder.AUTOCOLLECT_EXPEL_TIME);
     	Robot.feeder.stop();
     	
@@ -48,5 +48,6 @@ public class FeederAutoCollect extends Command {
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
+    	Robot.feeder.stop();
     }
 }

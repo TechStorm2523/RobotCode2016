@@ -114,8 +114,10 @@ public class ArmPivot extends Subsystem {
 	}
 	
 	public void setTargetAngle(double angle)
-	{		
-		set(-armPID.getPIDoutput(angle, getArmAngle()));
+	{
+		// ignore crazy values
+		if (0 <= angle && angle <= POTENTIOMETER_MAX_ANGLE)		
+			set(-armPID.getPIDoutput(angle, getArmAngle()));
 	}
 	
 	public double getArmAngle()

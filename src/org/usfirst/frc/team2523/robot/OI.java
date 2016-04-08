@@ -73,7 +73,7 @@ public class OI {
     	
 //    	utilButton5.whenPressed(new AutoExpel());
     	utilButton5.whileHeld(new FeederExpel());
-    	utilButton3.whileHeld(new AutoFeed()); 
+    	utilButton3.whenPressed(new AutoCollect()); 
     	
     	utilButton11.whenPressed(new LauncherLower());
    		utilButton12.whenPressed(new LauncherRaise());
@@ -92,7 +92,7 @@ public class OI {
 		
 	//	utilButton9.whileHeld(new OverrideLimits());
 		utilButton9.whenPressed(new EndOfMatchOverride());
-		utilButton10.whenPressed(new ResetWinchPosition());
+//		utilButton10.whenPressed(new ResetWinchPosition());
 		
 		// TODO: Remove
 //		utilButton10.whileHeld(new SetWinchDistance(8));

@@ -91,7 +91,8 @@ public class Winch extends Subsystem {
     	double setSpeed;
     	
     	// IN is +
-    	if (!winchLimitOverride && distance >= getArmConstrainedDistance()) 
+    	if (!winchLimitOverride && distance >= getArmConstrainedDistance() &&
+    			Robot.armpivot.getArmAngle() < 100) 
     	{
     		if (desiredSpeed > 0) // if going IN, let it go
     			setSpeed = desiredSpeed;
@@ -188,9 +189,15 @@ public class Winch extends Subsystem {
 	
 	public double getArmConstrainedDistance()
 	{
-		return ARM_PIVOT_TO_15IN / 
-			    Math.cos(Math.toRadians(ArmPivot.ARM_STARTING_ANGLE - Robot.armpivot.getArmAngle()))
-			    - ARM_LENGTH;
+		double mathValue = ARM_PIVOT_TO_15IN / 
+			    		Math.cos(Math.toRadians(ArmPivot.ARM_STARTING_ANGLE - Robot.armpivot.getArmAngle()))
+		    			- ARM_LENGTH;
+		
+		// ignore crazy values
+		if (0 <= mathValue && mathValue <= MAX_ARM_EXTENSION)
+			return mathValue;
+		else
+			return getCurrentDistance();
 	}
 	
 	/**

@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class Feeder extends Subsystem {
 	private static final double FEED_IN_SPEED = 1.0;
 	private static final double FEED_OUT_SPEED = 1.0;
-	public static final double AUTOCOLLECT_EXPEL_TIME = 0.2;
+	public static final double AUTOCOLLECT_EXPEL_TIME = 0.075;
 	
 	Victor feed = new Victor(RobotMap.feeder);
     
@@ -32,7 +32,12 @@ public class Feeder extends Subsystem {
 	
     public void expel(){
     	feed.set(FEED_OUT_SPEED);
-    	Robot.launcherWheels.launchFront.set(-LauncherWheels.MAX_RPM/8);	
+    }
+    
+    public void expelWithLauncher()
+    {
+    	expel();
+    	Robot.launcherWheels.launchFront.set(-LauncherWheels.MAX_RPM/8);
     }
 	
     public void stop(){

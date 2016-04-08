@@ -79,11 +79,11 @@ public class Robot extends IterativeRobot {
         playbackChooser.addObject("Drawbridge Defense", "Drawbridge_Defense");
         recordingChooser.addObject("Drawbridge Defense", "Drawbridge_Defense");
         
-        playbackChooser.addObject("Portcullis (Gate) Defense", "Portcullis_Defense");
-        recordingChooser.addObject("Portcullis (Gate) Defense", "Portcullis_Defense");
-        
         playbackChooser.addObject("Swing Door Defense", "Swing_Door_Defense");
         recordingChooser.addObject("Swing Door Defense", "Swing_Door_Defense");
+        
+        playbackChooser.addObject("Experimental Recording", "Experimental_Record");
+        recordingChooser.addObject("Experimental Recording", "Experimental_Record");
         
         SmartDashboard.putData("Joystick Playback Program", playbackChooser);
         SmartDashboard.putData("Joystick Recording Program", recordingChooser);
@@ -124,7 +124,7 @@ public class Robot extends IterativeRobot {
 		// We prioritize a normal auto command
 		if (autonomousCommand != null)
 		{			
-	    	// schedule the chosen autonomous command otherwise
+	    	// schedule the chosen autonomous command
 	        autonomousCommand.start();
 		}
 		else if (joystickRecording != null)
@@ -134,7 +134,7 @@ public class Robot extends IterativeRobot {
 			oi.UtilStick.startPlayback(RobotMap.JOYSTICK_RECORDINGS_SAVE_LOCATION + joystickRecording + "_util");
 		}
 		
-		targetTracker.startTracking();
+//		targetTracker.startTracking();
 		
 		// prep for driving and winching
 		launcherPneumatics.raise();
@@ -152,7 +152,7 @@ public class Robot extends IterativeRobot {
     public void teleopInit() {
     	// release winch brake and raise launcher
     	winch.releaseBrake();
-//    	launcherPneumatics.raise();
+    	launcherPneumatics.raise();
     	
     	// ensure that arm extends
 //    	winch.setDistance(Winch.MAX_ARM_EXTENSION);
@@ -167,8 +167,8 @@ public class Robot extends IterativeRobot {
     	oi.UtilStick.stopPlayback();
         if (autonomousCommand != null) autonomousCommand.cancel();
         
-        if (!targetTracker.tracking)
-        	targetTracker.startTracking();
+//        if (!targetTracker.tracking)
+//        	targetTracker.startTracking();
 //        String recordNew = SmartDashboard.getData("Record New Joystick Auto?");
         
         // check if we should start recording joysticks
@@ -210,6 +210,6 @@ public class Robot extends IterativeRobot {
         // update joystick recording
         oi.DriveStick.updateState();
         oi.UtilStick.updateState();
-//        System.out.println(Timer.getMatchTime());
+        System.out.println(Timer.getMatchTime());
     }
 }

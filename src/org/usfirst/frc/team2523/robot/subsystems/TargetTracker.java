@@ -19,7 +19,7 @@ public class TargetTracker extends Subsystem {
 	public static final String CONTOUR_NET_TABLE = "GRIP/ContoursReport";
 	public static final String OUTPUT_NET_TABLE = "GRIP/BestTargetReport";
 	private static final String RASPBERRY_PI_LOCATION = "visionpi2523.local";
-	public static final double TARGET_ACQUIRE_TIME = 1;
+	public static final double TARGET_ACQUIRE_TIME = 0.5;
 	// target geometry
 	private static final double IDEAL_ASPECT_RATIO = 20.0 / 14.0;
 	private static final double IDEAL_AREA_RATIO =  88.0 / 280.0;
@@ -28,12 +28,12 @@ public class TargetTracker extends Subsystem {
 	// elimination criteria
 	private static final double MIN_REASONABLE_RANGE = 0; // SET BASED ON WHEN TARGET OUT OF CAMERA VIEW
 	private static final double MAX_REASONABLE_RANGE = 15.5;
-	private static final double CENTER_ZONE_SIZE = 50; // pixels, distance off center where target considering in middle
+	private static final double CENTER_ZONE_SIZE = 100; // pixels, distance off center where target considering in middle
 	
 	// SINCE CAN'T USE CAMERA CLASS BCS CANT GET NETWORK IMAGE
-	private static final double IMAGE_WIDTH = 1280;
-	private static final double IMAGE_HEIGHT = 760;
-	private static final double FPS = 20;
+	private static final double IMAGE_WIDTH = 640;
+	private static final double IMAGE_HEIGHT = 480;
+	private static final double FPS = 15;
 	private final static double CAMERA_FOV = 39.935; // VERTICAL (By measuring distance from a known size object that spans vertical FOV and using tan OR solving the equation in getRangeToBestTarget for FOV using other measurements from debug)
 	private final static double CAMERA_ELEVATION = 45;
 
@@ -112,7 +112,7 @@ public class TargetTracker extends Subsystem {
 	{
 		// get targets...
 		allTargets = getTargetReports();
-		System.out.println("All Targets: " + allTargets);
+//		System.out.println("All Targets: " + allTargets);
 		
 		// and find the best one
 		TargetReport bestTarget = null;
@@ -121,12 +121,12 @@ public class TargetTracker extends Subsystem {
 		{
 			// Eliminate targets based on range
 			double targetRange = getRangeToTarget(target);
-//			if (targetRange > MAX_REASONABLE_RANGE || targetRange < MIN_REASONABLE_RANGE)
-//				continue;
+			if (targetRange > MAX_REASONABLE_RANGE || targetRange < MIN_REASONABLE_RANGE)
+				continue;
 			
 			// When DRIVERS are lining up, eliminate based on the assumption that the target is aligned.
-//			if (targetCloseToCenter && Math.abs(target.centerX - IMAGE_WIDTH / 2) < CENTER_ZONE_SIZE)
-//				continue;
+			if (targetCloseToCenter && Math.abs(target.centerX - IMAGE_WIDTH / 2) < CENTER_ZONE_SIZE)
+				continue;
 			
 			if (target.getCumulativeScore() > bestScore)
 			{
@@ -146,8 +146,8 @@ public class TargetTracker extends Subsystem {
 		// otherwise, return null (it will just default to the first value of bestTarget)
       // ALSO, report bestTarget to Driver station
 		currentBestTarget = bestTarget;
-		sendBestTargetReport();
-    	System.out.println(currentBestTarget);
+//		sendBestTargetReport();
+//    	System.out.println(currentBestTarget);
 		return bestTarget;
 	}
 	
@@ -170,7 +170,13 @@ public class TargetTracker extends Subsystem {
 		
 		// for each given, create a new object
 		ArrayList<TargetReport> reports = new ArrayList<TargetReport>();
-		for (int i = 0; i < reports.size(); i++)
+		int i = 0;
+		while (	i < centerXs.length && 
+				i < centerYs.length && 
+				i < areas.length && 
+				i < widths.length && 
+				i < heights.length && 
+				i < solidities.length)
 		{
 			// it will auto-initialize further scores
 			reports.add(new TargetReport(centerXs[i],
@@ -181,6 +187,7 @@ public class TargetTracker extends Subsystem {
 									  solidities[i],
 									  IDEAL_ASPECT_RATIO,
 									  IDEAL_AREA_RATIO));
+			i++;
 		}
 		
 		return reports;
@@ -230,7 +237,7 @@ public class TargetTracker extends Subsystem {
 	{	
 		ProcessBuilder starterProcess = new ProcessBuilder("ssh", 
 										"pi@" + RASPBERRY_PI_LOCATION,
-										"\"/home/pi/code/start_vision.sh " + 
+										"\"sudo /home/pi/code/stop_vision.sh && /home/pi/code/start_vision.sh " + 
 										FPS + " " + 
 										IMAGE_WIDTH + "x" + IMAGE_HEIGHT + "\"");
 		
