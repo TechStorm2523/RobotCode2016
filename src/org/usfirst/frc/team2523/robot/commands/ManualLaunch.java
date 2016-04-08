@@ -17,6 +17,6 @@ public class ManualLaunch extends CommandGroup {
         
         addSequential(new FeederOff());
         addSequential(new SetLauncherRPM(0));
-        addSequential(new LauncherRaise());
+        addParallel(new LauncherRaise());
     }
 }

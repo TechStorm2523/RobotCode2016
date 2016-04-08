@@ -28,7 +28,7 @@ public class ArmPivot extends Subsystem {
 	private static final double POTENTIOMETER_ANGLE_PER_VOLTS = -2.307*2*70.4106;
 	private static final double POTENTIOMETER_START_DEGREE = -322.2; // raw potentiometer reading at start angle
 	private static final double POTENTIOMETER_READ_DEADZONE = 0.25; // degrees
-	public static final double MAX_IN_MATCH_ANGLE = 190; //87;
+	public static final double MAX_IN_MATCH_ANGLE = 87; //87;
 	public static final double ARM_STOP_TOLERANCE = 1; // degrees, roughly leads to arm PID positioning precision
 	public static final double MAX_JOYSTICK_SPEED = 0.7;
 	public static final double MAX_PID_SPEED = 0.5;
@@ -149,7 +149,7 @@ public class ArmPivot extends Subsystem {
 //		if ((System.nanoTime() - lastPotentiometerRateRead)/10e9 > ARM_PROPS_READ_FREQUENCY)  
 //		{
 			// set max angle based on match time
-			if (RobotMap.MATCH_LENGTH - Timer.getMatchTime() > RobotMap.MATCH_END_PERIOD_LEN)
+			if (!armLimitOverride && RobotMap.MATCH_LENGTH - Timer.getMatchTime() > RobotMap.MATCH_END_PERIOD_LEN)
 				currentMaxAngle = MAX_IN_MATCH_ANGLE;
 			else
 				currentMaxAngle = POTENTIOMETER_MAX_ANGLE;

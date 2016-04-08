@@ -97,7 +97,7 @@ public class PIDControl extends Subsystem {
 		// calculate errors based off difference of target and current values and previous error
 		error = current - target;
 		IntegralError += error;
-		deltaError = PreviousError - error;
+		deltaError = error - PreviousError;
 		
 		// define proportional parameter
 		p = error * this.KP;
@@ -176,7 +176,7 @@ public class PIDControl extends Subsystem {
 		
 		// calculate errors based off difference of target and current values and previous error
 		error = current - target;
-		deltaError = PreviousError - error;
+		deltaError = error - PreviousError;
 		
 		// define proportional parameter
 		p = error * this.KP;

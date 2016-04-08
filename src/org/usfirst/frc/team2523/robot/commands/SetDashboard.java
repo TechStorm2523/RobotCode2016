@@ -54,6 +54,7 @@ public class SetDashboard extends Command
 //		SmartDashboard.putNumber(" Best Target X Position: ", Robot.targetTracker.currentBestTarget != null ? 
 //																Robot.targetTracker.currentBestTarget.centerX :
 //																0);
+		SmartDashboard.putData(" Start Joystick Recording ", new StartJoystickRecording());
 		
 		// DIAGNOSTICS
 		SmartDashboard.putString(" Status of Launcher ",Robot.launcherstatus.Status );

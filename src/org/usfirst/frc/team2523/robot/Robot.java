@@ -36,8 +36,8 @@ public class Robot extends IterativeRobot {
 	
     Command autonomousCommand;
     SendableChooser autoChooser;
-    SendableChooser playbackChooser;
-    SendableChooser recordingChooser;
+    public static SendableChooser playbackChooser;
+    public static SendableChooser recordingChooser;
     
     public static NetworkTable targetRecievingTable;
     public static NetworkTable targetSendingTable;
@@ -98,6 +98,9 @@ public class Robot extends IterativeRobot {
      */
     public void disabledInit(){
 //		TargetTracker.stopTracking();
+    	armpivot.armLimitOverride = false;
+    	winch.lowerWinchLimitOverride = false;
+    	winch.winchLimitOverride = false;
     }
 	
 	public void disabledPeriodic() {
@@ -154,7 +157,7 @@ public class Robot extends IterativeRobot {
     	// ensure that arm extends
 //    	winch.setDistance(Winch.MAX_ARM_EXTENSION);
     	
-    	armpivot.currentTargetAngle = 0;
+    	armpivot.currentTargetAngle = armpivot.getArmAngle();
     	
 		// This makes sure that the autonomous stops running when
         // teleop starts running. If you want the autonomous to 
@@ -165,7 +168,7 @@ public class Robot extends IterativeRobot {
         if (autonomousCommand != null) autonomousCommand.cancel();
         
         if (!targetTracker.tracking)
-        	targetTracker.startTracking(); 
+        	targetTracker.startTracking();
 //        String recordNew = SmartDashboard.getData("Record New Joystick Auto?");
         
         // check if we should start recording joysticks
@@ -207,6 +210,6 @@ public class Robot extends IterativeRobot {
         // update joystick recording
         oi.DriveStick.updateState();
         oi.UtilStick.updateState();
-        System.out.println(Timer.getMatchTime());
+//        System.out.println(Timer.getMatchTime());
     }
 }

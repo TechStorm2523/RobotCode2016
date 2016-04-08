@@ -1,6 +1,7 @@
 package org.usfirst.frc.team2523.robot.subsystems;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.usfirst.frc.team2523.robot.Robot;
 import org.usfirst.frc.team2523.robot.commands.IdentifyBestTarget;
@@ -42,7 +43,7 @@ public class TargetTracker extends Subsystem {
 	
 	// Variables
 	public TargetReport currentBestTarget = null;
-	private TargetReport[] allTargets = null;
+	private ArrayList<TargetReport> allTargets = null;
 	public double currentRangeToBestTarget = 0;
 	private boolean targetCloseToCenter = false;
 	public boolean tracking = false;
@@ -111,6 +112,7 @@ public class TargetTracker extends Subsystem {
 	{
 		// get targets...
 		allTargets = getTargetReports();
+		System.out.println("All Targets: " + allTargets);
 		
 		// and find the best one
 		TargetReport bestTarget = null;
@@ -119,12 +121,12 @@ public class TargetTracker extends Subsystem {
 		{
 			// Eliminate targets based on range
 			double targetRange = getRangeToTarget(target);
-			if (targetRange > MAX_REASONABLE_RANGE || targetRange < MIN_REASONABLE_RANGE)
-				continue;
+//			if (targetRange > MAX_REASONABLE_RANGE || targetRange < MIN_REASONABLE_RANGE)
+//				continue;
 			
 			// When DRIVERS are lining up, eliminate based on the assumption that the target is aligned.
-			if (targetCloseToCenter && Math.abs(target.centerX - IMAGE_WIDTH / 2) < CENTER_ZONE_SIZE)
-				continue;
+//			if (targetCloseToCenter && Math.abs(target.centerX - IMAGE_WIDTH / 2) < CENTER_ZONE_SIZE)
+//				continue;
 			
 			if (target.getCumulativeScore() > bestScore)
 			{
@@ -145,6 +147,7 @@ public class TargetTracker extends Subsystem {
       // ALSO, report bestTarget to Driver station
 		currentBestTarget = bestTarget;
 		sendBestTargetReport();
+    	System.out.println(currentBestTarget);
 		return bestTarget;
 	}
 	
@@ -152,7 +155,7 @@ public class TargetTracker extends Subsystem {
 	 * Retrieves the current TargetReports from GRIP via NetworkTables
 	 * @return A list of TargetReports containing all fields in the TargetReports class
 	 */
-	private TargetReport[] getTargetReports()
+	private ArrayList<TargetReport> getTargetReports()
 	{
 		// initialize null default value to pass if no connection
 		double[] defaultValue = new double[0];
@@ -166,18 +169,18 @@ public class TargetTracker extends Subsystem {
 		double[] solidities = Robot.targetRecievingTable.getNumberArray("solidity", defaultValue);
 		
 		// for each given, create a new object
-		TargetReport[] reports = new TargetReport[centerXs.length];
-		for (int i = 0; i < reports.length; i++)
+		ArrayList<TargetReport> reports = new ArrayList<TargetReport>();
+		for (int i = 0; i < reports.size(); i++)
 		{
 			// it will auto-initialize further scores
-			reports[i] = new TargetReport(centerXs[i],
-										  centerYs[i],
-										  areas[i], 
-										  widths[i],
-										  heights[i],
-										  solidities[i],
-										  IDEAL_ASPECT_RATIO,
-										  IDEAL_AREA_RATIO);
+			reports.add(new TargetReport(centerXs[i],
+									  centerYs[i],
+									  areas[i], 
+									  widths[i],
+									  heights[i],
+									  solidities[i],
+									  IDEAL_ASPECT_RATIO,
+									  IDEAL_AREA_RATIO));
 		}
 		
 		return reports;
@@ -196,12 +199,15 @@ public class TargetTracker extends Subsystem {
         double[] widths =  new double[2];
         double[] heights = new double[2];
         
-        // set props of bestTarget
-        centerXs[0] = currentBestTarget.centerX;
-        centerYs[0] = currentBestTarget.centerY;
-        //areas[0]
-        widths[0] = currentBestTarget.width;
-        heights[0] = currentBestTarget.height;
+        if (currentBestTarget != null)
+        {
+	        // set props of bestTarget
+	        centerXs[0] = currentBestTarget.centerX;
+	        centerYs[0] = currentBestTarget.centerY;
+	        //areas[0]
+	        widths[0] = currentBestTarget.width;
+	        heights[0] = currentBestTarget.height;
+        }
         
         // create artificial target to display center bar
         centerXs[1] = IMAGE_WIDTH/2;
@@ -224,7 +230,7 @@ public class TargetTracker extends Subsystem {
 	{	
 		ProcessBuilder starterProcess = new ProcessBuilder("ssh", 
 										"pi@" + RASPBERRY_PI_LOCATION,
-										" -c \"/home/pi/code/start_vision.sh " + 
+										"\"/home/pi/code/start_vision.sh " + 
 										FPS + " " + 
 										IMAGE_WIDTH + "x" + IMAGE_HEIGHT + "\"");
 		
@@ -232,6 +238,7 @@ public class TargetTracker extends Subsystem {
 		{
 			starterProcess.start();
 			tracking = true;
+			System.out.println("Started vision tracking on Pi");// + startedProcess + " (Error:" + startedProcess.getErrorStream() + ")");
 		} 
 		catch (IOException e) 
 		{
@@ -247,12 +254,13 @@ public class TargetTracker extends Subsystem {
 	{
 		ProcessBuilder enderProcess = new ProcessBuilder("ssh", 
 									  "pi@" + RASPBERRY_PI_LOCATION,
-									  " -c \"/home/pi/code/stop_vision.sh\"");
+									  "\"/home/pi/code/stop_vision.sh\"");
 		
 		try 
 		{
 			enderProcess.start();
 			tracking = false;
+			System.out.println("Stopped vision tracking on Pi");
 		} 
 		catch (IOException e) 
 		{

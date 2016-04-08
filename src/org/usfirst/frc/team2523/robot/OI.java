@@ -71,8 +71,8 @@ public class OI {
    		utilButton1.whileHeld(new ManualLaunch());
     	utilButton2.whenPressed(new AutoRangingLaunch());
     	
-    	utilButton5.whenPressed(new AutoExpel());
-//    	utilButton5.whileHeld(new FeederExpel());
+//    	utilButton5.whenPressed(new AutoExpel());
+    	utilButton5.whileHeld(new FeederExpel());
     	utilButton3.whileHeld(new AutoFeed()); 
     	
     	utilButton11.whenPressed(new LauncherLower());

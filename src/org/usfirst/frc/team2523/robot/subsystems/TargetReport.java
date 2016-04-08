@@ -102,4 +102,13 @@ public class TargetReport {
 		else
 			return 0;
 	}	
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "TargetReport [centerX=" + centerX + ",	 centerY=" + centerY
+				+ ",	 width=" + width + ",	 height=" + height + "]";
+	}
 }

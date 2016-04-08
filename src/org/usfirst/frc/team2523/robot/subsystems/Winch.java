@@ -32,7 +32,7 @@ public class Winch extends Subsystem {
 //	private static final double RPM_PID_KD = 0; // NO NEED
 	private static final double POS_PID_KP = 0.5; // TODO: MAY BE TOO HIGH (it will still be high because the winch is so slow and is so geared up)
 	private static final double POS_PID_KI = 0; //0.005;
-	private static final double POS_PID_KD = 0; // NO NEED
+	private static final double POS_PID_KD = 0.2;
 	private static final double REV_PER_INCH = 1/(2*Math.PI*0.75); // circumference inches in one revolution
 	
 	public static final double MAX_ARM_EXTENSION = 14; // inches
@@ -93,12 +93,16 @@ public class Winch extends Subsystem {
     	// IN is +
     	if (!winchLimitOverride && distance >= getArmConstrainedDistance()) 
     	{
-    		if (Robot.armpivot.getArmAngle() > 100)
-    			setSpeed = winchPID.getPIDoutput(MAX_ARM_EXTENSION, getCurrentDistance());
-    		else if (desiredSpeed > 0) // if going IN, let it go
+    		if (desiredSpeed > 0) // if going IN, let it go
     			setSpeed = desiredSpeed;
     		else
     			setSpeed = winchPID.getPIDoutput(getArmConstrainedDistance(), getCurrentDistance());
+    		
+    		/*
+    		 * if (Robot.armpivot.getArmAngle() > 100)
+    			setSpeed = 0; //winchPID.getPIDoutput(MAX_ARM_EXTENSION, getCurrentDistance());
+    		else 
+    		 */
     	}
 //    	else if (winchMotor.getOutputCurrent() > 40)
 //    	{
