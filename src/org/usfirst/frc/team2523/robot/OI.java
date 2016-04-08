@@ -80,8 +80,10 @@ public class OI {
 
     	// TODO: THIS COULD SCREW UP THE NORMAL WINCH-ARM FUNCTION!!! SET BASED ON HOW WELL THE LIFT COMMAND WORKS
 //    	utilButton11.whenPressed(new ArmRetract());
-   		utilButton4.whileHeld(new SetWinch(Winch.MAX_MANUAL_SPEED*2));
-    	utilButton6.whileHeld(new SetWinch(-Winch.MAX_MANUAL_SPEED));
+//   		utilButton4.whileHeld(new SetWinch(Winch.MAX_MANUAL_SPEED*2));
+//    	utilButton6.whileHeld(new SetWinch(-Winch.MAX_MANUAL_SPEED));
+   		utilButton4.whenPressed(new ContractArmWithSolenoid());
+   		utilButton6.whenPressed(new ExtendArmWithSolenoid());
 //    	utilButton4.whileHeld(new SetWinch(Winch.MAX_MANUAL_SPEED*2)); // slower
 //    	utilButton4.whenReleased(new SetWinch(0));
 //    	utilButton6.whileHeld(new SetWinch(-Winch.MAX_MANUAL_SPEED));

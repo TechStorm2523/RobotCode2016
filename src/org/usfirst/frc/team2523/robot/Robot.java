@@ -30,6 +30,7 @@ public class Robot extends IterativeRobot {
 	public static final LauncherPneumatics launcherPneumatics = new LauncherPneumatics();
 	public static final Dashboard dashboard = new Dashboard();
 	public static final LauncherStatus launcherstatus = new LauncherStatus();
+	public static final ArmSolenoids armsolenoids = new ArmSolenoids();
 	
 	// MUST be after subsystems
 	public static OI oi = new OI();
@@ -121,7 +122,7 @@ public class Robot extends IterativeRobot {
     public void autonomousInit() {    	      
 		String joystickRecording = (String) playbackChooser.getSelected();
 		autonomousCommand = (Command) autoChooser.getSelected();
-			
+		//armsolenoids.extend();	
 		// We prioritize a normal auto command
 		if (autonomousCommand != null)
 		{			
@@ -154,7 +155,7 @@ public class Robot extends IterativeRobot {
     	// release winch brake and raise launcher
     	winch.releaseBrake();
     	launcherPneumatics.raise();
-    	
+    	//armsolenoids.contract();
     	// ensure that arm extends
 //    	winch.setDistance(Winch.MAX_ARM_EXTENSION);
     	

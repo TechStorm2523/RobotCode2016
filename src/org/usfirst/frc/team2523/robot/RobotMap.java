@@ -46,6 +46,9 @@ public class RobotMap {
 	public static int launcherSolenoid1 = 1;
 	public static int launcherSolenoid2 = 2;
 	public static int winchBrakeSolenoid = 0;
+	public static int armsolenoid1 = 3;
+	public static int armsolenoid2 = 4;
+	
 	
 	// Analog In Ports
 	public static int armPoten1 = 0;

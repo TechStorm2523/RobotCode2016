@@ -33,7 +33,7 @@ public class SetDashboard extends Command
     	// ESSENTIALS
 		SmartDashboard.putNumber(" Arm Angle ", Robot.armpivot.getArmAngle());
 		SmartDashboard.putNumber(" Arm Target Angle ", Robot.armpivot.currentTargetAngle);
-
+		SmartDashboard.putBoolean(" Arm Extended? ", Robot.armsolenoids.getState());
 		SmartDashboard.putBoolean(" Ball? ", Robot.feeder.ballstate());
 		SmartDashboard.putBoolean(" Winch Braked? ", Robot.winch.isBraked());
 		SmartDashboard.putBoolean(" Launcher Lowered? ", Robot.launcherPneumatics.getState());
