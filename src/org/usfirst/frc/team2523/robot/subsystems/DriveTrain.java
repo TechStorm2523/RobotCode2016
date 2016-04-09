@@ -26,6 +26,8 @@ public class DriveTrain extends Subsystem {
 	public static final double RAMP_UP_DURATION = 0.75; // s
 	private static final double EXPONENETIAL_FACTOR = 2; // changes arm too
 	private static final double TURN_SPEED_MULTIPLIER = 0.9;
+	private static final double STARTING_TURN_SPEED = 0.3;
+	private static final double JOYSTICK_DEADZONE = 0.05;
 	
 	// CONSTANTS (for AUTO)
 	public static final double VISION_TARGET_OFFSET_TOLERANCE = 0.04; // normalized units, used in TurnToTarget
@@ -70,12 +72,25 @@ public class DriveTrain extends Subsystem {
 		// right side power = x - y
 		// left side power = x + y
 		// set the two motors on each side to the right power
-		double forwardSpeed = Robot.oi.DriveStick.getY();
-		double turnSpeed = Robot.oi.DriveStick.getZ();
+		double forwardCommand = Robot.oi.DriveStick.getY();
+		double turnCommand = Robot.oi.DriveStick.getZ();
 		
-		// scale the speeds so they are exponential
-		forwardSpeed = getExpodentialValue(forwardSpeed);
-		turnSpeed = TURN_SPEED_MULTIPLIER*getExpodentialValue(turnSpeed);
+		double forwardSpeed = 0;
+		double turnSpeed = 0;
+		
+		// apply deadzones
+		if (Math.abs(forwardCommand) > JOYSTICK_DEADZONE)
+		{
+			// scale the speeds so they are exponential
+			forwardSpeed = getExpodentialValue(forwardSpeed);
+		}
+		
+		
+		if(Math.abs(turnCommand) < JOYSTICK_DEADZONE)
+		{
+			// scale so exponential and shift up
+			turnSpeed = TURN_SPEED_MULTIPLIER*getShiftedExponentialValue(turnCommand, STARTING_TURN_SPEED);
+		}
 		
 		drive.arcadeDrive(forwardSpeed, turnSpeed);
 		
@@ -155,6 +170,26 @@ public class DriveTrain extends Subsystem {
 		else 
 		{
 			return -Math.pow(input, EXPONENETIAL_FACTOR);
+		}
+	}
+	
+	/**
+	 * Changes the given input to an exponential value, and shifts 0 input upwards
+	 * @param input Input to be translated to exponential between -1.0 and 1.0
+	 * @param shift Amount to shift zero input up
+	 * @return Returns the exponential value between -1.0 and 1.0
+	 */
+	public static double getShiftedExponentialValue(double input, double shift)
+	{
+		double output = (1 - shift) * Math.pow(input, EXPONENETIAL_FACTOR) + shift;
+		
+		if (input > 0)
+		{
+			return output;
+		}
+		else 
+		{
+			return -output;
 		}
 	}
 	

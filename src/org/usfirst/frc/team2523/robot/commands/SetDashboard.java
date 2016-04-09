@@ -57,6 +57,7 @@ public class SetDashboard extends Command
 		SmartDashboard.putNumber(" Best Target X Position: ", Robot.targetTracker.currentBestTarget != null ? 
 																Robot.targetTracker.currentBestTarget.centerX :
 																0);
+		SmartDashboard.putNumber(" Range Guess: ", Robot.targetTracker.guessedRange);
 		
 		// DIAGNOSTICS
 		SmartDashboard.putString(" Status of Launcher ",Robot.launcherstatus.Status );

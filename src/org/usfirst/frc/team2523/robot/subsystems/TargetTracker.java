@@ -26,7 +26,7 @@ public class TargetTracker extends Subsystem {
 	private static final double TARGET_WIDTH = 20 / 12.0; // feet
 	private static final double TARGET_HEIGHT = 14 / 12.0; // feet
 	// elimination criteria
-	private static final double MIN_REASONABLE_RANGE = 0; // SET BASED ON WHEN TARGET OUT OF CAMERA VIEW
+	private static final double MIN_REASONABLE_RANGE = 6; // SET BASED ON WHEN TARGET OUT OF CAMERA VIEW
 	private static final double MAX_REASONABLE_RANGE = 15.5;
 	private static final double CENTER_ZONE_SIZE = 100; // pixels, distance off center where target considering in middle
 	
@@ -47,6 +47,7 @@ public class TargetTracker extends Subsystem {
 	public double currentRangeToBestTarget = 0;
 	private boolean targetCloseToCenter = false;
 	public boolean tracking = false;
+	public double guessedRange = 0;
 
 	// POTENTIAL BUG ISSUE
 	public TargetTracker()
@@ -128,6 +129,10 @@ public class TargetTracker extends Subsystem {
 			// When DRIVERS are lining up, eliminate based on the assumption that the target is aligned.
 			if (targetCloseToCenter && Math.abs(target.centerX - IMAGE_WIDTH / 2) < CENTER_ZONE_SIZE)
 				continue;
+			
+			// add score for distance from throttle-based guess
+			guessedRange = MAX_REASONABLE_RANGE*0.5*(-Robot.oi.UtilStick.getThrottle() + 1);
+			target.addScoreFromDistance(guessedRange, targetRange);
 			
 			if (target.getCumulativeScore() > bestScore)
 			{

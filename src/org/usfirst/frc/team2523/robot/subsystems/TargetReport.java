@@ -8,6 +8,11 @@ public class TargetReport {
 	// constants
 	private final double IDEAL_ASPECT_RATIO;
 	private final double IDEAL_AREA_RATIO;
+	// weights only matter relative to eachother 
+	// (so if one is 1 and other is 2, that's twice as important)
+	private static final double ASPECT_RATIO_WEIGHT = 2;
+	private static final double AREA_RATIO_WEIGHT = 1; 
+	private static final double ADDITIONAL_SCORE_WEIGHT = 3;
 	
 	// target characteristics
 	public double centerX;
@@ -20,6 +25,7 @@ public class TargetReport {
 	// possible additional target scoring values
 	public double aspectRatioScore;
 	public double areaRatioScore;
+	public double additionalScore;
 	
 	/**
 	 * Basic Constructor
@@ -44,16 +50,18 @@ public class TargetReport {
 		// run further calculations upon initialization
 		this.aspectRatioScore = calculateAspectRatioScore();
 		this.areaRatioScore = calculateAreaRatioScore();
+		this.additionalScore = 0;
 	}
 	
 	/**
 	 * Generates cumulative score for the current target.
-	 * Must have setAdditionalScores run beforehand
 	 */
 	public double getCumulativeScore()
 	{
 		// if both scores are PERFECT, this will give a one
-		return (this.aspectRatioScore + this.areaRatioScore) / 2.0;
+		// (remove the additional score from this equation if it doesn't exist)
+		return (ASPECT_RATIO_WEIGHT*this.aspectRatioScore + AREA_RATIO_WEIGHT*this.areaRatioScore + ADDITIONAL_SCORE_WEIGHT*this.additionalScore) / 
+				(ASPECT_RATIO_WEIGHT + AREA_RATIO_WEIGHT + (this.additionalScore != 0 ? ADDITIONAL_SCORE_WEIGHT : 0) );
 	}
 	
 	/**
@@ -66,7 +74,7 @@ public class TargetReport {
 		
 		// prevent error when there is zero area
 		if (boundingBoxArea != 0)
-			return scoreFromDifference(this.area / boundingBoxArea, IDEAL_AREA_RATIO);
+			return scoreFromDistance(this.area / boundingBoxArea, IDEAL_AREA_RATIO);
 		else
 			return 0;
 	}
@@ -79,9 +87,21 @@ public class TargetReport {
 		// ensure no error
 		if (this.height != 0)
 			//
-			return scoreFromDifference(this.width / this.height, IDEAL_ASPECT_RATIO);
+			return scoreFromDistance(this.width / this.height, IDEAL_ASPECT_RATIO);
 		else
 			return 0;
+	}
+	
+	/**
+	 * Adds an additonal score to this TargetReport, based on the 
+	 * distance between the given ideal value and the real value of this particular target.
+	 * This will be factored into a call to getCumulativeScore().
+	 * @param realValue The current, actual value
+	 * @param idealValue The optimal value (would result in highest score)
+	 */
+	public void addScoreFromDistance(double realValue, double idealValue)
+	{
+		this.additionalScore = scoreFromDistance(realValue, idealValue);
 	}
 	
 	/**
@@ -92,7 +112,7 @@ public class TargetReport {
 	 * @param idealValue The optimal value (would result in highest score)
 	 * @return A 0-1 value representing the "closeness" of the realValue to the idealValue
 	 */
-	private double scoreFromDifference(double realValue, double idealValue)
+	private double scoreFromDistance(double realValue, double idealValue)
 	{
 		// Create a "pyramid function", inverting an absolute value function and 
 		// shifting so a 0 in the difference between one and the ratio of the values
@@ -102,13 +122,4 @@ public class TargetReport {
 		else
 			return 0;
 	}	
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "TargetReport [centerX=" + centerX + ",	 centerY=" + centerY
-				+ ",	 width=" + width + ",	 height=" + height + "]";
-	}
 }

@@ -117,6 +117,8 @@ public class Winch extends Subsystem {
     	// or NOT stopped if these constraints are overridden
     	// IN is +
     	if (!winchLimitOverride &&
+    		((distance >= MAX_ARM_EXTENSION && desiredSpeed < 0) || ((distance <= MIN_ARM_EXTENSION && desiredSpeed > 0) && !lowerWinchLimitOverride &&
+    			Timer.getMatchTime() > RobotMap.MATCH_END_PERIOD_LEN)))
 	 	{
 	 		setSpeed = 0;
 	 	}
@@ -127,6 +129,7 @@ public class Winch extends Subsystem {
     	winchMotor.changeControlMode(TalonControlMode.PercentVbus); // SPeed
     	
     	// SET THE SPEED
+//    	System.out.println("Distance: " + distance + " " + setSpeed + " " + desiredSpeed);
     	winchMotor.set(setSpeed);
     	
 		 //make sure brake released (only if not zero)
@@ -256,7 +259,7 @@ public class Winch extends Subsystem {
 	}
 	
     public void initDefaultCommand() {
-    	setDefaultCommand(new SetWinchAuto());
+    	//setDefaultCommand(new SetWinchAuto());
     }
 }
 
