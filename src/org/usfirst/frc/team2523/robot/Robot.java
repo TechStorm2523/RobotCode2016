@@ -103,6 +103,7 @@ public class Robot extends IterativeRobot {
     	winch.lowerWinchLimitOverride = false;
     	winch.winchLimitOverride = false;
     	launcherPneumatics.lower();
+    	armsolenoids.extend();
     }
 	
 	public void disabledPeriodic() {
@@ -140,6 +141,7 @@ public class Robot extends IterativeRobot {
 		
 		// prep for driving and winching
 		launcherPneumatics.raise();
+		armsolenoids.extend();
     	winch.releaseBrake();
     }
 
@@ -155,6 +157,7 @@ public class Robot extends IterativeRobot {
     	// release winch brake and raise launcher
     	winch.releaseBrake();
     	launcherPneumatics.raise();
+    	armsolenoids.extend();
     	//armsolenoids.contract();
     	// ensure that arm extends
 //    	winch.setDistance(Winch.MAX_ARM_EXTENSION);
