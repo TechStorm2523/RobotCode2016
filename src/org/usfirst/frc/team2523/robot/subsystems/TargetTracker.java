@@ -129,7 +129,7 @@ public class TargetTracker extends Subsystem {
 				continue;
 			
 			// When DRIVERS are lining up, eliminate based on the assumption that the target is aligned.
-			if (targetCloseToCenter && Math.abs(target.centerX - IMAGE_WIDTH / 2) < CENTER_ZONE_SIZE)
+			if (targetCloseToCenter && Math.abs(target.centerX - IMAGE_WIDTH / 2) > CENTER_ZONE_SIZE)
 				continue;
 			
 			// add score for distance from throttle-based guess
