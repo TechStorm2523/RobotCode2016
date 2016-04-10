@@ -25,8 +25,8 @@ public class SetLauncherRPMByTarget extends Command {
     protected void execute() {
     	// correct for noise in range (only change if reasonably different)
     	// this operates partially on the assumption that we are stationary when doing this
-    	if (Math.abs(Robot.targetTracker.currentRangeToBestTarget - currentRange) > LauncherWheels.RANGE_DIFFERENCE_DEADZONE)
-    		currentRange = Robot.targetTracker.currentRangeToBestTarget;
+//    	if (Math.abs(Robot.targetTracker.currentRangeToBestTarget - currentRange) > LauncherWheels.RANGE_DIFFERENCE_DEADZONE)
+		currentRange = Robot.targetTracker.currentRangeToBestTarget;
     	
     	targetRPM = Robot.launcherWheels.getRPMbyRange(currentRange);
     	System.out.println(targetRPM);

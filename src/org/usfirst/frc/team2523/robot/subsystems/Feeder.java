@@ -37,7 +37,7 @@ public class Feeder extends Subsystem {
     public void expelWithLauncher()
     {
     	expel();
-    	Robot.launcherWheels.launchFront.set(-LauncherWheels.MAX_RPM/8);
+    	Robot.launcherWheels.launchFront.set(-LauncherWheels.MAX_RPM/5);
     }
 	
     public void stop(){

@@ -26,9 +26,10 @@ public class TargetTracker extends Subsystem {
 	private static final double TARGET_WIDTH = 20 / 12.0; // feet
 	private static final double TARGET_HEIGHT = 14 / 12.0; // feet
 	// elimination criteria
-	private static final double MIN_REASONABLE_RANGE = 6; // SET BASED ON WHEN TARGET OUT OF CAMERA VIEW
+	private static final double MIN_REASONABLE_RANGE = 0; // SET BASED ON WHEN TARGET OUT OF CAMERA VIEW
 	private static final double MAX_REASONABLE_RANGE = 15.5;
 	private static final double CENTER_ZONE_SIZE = 100; // pixels, distance off center where target considering in middle
+	private static final double GUESS_ACCURACY_TOLERANCE = 1; // feet
 	
 	// SINCE CAN'T USE CAMERA CLASS BCS CANT GET NETWORK IMAGE
 	private static final double IMAGE_WIDTH = 640;
@@ -36,6 +37,7 @@ public class TargetTracker extends Subsystem {
 	private static final double FPS = 15;
 	private final static double CAMERA_FOV = 39.935; // VERTICAL (By measuring distance from a known size object that spans vertical FOV and using tan OR solving the equation in getRangeToBestTarget for FOV using other measurements from debug)
 	private final static double CAMERA_ELEVATION = 45;
+
 
 	// Objects Used
 //	static? NetworkTable recievingTable;
@@ -45,7 +47,7 @@ public class TargetTracker extends Subsystem {
 	public TargetReport currentBestTarget = null;
 	private ArrayList<TargetReport> allTargets = null;
 	public double currentRangeToBestTarget = 0;
-	private boolean targetCloseToCenter = false;
+	private boolean targetCloseToCenter = true;
 	public boolean tracking = false;
 	public double guessedRange = 0;
 
@@ -132,7 +134,16 @@ public class TargetTracker extends Subsystem {
 			
 			// add score for distance from throttle-based guess
 			guessedRange = MAX_REASONABLE_RANGE*0.5*(-Robot.oi.UtilStick.getThrottle() + 1);
-			target.addScoreFromDistance(guessedRange, targetRange);
+			if (Math.abs(guessedRange) > 0.01)
+			{
+				target.addScoreFromDistance(guessedRange, targetRange);
+				// highly prioritize a target close to a guess
+				if (Math.abs(guessedRange - targetRange) < GUESS_ACCURACY_TOLERANCE)
+				{
+					bestTarget = target;
+					break;
+				}
+			}
 			
 			if (target.getCumulativeScore() > bestScore)
 			{

@@ -33,7 +33,7 @@ public class Winch extends Subsystem {
 	private static final double POS_PID_KP = 0.5; // TODO: MAY BE TOO HIGH (it will still be high because the winch is so slow and is so geared up)
 	private static final double POS_PID_KI = 0; //0.005;
 	private static final double POS_PID_KD = 0.4;
-	private static final double REV_PER_INCH = 1/(2*Math.PI*0.75); // circumference inches in one revolution
+	private static final double REV_PER_INCH = 1/(2*Math.PI*0.4375); //1/(2*Math.PI*0.75); // circumference inches in one revolution
 	
 	public static final double MAX_ARM_EXTENSION = 14; // inches
 	public static final double MIN_ARM_EXTENSION = 0.5; // inches, off of initial reset point

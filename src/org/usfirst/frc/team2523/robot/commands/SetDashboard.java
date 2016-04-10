@@ -22,8 +22,8 @@ public class SetDashboard extends Command
 
     // Called just before this Command runs the first time
     protected void initialize() {
-		SmartDashboard.putData(" Start Recording? ", new StartJoystickRecording());
-		SmartDashboard.putData(" Reset Winch Position? ", new ResetWinchPosition());
+//		SmartDashboard.putData(" Start Recording? ", new StartJoystickRecording());
+//		SmartDashboard.putData(" Reset Winch Position? ", new ResetWinchPosition());
     }
 
     // Called repeatedly when this Command is scheduled to run

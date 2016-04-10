@@ -24,7 +24,7 @@ public class AutoRangingLaunch extends CommandGroup {
         addSequential(new FeederOff());
         addSequential(new SetLauncherRPM(0));
         addSequential(new LauncherRaise());
-    	addSequential(new SetTrackingToAutoAligned());
+//    	addSequential(new SetTrackingToAutoAligned());
 //        addSequential(new StopTargetTracking()); // OUT WITH NEW VISION
     }
 }

@@ -10,9 +10,9 @@ public class TargetReport {
 	private final double IDEAL_AREA_RATIO;
 	// weights only matter relative to eachother 
 	// (so if one is 1 and other is 2, that's twice as important)
-	private static final double ASPECT_RATIO_WEIGHT = 2;
+	private static final double ASPECT_RATIO_WEIGHT = 1;
 	private static final double AREA_RATIO_WEIGHT = 1; 
-	private static final double ADDITIONAL_SCORE_WEIGHT = 3;
+	private static final double ADDITIONAL_SCORE_WEIGHT = 100;
 	
 	// target characteristics
 	public double centerX;
@@ -60,8 +60,8 @@ public class TargetReport {
 	{
 		// if both scores are PERFECT, this will give a one
 		// (remove the additional score from this equation if it doesn't exist)
-		return (ASPECT_RATIO_WEIGHT*this.aspectRatioScore + AREA_RATIO_WEIGHT*this.areaRatioScore + ADDITIONAL_SCORE_WEIGHT*this.additionalScore) / 
-				(ASPECT_RATIO_WEIGHT + AREA_RATIO_WEIGHT + (this.additionalScore != 0 ? ADDITIONAL_SCORE_WEIGHT : 0) );
+		return (ASPECT_RATIO_WEIGHT*this.aspectRatioScore + AREA_RATIO_WEIGHT*this.areaRatioScore) / (ASPECT_RATIO_WEIGHT + AREA_RATIO_WEIGHT);// + ADDITIONAL_SCORE_WEIGHT*this.additionalScore) / 
+//				(ASPECT_RATIO_WEIGHT + AREA_RATIO_WEIGHT + (this.additionalScore != 0 ? ADDITIONAL_SCORE_WEIGHT : 0) );
 	}
 	
 	/**

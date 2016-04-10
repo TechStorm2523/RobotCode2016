@@ -27,7 +27,7 @@ public class DriveTrain extends Subsystem {
 	private static final double EXPONENETIAL_FACTOR = 2; // changes arm too
 	private static final double TURN_SPEED_MULTIPLIER = 0.9;
 	private static final double STARTING_TURN_SPEED = 0.3;
-	private static final double JOYSTICK_DEADZONE = 0.05;
+	private static final double JOYSTICK_DEADZONE = 0.1;
 	
 	// CONSTANTS (for AUTO)
 	public static final double VISION_TARGET_OFFSET_TOLERANCE = 0.04; // normalized units, used in TurnToTarget
@@ -82,11 +82,11 @@ public class DriveTrain extends Subsystem {
 		if (Math.abs(forwardCommand) > JOYSTICK_DEADZONE)
 		{
 			// scale the speeds so they are exponential
-			forwardSpeed = getExpodentialValue(forwardSpeed);
+			forwardSpeed = getExpodentialValue(forwardCommand);
 		}
 		
 		
-		if(Math.abs(turnCommand) < JOYSTICK_DEADZONE)
+		if(Math.abs(turnCommand) > JOYSTICK_DEADZONE)
 		{
 			// scale so exponential and shift up
 			turnSpeed = TURN_SPEED_MULTIPLIER*getShiftedExponentialValue(turnCommand, STARTING_TURN_SPEED);
