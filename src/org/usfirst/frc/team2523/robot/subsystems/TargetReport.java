@@ -10,7 +10,7 @@ public class TargetReport {
 	private final double IDEAL_AREA_RATIO;
 	// weights only matter relative to eachother 
 	// (so if one is 1 and other is 2, that's twice as important)
-	private static final double ASPECT_RATIO_WEIGHT = 1;
+	private static final double ASPECT_RATIO_WEIGHT = 2;
 	private static final double AREA_RATIO_WEIGHT = 1; 
 	private static final double ADDITIONAL_SCORE_WEIGHT = 100;
 	
