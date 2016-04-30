@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj.communication.FRCNetworkCommunicationsLibrary;
  * 
  * @author Mckenna Cisler, Team 2523
  */
-public class RecordingJoystick extends GenericHID {
+public class RecordingJoystick extends Joystick {
 	static final double STATE_STORE_FREQ = 20; // or n*20 to slow down... 20 is minimum // ms
 	static final double AUTO_PERIOD_LENGTH = 15*10e3; // ms
 	static final double MAX_PLAYBACK_DURATION = 10e6; // Arbitrarily large number // ms
@@ -40,12 +40,6 @@ public class RecordingJoystick extends GenericHID {
 	static final int MAX_JOYSTICK_AXES = FRCNetworkCommunicationsLibrary.kMaxJoystickAxes - 1; // just to remove errors becasue we call all these
 	static final int MAX_JOYSTICK_POVS = FRCNetworkCommunicationsLibrary.kMaxJoystickPOVs;
 	static final int MAX_JOYSTICK_BUTTONS = 14;
-
-	/**
-	 * Instead of re-implementing a whole joystick, we will use a traditional
-	 * Joystick object to actually read values from the driver station.
-	 */
-	Joystick inputJoystick;
 
 	/**
 	 * A RecordingJoystick has three modes: 
@@ -66,8 +60,8 @@ public class RecordingJoystick extends GenericHID {
 	private int currentMode = MODE_NORMAL_OPERATION;
 	
 	/**
-	 * Represents a momentary snapshot of the inputJoystick's state. An array of
-	 * these will be used to store and retrieve the inputJoystick's changes over
+	 * Represents a momentary snapshot of the input Joystick's (super class') state. An array of
+	 * these will be used to store and retrieve the input Joystick's (super class') changes over
 	 * time.
 	 */
 	private static class JoystickState implements java.io.Serializable {
@@ -115,7 +109,7 @@ public class RecordingJoystick extends GenericHID {
 		public String toString() {
 			return "JoystickState [xVal=" + xVal + ", yVal=" + yVal + ", zVal="
 					+ zVal + ", twistVal=" + twistVal + ", throttleVal="
-					+ throttleVal;// + ", rawAxes=" + Arrays.toString(rawAxes)
+					+ throttleVal;// + ", rawAxes=" + Arrays.toString(rawAxes) // TODO fix issues here
 //					+ ", triggerVal=" + triggerVal + ", topVal=" + topVal
 //					+ ", rawButtons=" + Arrays.toString(rawButtons)
 //					+ ", povVals=" + Arrays.toString(povVals) + "]";
@@ -185,7 +179,7 @@ public class RecordingJoystick extends GenericHID {
 	 *            into.
 	 */
 	public RecordingJoystick(int port) {
-		inputJoystick = new Joystick(port);
+		super(port);
 		joystickStates = new ArrayList<JoystickState>((int)(AUTO_PERIOD_LENGTH / STATE_STORE_FREQ));
 	}
 	
@@ -328,8 +322,8 @@ public class RecordingJoystick extends GenericHID {
 		// (if check frequency is less than our desired update frequency)
 		if (System.nanoTime() - lastStateCheck > STATE_STORE_FREQ*10e5) // apparently the correct conversion is 10e5
 		{
-//			System.out.println("RecordingJoystick's state is not updated frequently enough (" + 
-//						(System.nanoTime() - lastStateCheck) + "ns vs desired " + STATE_STORE_FREQ*10e6 + "ns)");
+			System.out.println("RecordingJoystick's state is not updated frequently enough (" + 
+						(System.nanoTime() - lastStateCheck) + "ns vs desired " + STATE_STORE_FREQ*10e6 + "ns)");
 		}
 		
 		elapsedDuration += (System.nanoTime() - lastStateCheck) / 10e5; // apparently the correct conversion is 10e5
@@ -385,7 +379,7 @@ public class RecordingJoystick extends GenericHID {
 		if (currentMode == MODE_PLAYBACK)
 			return currentState.xVal;
 		else
-			return inputJoystick.getX();
+			return super.getX();
 	}
 
 	/* (non-Javadoc)
@@ -396,7 +390,7 @@ public class RecordingJoystick extends GenericHID {
 		if (currentMode == MODE_PLAYBACK)
 			return currentState.yVal;
 		else
-			return inputJoystick.getY();
+			return super.getY();
 	}
 
 	/* (non-Javadoc)
@@ -407,7 +401,7 @@ public class RecordingJoystick extends GenericHID {
 		if (currentMode == MODE_PLAYBACK)
 			return currentState.zVal;
 		else
-			return inputJoystick.getZ();
+			return super.getZ();
 	}
 
 	/* (non-Javadoc)
@@ -418,7 +412,7 @@ public class RecordingJoystick extends GenericHID {
 		if (currentMode == MODE_PLAYBACK)
 			return currentState.twistVal;
 		else
-			return inputJoystick.getTwist();
+			return super.getTwist();
 	}
 
 	/* (non-Javadoc)
@@ -429,7 +423,7 @@ public class RecordingJoystick extends GenericHID {
 		if (currentMode == MODE_PLAYBACK)
 			return currentState.throttleVal;
 		else
-			return inputJoystick.getThrottle();
+			return super.getThrottle();
 	}
 
 	/* (non-Javadoc)
@@ -440,7 +434,7 @@ public class RecordingJoystick extends GenericHID {
 		if (currentMode == MODE_PLAYBACK)
 			return currentState.rawAxes[which];
 		else
-			return inputJoystick.getRawAxis(which);
+			return super.getRawAxis(which);
 	}
 
 	/* (non-Javadoc)
@@ -451,7 +445,7 @@ public class RecordingJoystick extends GenericHID {
 		if (currentMode == MODE_PLAYBACK)
 			return currentState.triggerVal;
 		else
-			return inputJoystick.getTrigger();
+			return super.getTrigger();
 	}
 
 	/* (non-Javadoc)
@@ -462,7 +456,7 @@ public class RecordingJoystick extends GenericHID {
 		if (currentMode == MODE_PLAYBACK)
 			return currentState.topVal;
 		else
-			return inputJoystick.getTop();
+			return super.getTop();
 	}
 
 	/* (non-Javadoc)
@@ -481,7 +475,7 @@ public class RecordingJoystick extends GenericHID {
 		if (currentMode == MODE_PLAYBACK)
 			return currentState.rawButtons[button];
 		else
-			return inputJoystick.getRawButton(button);
+			return super.getRawButton(button);
 	}
 
 	/* (non-Javadoc)
@@ -492,7 +486,7 @@ public class RecordingJoystick extends GenericHID {
 		if (currentMode == MODE_PLAYBACK)
 			return currentState.povVals[pov];
 		else
-			return inputJoystick.getPOV(pov);
+			return super.getPOV(pov);
 	}
 
 	// TODO: Include excess Joystick functions that may be used 
