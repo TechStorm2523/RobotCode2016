@@ -4,6 +4,7 @@ import org.usfirst.frc.team2523.robot.subsystems.*;
 import org.usfirst.frc.team2523.robot.commands.*;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -36,6 +37,7 @@ public class Robot extends IterativeRobot {
 	public static OI oi = new OI();
 	
     Command autonomousCommand;
+    Preferences prefs;
     SendableChooser autoChooser;
     public static SendableChooser playbackChooser;
     public static SendableChooser recordingChooser;
@@ -90,8 +92,11 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putData("Joystick Recording Program", recordingChooser);
         
 //    	targetTracker.init(); OLD VISION
+        
+        // input preferences from SmartDashboard
+        initPrefs();
     }
-	
+
 	/**
      * This function is called once each time the robot enters Disabled mode.
      * You can use it to reset any subsystem information you want to clear when
@@ -138,6 +143,8 @@ public class Robot extends IterativeRobot {
 		}
 		
 //		targetTracker.startTracking();
+		
+		initPrefs();
 		
 		// prep for driving and winching
 		launcherPneumatics.raise();
@@ -187,6 +194,8 @@ public class Robot extends IterativeRobot {
         	oi.DriveStick.startRecording(RobotMap.JOYSTICK_RECORDINGS_SAVE_LOCATION + joystickRecording + "_drive", 15); // recordLen
         	oi.UtilStick.startRecording(RobotMap.JOYSTICK_RECORDINGS_SAVE_LOCATION + joystickRecording + "_util", 15);
         }
+        
+        initPrefs();
     }
 
     /**
@@ -217,4 +226,13 @@ public class Robot extends IterativeRobot {
         oi.UtilStick.updateState();
 //        System.out.println(Timer.getMatchTime());
     }
+    
+	/**
+	 * Initializes preferences from the SmartDashboard
+	 */
+	private void initPrefs() 
+	{
+		prefs = Preferences.getInstance();
+		DriveTrain.MAX_POWER = prefs.getDouble("Max Drive Power", 1.0);	
+	}
 }

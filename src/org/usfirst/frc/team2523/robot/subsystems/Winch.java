@@ -92,24 +92,24 @@ public class Winch extends Subsystem {
     	double distance = getCurrentDistance();
     	double setSpeed;
     	
-    	// IN is +
-    	if (!winchLimitOverride && distance >= getArmConstrainedDistance() &&
-    			Robot.armpivot.getArmAngle() < 100) 
-    	{
-    		if (desiredSpeed > 0) // if going IN, let it go
-    			setSpeed = desiredSpeed;
-    		else
-    			setSpeed = winchPID.getPIDoutput(getArmConstrainedDistance(), getCurrentDistance());
-    	}
+//    	// IN is +
+//    	if (!winchLimitOverride && distance >= getArmConstrainedDistance() &&
+//    			Robot.armpivot.getArmAngle() < 100) 
+//    	{
+//    		if (desiredSpeed > 0) // if going IN, let it go
+//    			setSpeed = desiredSpeed;
+//    		else
+//    			setSpeed = winchPID.getPIDoutput(getArmConstrainedDistance(), getCurrentDistance());
+//    	}
     	// on over-rideable limits
 //    	else if (winchMotor.getOutputCurrent() > MAX_MOTOR_CURRENT) //|| distance < ABSOLUTE_MIN_ARM_EXTENSION)
 //    	{
 //    		winchMotor.set(0);
 //    	}
-    	else
-    	{
+//    	else
+//    	{
         	setSpeed = desiredSpeed;
-    	}
+//    	}
     	
     	// the winch must be stopped when it is:
     	// too far out while trying to go out,
@@ -117,8 +117,8 @@ public class Winch extends Subsystem {
     	// or NOT stopped if these constraints are overridden
     	// IN is +
     	if (!winchLimitOverride &&
-    		((distance >= MAX_ARM_EXTENSION && desiredSpeed < 0) || ((distance <= MIN_ARM_EXTENSION && desiredSpeed > 0) && !lowerWinchLimitOverride &&
-    			Timer.getMatchTime() > RobotMap.MATCH_END_PERIOD_LEN)))
+    		((distance >= MAX_ARM_EXTENSION && desiredSpeed < 0) || ((distance <= MIN_ARM_EXTENSION && desiredSpeed > 0) && !lowerWinchLimitOverride))) //  &&
+//    			Timer.getMatchTime() > RobotMap.MATCH_END_PERIOD_LEN)))
 	 	{
 	 		setSpeed = 0;
 	 	}
@@ -259,7 +259,7 @@ public class Winch extends Subsystem {
 	}
 	
     public void initDefaultCommand() {
-    	//setDefaultCommand(new SetWinchAuto());
+    	setDefaultCommand(new SetWinchAuto());
     }
 }
 
