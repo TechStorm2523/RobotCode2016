@@ -16,8 +16,7 @@ public class FeederAutoCollect extends Command {
         // Use requires() here to declare subsystem dependencies
         requires(Robot.feeder);
     }
-    
-
+   
     // Called just before this Command runs the first time
     protected void initialize() {
     }
@@ -35,6 +34,9 @@ public class FeederAutoCollect extends Command {
     	} else {
     		return false;
     	}
+    	
+    	// could do:
+//    	return Robot.feeder.ballstate();
     }
 
     // Called once after isFinished returns true

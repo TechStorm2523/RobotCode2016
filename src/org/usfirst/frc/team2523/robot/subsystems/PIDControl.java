@@ -7,7 +7,7 @@ import org.usfirst.frc.team2523.robot.RobotMap;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/**
+/** Jack,
  * !!!!!BADLY DESIGNED - make a better one!!!! (Could be done in 1/3 of the lines of code... so much repetition!)
  * 
  * PIDControl class for creating PID control systems. 
@@ -252,7 +252,7 @@ public class PIDControl extends Subsystem {
 	 * @param min Minimum value
 	 * @param max Maximum value
 	 */
-	public void setMaxMin(double min, double max)
+	public void setMinMax(double min, double max)
 	{
 		// set values
 		this.MIN_OUTPUT = min;
@@ -263,7 +263,7 @@ public class PIDControl extends Subsystem {
 	 * Sets the maximum and minimum speeds to output from the PID control, by one value
 	 * @param minMax Absolute value of min/max value
 	 */
-	public void setMaxMin(double minMax)
+	public void setMinMax(double minMax)
 	{
 		// set values
 		this.MIN_OUTPUT = minMax;
@@ -280,7 +280,6 @@ public class PIDControl extends Subsystem {
 	
 	public void initDefaultCommand() {
 	    // Set the default command for a subsystem here.
-	    //setDefaultCommand(new PIDControl());
 	}
 }
 

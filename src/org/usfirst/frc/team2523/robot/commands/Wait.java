@@ -31,6 +31,7 @@ public class Wait extends Command
     // Called repeatedly when this Command is scheduled to run
     protected void execute() 
     {
+    	// this hangs until finished
     	Timer.delay(this.time);
     }
 

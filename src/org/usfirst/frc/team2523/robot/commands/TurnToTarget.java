@@ -18,11 +18,14 @@ public class TurnToTarget extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
+    	// The integral error can sometimes get really big, so reset it to ignore any past error
     	Robot.drivetrain.turnPID.resetIntegral();
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+    	// these functions are built for just this (we get a distance from -1 to 1 and then
+    	// use a PID control system expecting -1 to 1 to set power)
     	currentXOffset = Robot.targetTracker.getTargetDistanceFromCenter()[0];
     	Robot.drivetrain.setTurnRateByNormalizedOffset(currentXOffset);
     }

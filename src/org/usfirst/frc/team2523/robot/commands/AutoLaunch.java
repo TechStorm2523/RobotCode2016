@@ -27,13 +27,14 @@ public class AutoLaunch extends CommandGroup {
         // FIRE!
         addSequential(new FeederFire());
         addParallel(new SetStatusFiring());
+        
         // wait, then shutdown
         addSequential(new Wait(LauncherWheels.POST_LAUNCH_WAIT_TIME));
         addSequential(new FeederOff());
         addSequential(new SetStatusIdle());
         addSequential(new SetLauncherRPM(0));
         addSequential(new LauncherRaise());
-    	addSequential(new SetTrackingToDriverAligned());
+    	addSequential(new SetTrackingToDriverAligned()); // NEW VISION
 //        addSequential(new StopTargetTracking()); // OUT WITH NEW VISION
     }
 }

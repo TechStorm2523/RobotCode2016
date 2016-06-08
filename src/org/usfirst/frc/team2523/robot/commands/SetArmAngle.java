@@ -72,7 +72,7 @@ public class SetArmAngle extends Command
     protected void initialize() 
     {
         // set arm speed according to input
-        Robot.armpivot.armPID.setMaxMin(-this.speed, this.speed);
+        Robot.armpivot.armPID.setMinMax(-this.speed, this.speed);
         
     	// reset integral value
         Robot.armpivot.armPID.resetIntegral();

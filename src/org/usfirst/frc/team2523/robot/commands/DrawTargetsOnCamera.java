@@ -8,7 +8,7 @@
 //import com.ni.vision.NIVision;
 //
 ///**
-// * @deprecated
+// * @deprecated - WE DO THIS INSIDE OF TARGETTRACKER.JAVA NOW
 // */
 //public class DrawTargetsOnCamera extends Command 
 //{

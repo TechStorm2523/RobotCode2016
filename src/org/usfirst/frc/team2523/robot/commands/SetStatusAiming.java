@@ -5,6 +5,13 @@ import edu.wpi.first.wpilibj.command.Command;
 
 import org.usfirst.frc.team2523.robot.Robot;
 
+/*
+ * Jack, a better way to do this would be to have a single command SetStatus(int status) 
+ * That used a bunch of numbers and a switch or if/else statement to decide which status to set.
+ * You would also want to use constants for those numbers in the same class, like: int STATUS_IDLE = 4; 
+ * so you can do things like: new SetStatus(SetStatus.STATUS_IDLE); 
+ */
+
 /**
  *
  */

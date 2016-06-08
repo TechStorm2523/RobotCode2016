@@ -53,7 +53,7 @@ public class ArmPivot extends Subsystem {
 	public ArmPivot()
 	{
 		setBrake(true);
-		armPID.setMaxMin(-MAX_PID_SPEED, MAX_PID_SPEED); // this is stupidly counterintuitive (its min then max)... my bad
+		armPID.setMinMax(-MAX_PID_SPEED, MAX_PID_SPEED); // this is stupidly counterintuitive (its min then max)... my bad
 		
 		currentTargetAngle = getArmAngle(); // don't try to go somewhere right off the bat
 	}

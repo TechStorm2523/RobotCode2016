@@ -30,13 +30,10 @@ public class FeederFire extends Command {
     	Robot.feeder.feed();
     }
 
-    // Make this return true when this Command no longer needs to run execute()
-    protected boolean isFinished() {
-    	return true;
-    	
-    	}
-	
-    
+	// Make this return true when this Command no longer needs to run execute()
+	protected boolean isFinished() {
+		return true;
+	}
 
     // Called once after isFinished returns true
     protected void end(){

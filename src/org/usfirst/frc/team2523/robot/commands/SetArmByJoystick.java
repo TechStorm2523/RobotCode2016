@@ -22,6 +22,7 @@ public class SetArmByJoystick extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
 		Robot.armpivot.setArmByJoystick();
+		// when we used to try to set winch speed by arm speed (now it's all done inside Winch.java)
 //		if (Robot.winch.canSetWinchByArm)
 //		{
 //			Robot.winch.setWinchByArmSpeed();

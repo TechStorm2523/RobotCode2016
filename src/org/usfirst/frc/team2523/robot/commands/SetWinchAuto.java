@@ -5,7 +5,7 @@ import org.usfirst.frc.team2523.robot.Robot;
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
- *
+ * This is the default command of the Winch subsystem. 
  */
 public class SetWinchAuto extends Command {
 
@@ -20,6 +20,11 @@ public class SetWinchAuto extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+    	// This is another way of setting winch speed, and it just allows
+    	// us to handle lots of speed change requests more easily. 
+    	// (There are other commands which just set the value of desiredWinchSpeed)
+    	// (This isn't the best practice, and it should probably be removed, but
+    	//  I used it for some reason back in competition)
     	Robot.winch.set(Robot.winch.desiredWinchSpeed);
     }
 

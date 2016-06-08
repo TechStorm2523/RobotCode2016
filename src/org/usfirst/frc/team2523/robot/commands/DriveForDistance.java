@@ -29,7 +29,7 @@ public class DriveForDistance extends Command {
     // Called just before this Command runs the first time
     protected void initialize() {
     	Robot.drivetrain.resetDistance();
-    	Robot.drivetrain.drivePID.setMaxMin(-maxSpeed, maxSpeed); 	
+    	Robot.drivetrain.drivePID.setMinMax(-maxSpeed, maxSpeed); 	
     	rampUpStartTime = System.nanoTime();
     }
 
@@ -41,7 +41,7 @@ public class DriveForDistance extends Command {
 		 	< DriveTrain.RAMP_UP_DURATION)
     	{
     		// use PID max/min to set speed, to allow for really short travel distances (ramp is not min)
-        	Robot.drivetrain.drivePID.setMaxMin(
+        	Robot.drivetrain.drivePID.setMinMax(
         			Robot.drivetrain.getSpeedByRamp(maxSpeed, System.nanoTime() - rampUpStartTime) * 10e9 
     														 / DriveTrain.RAMP_UP_DURATION);
     	}

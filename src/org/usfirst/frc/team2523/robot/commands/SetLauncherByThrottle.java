@@ -28,6 +28,9 @@ public class SetLauncherByThrottle extends Command {
     protected void execute() {
     	Robot.launcherWheels.setByThrottle();
     	
+    	// The following was supposed to add time to elapsedSinceAtTarget for all the time that the RPM
+    	// was in the right range, so we could only end this command once it had been on target for a long enough
+    	// amount of time that we could expect it to stay there.
 //    	if (Robot.launcherWheels.getCurrentRPMError()[0] < LauncherWheels.TARGET_SPEED_TOLERANCE && 
 //        	Robot.launcherWheels.getCurrentRPMError()[1] < LauncherWheels.TARGET_SPEED_TOLERANCE)
 //    	{
@@ -39,9 +42,10 @@ public class SetLauncherByThrottle extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {   	
-    	// stop once BOTH target RPMs are reached (in certain range) AND we have waited enough
         return true;
-//        		elapsedSinceAtTarget >= LauncherWheels.POST_SPOOL_UP_WAIT_TIME && 
+        
+        // OR YOU COULD stop once BOTH target RPMs are reached (in certain range) AND we have waited enough
+//      return elapsedSinceAtTarget >= LauncherWheels.POST_SPOOL_UP_WAIT_TIME && 
 //        	   Robot.launcherWheels.getCurrentRPMError()[0] < LauncherWheels.TARGET_SPEED_TOLERANCE && 
 //        	   Robot.launcherWheels.getCurrentRPMError()[1] < LauncherWheels.TARGET_SPEED_TOLERANCE;
     }

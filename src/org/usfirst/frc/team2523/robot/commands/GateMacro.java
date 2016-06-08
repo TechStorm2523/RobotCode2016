@@ -15,8 +15,15 @@ public class GateMacro extends CommandGroup {
 
         // To run multiple commands at the same time,
         // use addParallel()
+    	
+    	
+    	// ....You might just use the DriveForTime command instead of using these purpose-built commands
         addParallel(new GateForward());
         addParallel(new GateSwing());
+        
+        
+        
+        
         // Command1 and Command2 will run in parallel.
 
         // A command group will require all of the subsystems that each member

@@ -13,7 +13,7 @@ public class StartJoystickRecording extends Command {
 
 	public StartJoystickRecording() {
         // Use requires() here to declare subsystem dependencies
-        // eg. requires(chassis);
+        // eg. requires(chassis); // no subsystem involved
     }
 
     // Called just before this Command runs the first time
@@ -41,6 +41,7 @@ public class StartJoystickRecording extends Command {
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
+    	// this allows it to be interrupted using normal command-based paradigms
     	Robot.oi.DriveStick.stopRecording();
     	Robot.oi.UtilStick.stopRecording();
     }

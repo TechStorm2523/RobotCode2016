@@ -24,6 +24,8 @@ public class ManualAim extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+    	// Jack, the issue with doing commands like this is that they can't be interrupted very nicely...
+    	// It's better to use a CommandGroup
     	Robot.launcherPneumatics.lower();
     	Robot.launcherWheels.setByThrottle();
     	Timer.delay(LauncherWheels.POST_SPOOL_UP_WAIT_TIME);

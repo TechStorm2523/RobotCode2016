@@ -23,9 +23,10 @@ public class SetLauncherRPMByTarget extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	// correct for noise in range (only change if reasonably different)
+    	// YOU COULD correct for noise in range with this (only change if reasonably different)
     	// this operates partially on the assumption that we are stationary when doing this
 //    	if (Math.abs(Robot.targetTracker.currentRangeToBestTarget - currentRange) > LauncherWheels.RANGE_DIFFERENCE_DEADZONE)
+    	
 		currentRange = Robot.targetTracker.currentRangeToBestTarget;
     	
     	targetRPM = Robot.launcherWheels.getRPMbyRange(currentRange);
@@ -36,7 +37,7 @@ public class SetLauncherRPMByTarget extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-    	// stop once BOTH target RPMs are reached (in certain range)
+    	// stop once BOTH target RPMs are reached (in certain range) OR if it's just an unreachable speed
         return targetRPM > LauncherWheels.MAX_RPM ||
         	   Math.abs(Robot.launcherWheels.getCurrentRPMError()[0]) < LauncherWheels.TARGET_SPEED_TOLERANCE && 
         	   Math.abs(Robot.launcherWheels.getCurrentRPMError()[1]) < LauncherWheels.TARGET_SPEED_TOLERANCE;

@@ -11,9 +11,8 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class AutoRangingLaunch extends CommandGroup {
     
     public  AutoRangingLaunch() {
-//    	addSequential(new IdentifyBestTarget());
     	addSequential(new LauncherLower());
-    	addSequential(new SetTrackingToDriverAligned());
+    	addSequential(new SetTrackingToDriverAligned()); // NEW VISION
 //    	addSequential(new StartTargetTracking()); // OUT WITH NEW VISION
 //    	addSequential(new Wait(TargetTracker.TARGET_ACQUIRE_TIME)); // OUT WITH NEW VISION
     	addSequential(new SetLauncherRPMByTarget());
@@ -24,7 +23,7 @@ public class AutoRangingLaunch extends CommandGroup {
         addSequential(new FeederOff());
         addSequential(new SetLauncherRPM(0));
         addSequential(new LauncherRaise());
-//    	addSequential(new SetTrackingToAutoAligned());
+//    	addSequential(new SetTrackingToAutoAligned()); // NEW VISION (don't need because this only occurs in auto)
 //        addSequential(new StopTargetTracking()); // OUT WITH NEW VISION
     }
 }
