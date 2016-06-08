@@ -48,16 +48,14 @@ public class ArmPivot extends Subsystem {
 	CANTalon arm1 = new CANTalon(RobotMap.lifter1);
 	CANTalon arm2 = new CANTalon(RobotMap.lifter2);
 	public AnalogPotentiometer armPotentiometer = new AnalogPotentiometer(RobotMap.armPoten1, POTENTIOMETER_ANGLE_PER_VOLTS);
-//	public AnalogPotentiometer armPotentiometer = new AnalogPotentiometer(RobotMap.armPoten1, POTENTIOMETER_MAX_ANGLE, 
-//																							  POTENTIOMETER_START_DEGREE);
 	public PIDControl armPID = new PIDControl(PID_KP, PID_KI, PID_KD);
 	
 	public ArmPivot()
 	{
 		setBrake(true);
-		armPID.setMaxMin(-MAX_PID_SPEED, MAX_PID_SPEED);
+		armPID.setMaxMin(-MAX_PID_SPEED, MAX_PID_SPEED); // this is stupidly counterintuitive (its min then max)... my bad
 		
-		currentTargetAngle = getArmAngle();
+		currentTargetAngle = getArmAngle(); // don't try to go somewhere right off the bat
 	}
 	
 	public void setArmByJoystick()
@@ -66,7 +64,7 @@ public class ArmPivot extends Subsystem {
 		// consider using armPID and setTargetAngle for this so the arm stays up (also see whether the motors are braking...)
 		double commandedSpeed = MAX_JOYSTICK_SPEED*Robot.oi.UtilStick.getY();
 
-		// apply deadzone, and if in it, use PID
+		// apply deadzone, and if in it, use PID control
 		if (Math.abs(commandedSpeed) < JOYSTICK_DEADZONE)
 		{
 			// only use PID when off limits (and not trying to get out of limits) to avoid odd behavior there
@@ -84,6 +82,7 @@ public class ArmPivot extends Subsystem {
 			// use drivetrain function to get a curved input
 			commandedSpeed = DriveTrain.getExpodentialValue(commandedSpeed);
 			
+			// finally, actually set it
 			set(commandedSpeed);
 			
 			// log current position to hold (and limit it)
@@ -91,13 +90,14 @@ public class ArmPivot extends Subsystem {
 			if (!armLimitOverride && currentTargetAngle > currentMaxAngle) currentTargetAngle = currentMaxAngle;
 			else if (!armLimitOverride && currentTargetAngle < 0) currentTargetAngle = 0;
 			
-			// reset PID integral so old error is ignored
+			// reset PID integral error so old error is ignored
 			armPID.resetIntegral();
 		}
 	}
 
 	public void set(double speed)
 	{
+		// stop if we are NOT overridden AND we're not too low and trying to go down OR too high and trying to go up
 		if (!armLimitOverride && (speed < 0 && getArmAngle() < 0) || (speed > 0 && getArmAngle() > currentMaxAngle))
 		{
 			arm1.set(0);
@@ -105,6 +105,8 @@ public class ArmPivot extends Subsystem {
 			this.currentSpeed = 0;
 		} else {
 			// we may need to limit the commanded speed to remain within the winch speed limits
+			// (we never tried this... but its based on my calculus and the actual arm speed (which was
+			// really noisy) so it would probably never work...)
 			speed = speed; //Robot.winch.getLimitedArmSpeed(speed);
 			
 			arm1.set(-speed);
@@ -122,13 +124,13 @@ public class ArmPivot extends Subsystem {
 	
 	public double getArmAngle()
 	{
-		// change if has exceeded change threshold
+		// change if has exceeded change threshold (to remove noise)
 		if (Math.abs(lastOfficalAngle - armPotentiometer.get()) >= POTENTIOMETER_READ_DEADZONE)
 			lastOfficalAngle = armPotentiometer.get() - POTENTIOMETER_START_DEGREE;
 		
 		return lastOfficalAngle;
 		
-		// OR  POTENTIOMETER_MAX_ANGLE - (armPotentiometer.get() + POTENTIOMETER_START_DEGREE);
+		// OR just give raw values: POTENTIOMETER_MAX_ANGLE - (armPotentiometer.get() + POTENTIOMETER_START_DEGREE);
 	}
 	
 	/**
@@ -148,6 +150,8 @@ public class ArmPivot extends Subsystem {
 	 */
 	public void updateArmProperties()
 	{
+		// I was going to not read the arm speed so fast to get more average speed (which might
+		// be less noisy), but it screwed it up I think... anyways it would be hard to remove it all
 //		if ((System.nanoTime() - lastPotentiometerRateRead)/10e9 > ARM_PROPS_READ_FREQUENCY)  
 //		{
 			// set max angle based on match time
@@ -156,8 +160,12 @@ public class ArmPivot extends Subsystem {
 			else
 				currentMaxAngle = POTENTIOMETER_MAX_ANGLE;
 				
-			currentArmRate = (getArmAngle() - pastPotentiometerAngle) / // currentSpeed * DEGREE_PER_SEC_PER_POWER
+			currentArmRate = (getArmAngle() - pastPotentiometerAngle) /
 		   			 ((System.nanoTime() - lastPotentiometerRateRead)/10e9);
+			
+			// OR currentArmRate = currentSpeed * DEGREE_PER_SEC_PER_POWER // (this would have allowed us to
+			// get the arm rate just based on a constant we measured on our own, so we could actually limit 
+			// the winch speed with this (to bypass noise issue), but again we never did.)
 				
 			pastPotentiometerAngle = getArmAngle();
 			lastPotentiometerRateRead = System.nanoTime();

@@ -20,7 +20,7 @@ public class TargetTracker extends Subsystem {
 	public static final String OUTPUT_NET_TABLE = "GRIP/BestTargetReport";
 	private static final String RASPBERRY_PI_LOCATION = "visionpi2523.local";
 	public static final double TARGET_ACQUIRE_TIME = 0.5;
-	// target geometry
+	// target geometry (this can probably be all you change to make this work next year, if the targets are rectangluar)
 	private static final double IDEAL_ASPECT_RATIO = 20.0 / 14.0;
 	private static final double IDEAL_AREA_RATIO =  88.0 / 280.0;
 	private static final double TARGET_WIDTH = 20 / 12.0; // feet
@@ -39,7 +39,8 @@ public class TargetTracker extends Subsystem {
 	private final static double CAMERA_ELEVATION = 45;
 
 
-	// Objects Used
+	// Objects Used (Having these defined here instead of in Robot.java was an issue, but it might be
+	// because they weren't static...???)
 //	static? NetworkTable recievingTable;
 //	static? NetworkTable sendingTable;
 	
@@ -51,7 +52,6 @@ public class TargetTracker extends Subsystem {
 	public boolean tracking = false;
 	public double guessedRange = 0;
 
-	// POTENTIAL BUG ISSUE
 	public TargetTracker()
 	{
 //		recievingTable = NetworkTable.getTable(CONTOUR_NET_TABLE);
@@ -136,8 +136,10 @@ public class TargetTracker extends Subsystem {
 			guessedRange = MAX_REASONABLE_RANGE*0.5*(-Robot.oi.UtilStick.getThrottle() + 1);
 			if (Math.abs(guessedRange) > 0.01)
 			{
+				// give a bunch of weight (see TargetReport) based on closesness to guessedRange
 				target.addScoreFromDistance(guessedRange, targetRange);
-				// highly prioritize a target close to a guess
+				
+				// highly prioritize a target close to a guess (this basically overrides the above line...)
 				if (Math.abs(guessedRange - targetRange) < GUESS_ACCURACY_TOLERANCE)
 				{
 					bestTarget = target;
@@ -145,15 +147,16 @@ public class TargetTracker extends Subsystem {
 				}
 			}
 			
+			// if a target is better than the best, it's now the best
 			if (target.getCumulativeScore() > bestScore)
 			{
 				bestTarget = target;
 				bestScore = target.getCumulativeScore();
 			}
 		}
-		allTargets.clear();
+		allTargets.clear(); // we thought this might have been taking up too much memory, so we cleared it.
 		
-		// determine if in launcher range to target
+		// determine if in launcher range to target and set notification based on this
 		currentRangeToBestTarget = getRangeToBestTarget();
 		if (Robot.launcherWheels.inRange(currentRangeToBestTarget))
 			Robot.launcherstatus.setInRange();
@@ -211,17 +214,18 @@ public class TargetTracker extends Subsystem {
 
     /**
      * Sends the currentBestTarget via NetworkTables in a format emulating
-     * GRIP's reports, so can be used with SmartDashboard extension.
+     * GRIP's reports, so can be used with the SmartDashboard extension.
      */
     private void sendBestTargetReport()
     {
-        // define arrays (just of the bestTarget and a vertical bar)
+        // define arrays (just of the bestTarget and a vertical bar so length 2)
         double[] centerXs = new double[2];
         double[] centerYs = new double[2];
         //double[] areas = new double[2];
         double[] widths =  new double[2];
         double[] heights = new double[2];
         
+        // send currentBestTarget if it exists
         if (currentBestTarget != null)
         {
 	        // set props of bestTarget
@@ -246,6 +250,14 @@ public class TargetTracker extends Subsystem {
         Robot.targetSendingTable.putNumberArray("height", heights);
     }
 
+    /*
+     * THE FOLLOWING DON"T WORK... I THINK
+     * IT WAS REALLY HARD TO TRY TO DEBUG IT, so I just ran the commands 
+     * when the rasberry pi started up
+     * 
+     */
+    
+    
 	/**
 	 * Starts vision tracking on Pi via SSH network command
 	 */

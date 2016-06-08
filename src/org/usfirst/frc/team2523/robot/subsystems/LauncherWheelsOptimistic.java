@@ -1,3 +1,9 @@
+/**
+ * You could try to use this, but I'd really just go with the nice math and focus on other things...
+ * I don't even know if the theory that one motor controls angle while the other controls speed is even right,
+ * but I think that it would likely be the front which controls angle... BUT PHYSICS IS COOL AS WE USED IT, USE THAT!!
+ */
+
 //
 //package org.usfirst.frc.team2523.robot.subsystems;
 //

@@ -16,8 +16,10 @@ public class OI {
     // One type of button is a joystick button which is any button on a joystick.
     // You create one by telling it which joystick it's on and which button
     // number it is.
+	
+	// the recording joystick simply replaces the normal joystick so it can impersonate it in auto
 //    public Joystick DriveStick = new Joystick(0);
-    public RecordingJoystick DriveStick = new RecordingJoystick(0);
+    public RecordingJoystick DriveStick = new RecordingJoystick(0); 
     Button driveButton1 = new JoystickButton(DriveStick, 1),
 			driveButton2 = new JoystickButton(DriveStick, 2),
 			driveButton3 = new JoystickButton(DriveStick, 3),
@@ -78,8 +80,6 @@ public class OI {
     	utilButton11.whenPressed(new LauncherLower());
    		utilButton12.whenPressed(new LauncherRaise());
 
-    	// TODO: THIS COULD SCREW UP THE NORMAL WINCH-ARM FUNCTION!!! SET BASED ON HOW WELL THE LIFT COMMAND WORKS
-//    	utilButton11.whenPressed(new ArmRetract());
    		utilButton4.whileHeld(new SetWinch(Winch.MAX_MANUAL_SPEED*2)); // faster
     	utilButton6.whileHeld(new SetWinch(-Winch.MAX_MANUAL_SPEED));
 //   		utilButton4.whenPressed(new ContractArmWithSolenoid());
@@ -93,15 +93,8 @@ public class OI {
 		utilButton10.whenPressed(new AutoLaunch());
 //		utilButton10.whenPressed(new ResetWinchPosition());
 		
-		// TODO: Remove
-//		utilButton10.whileHeld(new SetWinchDistance(8));
-//		utilButton10.whileHeld(new SetArmByJoystick());
-		
 //		utilButton12.whileHeld(new IdentifyBestTarget());
 //   		utilButton11.whileHeld(new SetLauncherByThrottle());
-		
-//    	utilButton8.whenPressed(new LiftRobot());
-//	    utilButton12.whenPressed(new GateMacro());
     
 	    // There are a few additional built in buttons you can use. Additionally,
 	    // by subclassing Button you can create custom triggers and bind those to

@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
+ * !!!!!BADLY DESIGNED - make a better one!!!! (Could be done in 1/3 of the lines of code... so much repetition!)
+ * 
  * PIDControl class for creating PID control systems. 
  * Class stores past error and cumulative integral error, and therefore a new instance should be used for each system. 
  * @author Robotics

@@ -1,7 +1,9 @@
 package org.usfirst.frc.team2523.robot.subsystems;
 
 /**
- * Basic class to contain information on a vision target
+ * Basic class to contain information on a vision target.
+ * Could be used unchanged year-to-year for basic rectangular 
+ * targets if you enter new constants in the contructor.
  * @author Robotics
  */
 public class TargetReport {
@@ -12,7 +14,9 @@ public class TargetReport {
 	// (so if one is 1 and other is 2, that's twice as important)
 	private static final double ASPECT_RATIO_WEIGHT = 2;
 	private static final double AREA_RATIO_WEIGHT = 1; 
-	private static final double ADDITIONAL_SCORE_WEIGHT = 100;
+	private static final double ADDITIONAL_SCORE_WEIGHT = 100; // I removed this for some reason... it actually probably wasn't the problem
+																// (I was going to add an additional score for how close a target was to the driver's pick, 
+																// but I guess it didn't happen)
 	
 	// target characteristics
 	public double centerX;
@@ -92,7 +96,7 @@ public class TargetReport {
 			return 0;
 	}
 	
-	/**
+	/** 
 	 * Adds an additonal score to this TargetReport, based on the 
 	 * distance between the given ideal value and the real value of this particular target.
 	 * This will be factored into a call to getCumulativeScore().
@@ -107,7 +111,7 @@ public class TargetReport {
 	/**
 	 * Calculates a score representing the distance of a value off the ideal value.
 	 * Uses a peicewise "pyramid" function which is highest (1) at one but falls off to 0
-	 * as the ratio approaches 0 or 2.
+	 * as the ratio approaches 0 or 2. Basically, shows how close realValue is to idealValue
 	 * @param realValue The current, actual value
 	 * @param idealValue The optimal value (would result in highest score)
 	 * @return A 0-1 value representing the "closeness" of the realValue to the idealValue

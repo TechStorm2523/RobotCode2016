@@ -1,3 +1,11 @@
+/**
+ * Jack,
+ * You could use this just to handle the image grabbing and putting boxes on it and stuff, 
+ * but I ended up just doing this all in the old vision code class (TargetTracker) (this wouldn't work at with the 
+ * raspberry pi because the camera has to be in the RoboRio.)
+ * (You'll see I basically copied everything in here elsewhere)
+ */
+
 //package org.usfirst.frc.team2523.robot.subsystems;
 //
 //import org.usfirst.frc.team2523.robot.Robot;

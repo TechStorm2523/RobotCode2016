@@ -7,7 +7,7 @@ import org.usfirst.frc.team2523.robot.commands.SetDashboard;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
- *
+ * The most annoyingly simply class here.
  */
 public class Dashboard extends Subsystem {
     

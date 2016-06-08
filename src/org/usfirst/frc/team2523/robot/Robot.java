@@ -98,7 +98,6 @@ public class Robot extends IterativeRobot {
 	 * the robot is disabled.
      */
     public void disabledInit(){
-//		TargetTracker.stopTracking();
     	armpivot.armLimitOverride = false;
     	winch.lowerWinchLimitOverride = false;
     	winch.winchLimitOverride = false;
@@ -137,7 +136,7 @@ public class Robot extends IterativeRobot {
 			oi.UtilStick.startPlayback(RobotMap.JOYSTICK_RECORDINGS_SAVE_LOCATION + joystickRecording + "_util");
 		}
 		
-//		targetTracker.startTracking();
+//		targetTracker.startTracking(); - not necessary because we do this when the RPi starts up now
 		
 		// prep for driving and winching
 		launcherPneumatics.raise();
@@ -158,10 +157,8 @@ public class Robot extends IterativeRobot {
     	winch.releaseBrake();
     	launcherPneumatics.raise();
     	armsolenoids.extend();
-    	//armsolenoids.contract();
-    	// ensure that arm extends
-//    	winch.setDistance(Winch.MAX_ARM_EXTENSION);
     	
+    	// make sure that arm is satisfied with where it is
     	armpivot.currentTargetAngle = armpivot.getArmAngle();
     	
 		// This makes sure that the autonomous stops running when
@@ -173,16 +170,12 @@ public class Robot extends IterativeRobot {
         if (autonomousCommand != null) autonomousCommand.cancel();
         
 //        if (!targetTracker.tracking)
-//        	targetTracker.startTracking();
-//        String recordNew = SmartDashboard.getData("Record New Joystick Auto?");
+//        	targetTracker.startTracking(); - not necessary because we do this when the RPi starts up now
         
         // check if we should start recording joysticks
 		String joystickRecording = (String) recordingChooser.getSelected();
         if (joystickRecording != null)
-        {
-//        	String filename = SmartDashboard.getString("New Recorded Auto Name: ", "RecordedAuto...");
-////        	double recordLen = SmartDashboard.getNumber("New Recorded Auto Length", 0);
-        	
+        {        	
         	// record for length of auto
         	oi.DriveStick.startRecording(RobotMap.JOYSTICK_RECORDINGS_SAVE_LOCATION + joystickRecording + "_drive", 15); // recordLen
         	oi.UtilStick.startRecording(RobotMap.JOYSTICK_RECORDINGS_SAVE_LOCATION + joystickRecording + "_util", 15);
