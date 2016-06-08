@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj.communication.FRCNetworkCommunicationsLibrary;
  * 
  * @author Mckenna Cisler, Team 2523
  */
-public class RecordingJoystick extends Joystick {
+public class RecordingJoystick extends GenericHID {
 	static final double STATE_STORE_FREQ = 20; // or n*20 to slow down... 20 is minimum // ms
 	static final double AUTO_PERIOD_LENGTH = 15*10e3; // ms
 	static final double MAX_PLAYBACK_DURATION = 10e6; // Arbitrarily large number // ms
@@ -33,6 +33,8 @@ public class RecordingJoystick extends Joystick {
 	static final int MODE_NORMAL_OPERATION = 0;
 	static final int MODE_RECORDING = 1;
 	static final int MODE_PLAYBACK = 2;
+	
+	Joystick inputJoystick;
 	
 	// Note: with the following maximums, 
 	// too low values will result in lost data from recordings, while
@@ -179,7 +181,7 @@ public class RecordingJoystick extends Joystick {
 	 *            into.
 	 */
 	public RecordingJoystick(int port) {
-		super(port);
+		inputJoystick = new Joystick(port);
 		joystickStates = new ArrayList<JoystickState>((int)(AUTO_PERIOD_LENGTH / STATE_STORE_FREQ));
 	}
 	
@@ -322,8 +324,8 @@ public class RecordingJoystick extends Joystick {
 		// (if check frequency is less than our desired update frequency)
 		if (System.nanoTime() - lastStateCheck > STATE_STORE_FREQ*10e5) // apparently the correct conversion is 10e5
 		{
-			System.out.println("RecordingJoystick's state is not updated frequently enough (" + 
-						(System.nanoTime() - lastStateCheck) + "ns vs desired " + STATE_STORE_FREQ*10e6 + "ns)");
+//			System.out.println("RecordingJoystick's state is not updated frequently enough (" + 
+//						(System.nanoTime() - lastStateCheck) + "ns vs desired " + STATE_STORE_FREQ*10e6 + "ns)");
 		}
 		
 		elapsedDuration += (System.nanoTime() - lastStateCheck) / 10e5; // apparently the correct conversion is 10e5
@@ -379,7 +381,7 @@ public class RecordingJoystick extends Joystick {
 		if (currentMode == MODE_PLAYBACK)
 			return currentState.xVal;
 		else
-			return super.getX();
+			return inputJoystick.getX();
 	}
 
 	/* (non-Javadoc)
@@ -390,7 +392,7 @@ public class RecordingJoystick extends Joystick {
 		if (currentMode == MODE_PLAYBACK)
 			return currentState.yVal;
 		else
-			return super.getY();
+			return inputJoystick.getY();
 	}
 
 	/* (non-Javadoc)
@@ -401,7 +403,7 @@ public class RecordingJoystick extends Joystick {
 		if (currentMode == MODE_PLAYBACK)
 			return currentState.zVal;
 		else
-			return super.getZ();
+			return inputJoystick.getZ();
 	}
 
 	/* (non-Javadoc)
@@ -412,7 +414,7 @@ public class RecordingJoystick extends Joystick {
 		if (currentMode == MODE_PLAYBACK)
 			return currentState.twistVal;
 		else
-			return super.getTwist();
+			return inputJoystick.getTwist();
 	}
 
 	/* (non-Javadoc)
@@ -423,7 +425,7 @@ public class RecordingJoystick extends Joystick {
 		if (currentMode == MODE_PLAYBACK)
 			return currentState.throttleVal;
 		else
-			return super.getThrottle();
+			return inputJoystick.getThrottle();
 	}
 
 	/* (non-Javadoc)
@@ -434,7 +436,7 @@ public class RecordingJoystick extends Joystick {
 		if (currentMode == MODE_PLAYBACK)
 			return currentState.rawAxes[which];
 		else
-			return super.getRawAxis(which);
+			return inputJoystick.getRawAxis(which);
 	}
 
 	/* (non-Javadoc)
@@ -445,7 +447,7 @@ public class RecordingJoystick extends Joystick {
 		if (currentMode == MODE_PLAYBACK)
 			return currentState.triggerVal;
 		else
-			return super.getTrigger();
+			return inputJoystick.getTrigger();
 	}
 
 	/* (non-Javadoc)
@@ -456,7 +458,7 @@ public class RecordingJoystick extends Joystick {
 		if (currentMode == MODE_PLAYBACK)
 			return currentState.topVal;
 		else
-			return super.getTop();
+			return inputJoystick.getTop();
 	}
 
 	/* (non-Javadoc)
@@ -475,7 +477,7 @@ public class RecordingJoystick extends Joystick {
 		if (currentMode == MODE_PLAYBACK)
 			return currentState.rawButtons[button];
 		else
-			return super.getRawButton(button);
+			return inputJoystick.getRawButton(button);
 	}
 
 	/* (non-Javadoc)
@@ -486,7 +488,7 @@ public class RecordingJoystick extends Joystick {
 		if (currentMode == MODE_PLAYBACK)
 			return currentState.povVals[pov];
 		else
-			return super.getPOV(pov);
+			return inputJoystick.getPOV(pov);
 	}
 
 	// TODO: Include excess Joystick functions that may be used 

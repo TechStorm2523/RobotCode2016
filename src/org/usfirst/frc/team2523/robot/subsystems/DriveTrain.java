@@ -26,8 +26,9 @@ public class DriveTrain extends Subsystem {
 	public static final double RAMP_UP_DURATION = 0.75; // s
 	private static final double EXPONENETIAL_FACTOR = 2; // changes arm too
 	private static final double TURN_SPEED_MULTIPLIER = 0.9;
-	private static final double STARTING_TURN_SPEED = 0.3;
+	private static final double STARTING_TURN_SPEED = 0.25;
 	private static final double JOYSTICK_DEADZONE = 0.1;
+	public static double MAX_POWER = 1.0;
 	
 	// CONSTANTS (for AUTO)
 	public static final double VISION_TARGET_OFFSET_TOLERANCE = 0.04; // normalized (-1 to 1) units, used in TurnToTarget
@@ -84,17 +85,14 @@ public class DriveTrain extends Subsystem {
 			turnSpeed = TURN_SPEED_MULTIPLIER*getShiftedExponentialValue(turnCommand, STARTING_TURN_SPEED);
 		}
 		
-		drive.arcadeDrive(forwardSpeed, turnSpeed);
-		
-		
-		// how to do arcade drive
-		// given an x and y speeds:
-		// right side power = x - y
-		// left side power = x + y
-		// set the two motors on each side to the right power
-		// (WE DON"T ACTUALLY DO THAT HERE)
+		drive.arcadeDrive(MAX_POWER*forwardSpeed, MAX_POWER*turnSpeed);
 		
 //		// convert to arcadedrive power
+//		// how to do arcade drive
+//		// given an x and y speeds:
+//		// right side power = x - y
+//		// left side power = x + y
+//		// set the two motors on each side to the right power
 //		double rightSpeed = forwardSpeed + turnSpeed;
 //		double leftSpeed = forwardSpeed - turnSpeed;
 //			
@@ -111,7 +109,7 @@ public class DriveTrain extends Subsystem {
 	 */
 	public void set(double driveRate, double turnRate)
 	{
-		drive.arcadeDrive(driveRate, turnRate);
+		drive.arcadeDrive(MAX_POWER*driveRate, MAX_POWER*turnRate);
 	}
 
 	/**
