@@ -20,15 +20,15 @@ public class TargetTracker extends Subsystem {
 	public static final String OUTPUT_NET_TABLE = "GRIP/BestTargetReport";
 	private static final String RASPBERRY_PI_LOCATION = "visionpi2523.local";
 	public static final double TARGET_ACQUIRE_TIME = 0.5;
-	// target geometry (this can probably be all you change to make this work next year, if the targets are rectangluar)
+	// target geometry (this can probably be all you change to make this work next year, if the targets are rectangular)
 	private static final double IDEAL_ASPECT_RATIO = 20.0 / 14.0;
 	private static final double IDEAL_AREA_RATIO =  88.0 / 280.0;
-	private static final double TARGET_WIDTH = 20 / 12.0; // feet
+	private static final double TARGET_WIDTH = 20 / 12.0; // feet // this would only be used if we did ranging based on width, but we used height instead
 	private static final double TARGET_HEIGHT = 14 / 12.0; // feet
 	// elimination criteria
 	private static final double MIN_REASONABLE_RANGE = 0; // SET BASED ON WHEN TARGET OUT OF CAMERA VIEW
 	private static final double MAX_REASONABLE_RANGE = 15.5;
-	private static final double CENTER_ZONE_SIZE = 100; // pixels, distance off center where target considering in middle
+	private static final double CENTER_ZONE_SIZE = 100; // pixels, distance off center where target is considered "in the middle"
 	private static final double GUESS_ACCURACY_TOLERANCE = 1; // feet
 	
 	// SINCE CAN'T USE CAMERA CLASS BCS CANT GET NETWORK IMAGE
@@ -54,6 +54,7 @@ public class TargetTracker extends Subsystem {
 
 	public TargetTracker()
 	{
+		// see above for why these are commented out
 //		recievingTable = NetworkTable.getTable(CONTOUR_NET_TABLE);
 //		sendingTable = NetworkTable.getTable(OUTPUT_NET_TABLE);
 		allTargets = new ArrayList<TargetReport>();
@@ -129,6 +130,7 @@ public class TargetTracker extends Subsystem {
 				continue;
 			
 			// When DRIVERS are lining up, eliminate based on the assumption that the target is aligned.
+			// (targetCloseToCenter is set to true during teleop, because we would expect it to be with human drivers)
 			if (targetCloseToCenter && Math.abs(target.centerX - IMAGE_WIDTH / 2) > CENTER_ZONE_SIZE)
 				continue;
 			
@@ -154,7 +156,7 @@ public class TargetTracker extends Subsystem {
 				bestScore = target.getCumulativeScore();
 			}
 		}
-		allTargets.clear(); // we thought this might have been taking up too much memory, so we cleared it.
+		allTargets.clear(); // we thought this might have been taking up too much memory, so we cleared it once we were done with it. (It wasn't the issue)
 		
 		// determine if in launcher range to target and set notification based on this
 		currentRangeToBestTarget = getRangeToBestTarget();
@@ -165,10 +167,13 @@ public class TargetTracker extends Subsystem {
 
 		// if we've found one, cache and return it
 		// otherwise, return null (it will just default to the first value of bestTarget)
-      // ALSO, report bestTarget to Driver station
 		currentBestTarget = bestTarget;
-//		sendBestTargetReport();
+		
+		// ALSO, report bestTarget to Driver station
+//		sendBestTargetReport(); // Didn't work, see below
+		
 //    	System.out.println(currentBestTarget);
+		
 		return bestTarget;
 	}
 	
@@ -211,7 +216,14 @@ public class TargetTracker extends Subsystem {
 			i++;
 		}
 	}
-
+	
+	/*
+	 * The following function didn't end up working (the issue was with the SmartDashboard extension)
+	 * because the extension expected the camera to be connected to the roborio (when it was actually being
+	 * streamed from the RPi), so the data it got over networktables couldn't be displayed because it couldn't
+	 * get the image.
+	 */
+	
     /**
      * Sends the currentBestTarget via NetworkTables in a format emulating
      * GRIP's reports, so can be used with the SmartDashboard extension.
@@ -256,7 +268,6 @@ public class TargetTracker extends Subsystem {
      * when the rasberry pi started up
      * 
      */
-    
     
 	/**
 	 * Starts vision tracking on Pi via SSH network command

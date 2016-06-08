@@ -18,12 +18,12 @@
 //
 //    // Called just before this Command runs the first time
 //    protected void initialize() {
-//		NIVision.IMAQdxStartAcquisition(Robot.targetTracker.session); // Robot.camera.session
+//		NIVision.IMAQdxStartAcquisition(Robot.targetTracker.session); // This was Robot.camera.session when we had a separate camera class
 //    }
 //
 //    // Called repeatedly when this Command is scheduled to run
 //    protected void execute() {
-//    	Robot.targetTracker.runAppropriateVisionTasks(); // Robot.camera.transferImagetoDS();
+//    	Robot.targetTracker.runAppropriateVisionTasks(); // Robot.camera.transferImagetoDS(); for absolutely no vision tracking
 //    }
 //
 //    // Make this return true when this Command no longer needs to run execute()
@@ -34,7 +34,7 @@
 //
 //    // Called once after isFinished returns true
 //    protected void end() {
-//    	NIVision.IMAQdxStopAcquisition(Robot.targetTracker.session); // Robot.camera.session
+//    	NIVision.IMAQdxStopAcquisition(Robot.targetTracker.session); // This was Robot.camera.session when we had a separate camera class
 //    }
 //
 //    // Called when another command which requires one or more of the same
